@@ -69,7 +69,7 @@
 </template>
 
 <script>
-	import _app from './appJS.js';
+	import _app from './app.js';
 	import uniIcon from './uni-icon.vue';
 	export default {
 		props: {
