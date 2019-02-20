@@ -69,9 +69,7 @@
 </template>
 
 <script>
-	import _app from '@/util/appJS.js';
-	import SendMsg from '@/util/SendMsg-Manager.js';
-	import md5 from '@/util/md5.js';
+	import _app from './appJS.js';
 	import uniIcon from './uni-icon.vue';
 	export default {
 		props: {
