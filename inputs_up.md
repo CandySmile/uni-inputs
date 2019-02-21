@@ -7,6 +7,7 @@
 
 | 序号 | 更新说明 |
 |---|------|
+| 6 | 新增cssMode属性，可控制非input类型的项内布局方式,可在父组件传入，也可在项内属性中传入 |
 | 5 | ruleName属性修改为ruleArray, 可以支持一个以上的规则或协议 |
 | 4 | 新增radio(单选)类型，checkbox（多选）类型 |
 | 3 | 为提升用户体验，在循环项数较多的情况下，防止超屏，新增overflow_x为scroll(x轴滚动) |
@@ -25,7 +26,8 @@
 	<inputs :inputs="inputsArray" activeName="申请入驻" :ifCode="true" 
 			:ifRule="true" :ruleArray="ruleArray" 
 			v-on:chaildOpenEvent="openWin" 
-			v-on:activeFc="activeFc"  :onLoadData="onLoadData" />
+			v-on:activeFc="activeFc"  :onLoadData="onLoadData" 
+			cssMode="scrollX"/>
   </view>
 </template>
 ```
@@ -39,12 +41,22 @@
 	    inputsArray: [{
 			type: 'radio',
 			title: 'radioName',
+			cssMode: 'scrollX',
 			radioArray: [{
 				name: '测试一',
 				value: '测试一值'
 			}, {
 				name: '测试二',
 				value: '测试二值'
+			}, {
+				name: '测试三',
+				value: '测试三值'
+			}, {
+				name: '测试四',
+				value: '测试四值'
+			}, {
+				name: '测试五',
+				value: '测试五值'
 			}]
 		},{
 			type: 'checkbox',
@@ -55,7 +67,16 @@
 			}, {
 				name: '测试二',
 				value: '测试二值'
-			}]
+			}, {
+				name: '测试三',
+				value: '测试三值'
+			}, {
+				name: '测试四',
+				value: '测试四值'
+			}, {
+				name: '测试五',
+				value: '测试五值'
+			}],
 		},{
 			title: '商家名称'
 		},{
@@ -139,12 +160,20 @@
 | fontSize| 否| Number| '2.1' | title的文字大小|
 | fontColor| 否| String| '#666666'| title的文字颜色|
 | input_fontSize| 否| Number| '2.1'| input的文字大小|
+| cssMode| 否| String| 'wrap'| 非input类型的项内布局方式|
 
 ### ruleArray属性说明
 | 属性 | 说明|
 |---|---|
 | name| 需要用户同意某规则或协议的名字 |
 | value| 需要用户同意某规则或协议的标识(父级方法判断用) |
+
+### cssMode属性说明
+| 值| 说明|
+|---|---|
+| wrap| 布局方式: 全显+换行  |
+| scrollX| 布局方式: 非全显+滑动 |
+注：cssMode属性可在父级中传入，也可在项内属性中传入,优先级: 项内属性>父级属性.
 
 
 ## inputs属性说明

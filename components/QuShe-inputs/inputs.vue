@@ -2,8 +2,9 @@
 	<view class="width100">
 		<view :class="item.type&&item.type=='pics'?'flex_column':'flex_row'" class="width100 padding2vh3vw box-sizing-border-box"
 		 v-for="(item, index) in inputs" :key="index">
-			<view :class="item.type&&item.type=='pics'?'flex_row_none_c':item.cssMode=='scrollX'||cssMode=='scrollX'?'flex_row_e_c':'flex_row_e_none'" class="input_title" :style="{'fontSize': fontSize + 'vh', 'color': fontColor}">
-				<view class="fontSize1Point8vh fontColorF1505C" v-if="item.type!='pics'&&!item.ignore">*</view>{{item.title || ''}}:
+			<view :class="item.type&&item.type=='pics'?'flex_row_none_c':item.cssMode=='scrollX'||cssMode=='scrollX'?'flex_row_e_c':'flex_row_c_none'" class="input_title" :style="{'fontSize': fontSize + 'vh', 'color': fontColor}">
+				<view class="fontSize1Point8vh fontColorF1505C" v-if="item.type!='pics'&&!item.ignore">*</view>
+				<view class="width100 word_wrap">{{item.title || ''}}:</view>
 			</view>
 			<view class="width100 padding1vh3vw box-sizing-border-box" v-if="item.type&&item.type=='pics'">
 				<view class="flex_row width100" :class="item.cssMode||cssMode||'wrap'">
@@ -34,7 +35,7 @@
 			</view>
 			<view class="input_item" v-else-if="item.type&&item.type=='checkbox'">
 				<checkbox-group @change="inputs_change($event, index)" class="width100 flex_row_none_c" :class="item.cssMode||cssMode||'wrap'">
-					<label class="marginItemRight2vw fontSize1Point8vh fontColor666666 flex_row_none_c" v-for="(checkboxItem, checkboxIndex) in item.checkboxArray"
+					<label class="marginItemRight2vw fontSize1Point8vh fontColor666666 flex_row_none_c padding1vh" v-for="(checkboxItem, checkboxIndex) in item.checkboxArray"
 					 :key="checkboxIndex">
 						<view>
 							<checkbox :value="checkboxItem.value"/>
@@ -300,7 +301,7 @@
 		width: 25%;
 		margin-right: 5%;
 	}
-
+	
 	.input_item {
 		width: 75%;
 	}
@@ -336,6 +337,10 @@
 	}
 	
 	/* 公共样式(可剪切至App.vue) */
+	.word_wrap {
+		word-wrap:break-word; 
+		word-break:break-all;
+	}
 	.wrap {
 		flex-wrap: wrap;
 	}
