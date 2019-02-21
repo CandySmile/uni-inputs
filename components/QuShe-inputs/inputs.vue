@@ -2,11 +2,11 @@
 	<view class="width100">
 		<view :class="item.type&&item.type=='pics'?'flex_column':'flex_row'" class="width100 padding2vh3vw box-sizing-border-box"
 		 v-for="(item, index) in inputs" :key="index">
-			<view :class="item.type&&item.type=='pics'?'flex_row_none_c':'flex_row_e_c'" class="input_title" :style="{'fontSize': fontSize + 'vh', 'color': fontColor}">
+			<view :class="item.type&&item.type=='pics'?'flex_row_none_c':item.cssMode=='scrollX'||cssMode=='scrollX'?'flex_row_e_c':'flex_row_e_none'" class="input_title" :style="{'fontSize': fontSize + 'vh', 'color': fontColor}">
 				<view class="fontSize1Point8vh fontColorF1505C" v-if="item.type!='pics'&&!item.ignore">*</view>{{item.title || ''}}:
 			</view>
-			<view class="width100 padding1vh3vw box-sizing-border-box overflow_x_scroll" v-if="item.type&&item.type=='pics'">
-				<view class="flex_row width100">
+			<view class="width100 padding1vh3vw box-sizing-border-box" v-if="item.type&&item.type=='pics'">
+				<view class="flex_row width100" :class="item.cssMode||cssMode||'wrap'">
 					<view class="flex_column_c_c padding1vh" v-for="(picsItem, picsIndex) in item.picsArray" :key="picsIndex">
 						<view class="flex_row_c_c pic_view" @tap="!picsObj[onLoadData + index + onLoadData + picsIndex]?chooseImg(index, picsIndex): ''">
 							<image :src="picsObj[onLoadData + index + onLoadData + picsIndex]" mode="aspectFill" class="picsItem_pic" v-if="picsObj[onLoadData + index + onLoadData + picsIndex]"></image>
@@ -21,9 +21,9 @@
 					</view>
 				</view>
 			</view>
-			<view class="input_item overflow_x_scroll" v-else-if="item.type&&item.type=='radio'">
-				<radio-group @change="inputs_change($event, index)" class="width100 flex_row_none_c">
-					<label class="marginItemRight2vw fontSize1Point8vh fontColor666666 flex_row_none_c" v-for="(radioItem, radioIndex) in item.radioArray"
+			<view class="input_item" v-else-if="item.type&&item.type=='radio'">
+				<radio-group @change="inputs_change($event, index)" class="width100 flex_row_none_c" :class="item.cssMode||cssMode||'wrap'">
+					<label class="marginItemRight2vw fontSize1Point8vh fontColor666666 flex_row_none_c padding1vh" v-for="(radioItem, radioIndex) in item.radioArray"
 					 :key="radioIndex">
 						<view>
 							<radio :value="radioItem.value"/>
@@ -32,8 +32,8 @@
 					</label>
 				</radio-group>
 			</view>
-			<view class="input_item overflow_x_scroll" v-else-if="item.type&&item.type=='checkbox'">
-				<checkbox-group @change="inputs_change($event, index)" class="width100 flex_row_none_c">
+			<view class="input_item" v-else-if="item.type&&item.type=='checkbox'">
+				<checkbox-group @change="inputs_change($event, index)" class="width100 flex_row_none_c" :class="item.cssMode||cssMode||'wrap'">
 					<label class="marginItemRight2vw fontSize1Point8vh fontColor666666 flex_row_none_c" v-for="(checkboxItem, checkboxIndex) in item.checkboxArray"
 					 :key="checkboxIndex">
 						<view>
@@ -108,6 +108,10 @@
 			onLoadData: { // 数据变量名（+index）
 				type: String,
 				default: 'data_'
+			},
+			cssMode: {
+				type: String,
+				default: 'wrap'
 			}
 		},
 		data() {
@@ -332,7 +336,10 @@
 	}
 	
 	/* 公共样式(可剪切至App.vue) */
-	.overflow_x_scroll{
+	.wrap {
+		flex-wrap: wrap;
+	}
+	.scrollX {
 		overflow-x: scroll;
 	}
 	
@@ -344,7 +351,11 @@
 		display: flex;
 		flex-direction: column;
 	}
-
+	.flex_row_e_none {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+	}
 	.flex_column_c_c {
 		display: flex;
 		flex-direction: column;
