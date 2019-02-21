@@ -1,10 +1,11 @@
 <template>
 	<view class="width100">
-		<view :class="item.type&&item.type=='pics'?'flex_column':'flex_row'" class="width100 padding2vh3vw box-sizing-border-box"
+		<view :class="item.type=='pics'||item.type=='date'?'flex_column':'flex_row'" class="width100 padding2vh3vw box-sizing-border-box"
 		 v-for="(item, index) in inputs" :key="index">
-			<view :class="item.type&&item.type=='pics'?'flex_row_none_c':item.cssMode=='scrollX'||cssMode=='scrollX'?'flex_row_e_c':'flex_row_c_none'" class="input_title" :style="{'fontSize': fontSize + 'vh', 'color': fontColor}">
-				<view class="fontSize1Point8vh fontColorF1505C" v-if="item.type!='pics'&&!item.ignore">*</view>
-				<view class="width100 word_wrap">{{item.title || ''}}:</view>
+			<view class="input_title" :style="{'fontSize': fontSize + 'vh', 'color': fontColor}">
+				<view class="width100 word_wrap" :class="item.type=='pics'||item.type=='date'?'flex_row_none_c':item.cssMode=='scrollX'||cssMode=='scrollX'?'flex_row_e_c':'flex_row_e_none'">
+					<view class="fontSize1Point8vh fontColorF1505C" v-if="item.type!='pics'&&!item.ignore">*</view>{{item.title || ''}}:
+				</view>
 			</view>
 			<view class="width100 padding1vh3vw box-sizing-border-box" v-if="item.type&&item.type=='pics'">
 				<view class="flex_row width100" :class="item.cssMode||cssMode||'wrap'">
@@ -27,7 +28,7 @@
 					<label class="marginItemRight2vw fontSize1Point8vh fontColor666666 flex_row_none_c padding1vh" v-for="(radioItem, radioIndex) in item.radioArray"
 					 :key="radioIndex">
 						<view>
-							<radio :value="radioItem.value"/>
+							<radio :value="radioItem.value" />
 						</view>
 						<view class="flex_row_none_c radioItem_name">{{radioItem.name}}</view>
 					</label>
@@ -38,7 +39,7 @@
 					<label class="marginItemRight2vw fontSize1Point8vh fontColor666666 flex_row_none_c padding1vh" v-for="(checkboxItem, checkboxIndex) in item.checkboxArray"
 					 :key="checkboxIndex">
 						<view>
-							<checkbox :value="checkboxItem.value"/>
+							<checkbox :value="checkboxItem.value" />
 						</view>
 						<view class="flex_row_none_c radioItem_name">{{checkboxItem.name}}</view>
 					</label>
@@ -213,8 +214,8 @@
 				if (_this.ifRule)
 					if (!_this.Igree) {
 						let ruleName = '';
-						for(let i = 0; i < _this.ruleArray.length; i++) {
-							ruleName += i==0?_this.ruleArray[i].name:'、' + _this.ruleArray[i].name;
+						for (let i = 0; i < _this.ruleArray.length; i++) {
+							ruleName += i == 0 ? _this.ruleArray[i].name : '、' + _this.ruleArray[i].name;
 						}
 						_app.showToast('请先阅读并勾选' + ruleName);
 						return;
@@ -301,7 +302,7 @@
 		width: 25%;
 		margin-right: 5%;
 	}
-	
+
 	.input_item {
 		width: 75%;
 	}
@@ -335,19 +336,21 @@
 	.radioItem_name {
 		width: 15vw;
 	}
-	
+
 	/* 公共样式(可剪切至App.vue) */
 	.word_wrap {
-		word-wrap:break-word; 
-		word-break:break-all;
+		word-wrap: break-word;
+		word-break: break-all;
 	}
+
 	.wrap {
 		flex-wrap: wrap;
 	}
+
 	.scrollX {
 		overflow-x: scroll;
 	}
-	
+
 	.width100 {
 		width: 100%;
 	}
@@ -356,11 +359,13 @@
 		display: flex;
 		flex-direction: column;
 	}
+
 	.flex_row_e_none {
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-end;
 	}
+
 	.flex_column_c_c {
 		display: flex;
 		flex-direction: column;
@@ -451,7 +456,7 @@
 	.margin2vh3vw {
 		margin: 2vh 3vw;
 	}
-	
+
 	.marginItemRight2vw {
 		margin-right: 2vw;
 	}

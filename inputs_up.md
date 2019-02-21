@@ -7,12 +7,12 @@
 
 | 序号 | 更新说明 |
 |---|------|
-| 6 | 新增cssMode属性，可控制非input类型的项内布局方式,可在父组件传入，也可在项内属性中传入,默认为wrap |
-| 5 | ruleName属性修改为ruleArray, 可以支持一个以上的规则或协议 |
-| 4 | 新增radio(单选)类型，checkbox（多选）类型 |
-| 3 | 为提升用户体验，在循环项数较多的情况下，防止超屏，新增overflow_x为scroll(x轴滚动) |
-| 2 | 判断类型使用type判断 |
-| 1 | 完善213-226行的判断写法不正确问题 |
+| 1.7 | 新增cssMode属性，可控制非input类型的项内布局方式,可在父组件传入，也可在项内属性中传入,默认为wrap |
+| 1.6 | ruleName属性修改为ruleArray, 可以支持一个以上的规则或协议 |
+| 1.5 | 新增radio(单选)类型，checkbox（多选）类型 |
+|  | 为提升用户体验，在循环项数较多的情况下，防止超屏，新增overflow_x为scroll(x轴滚动) |
+|  | 判断类型使用type判断 |
+|  | 完善213-226行的判断写法不正确问题 |
 
 # inputs组件使用说明
 注：有引入官方的uni-Icon组件（删除图片的叉叉），可自行修改
@@ -151,7 +151,7 @@
 |------|---|----|---|-------|
 | inputs| 是| Array| []| 需循环的inputs数组|
 | activeName| 是| String| '发送'| 主功能按钮的文字说明|
-| ifCode| 否| Boolean| false| 是否启用验证码功能, 若启用则需完善163-168的发送验证码方法|
+| ifCode| 否| Boolean| false| 是否启用验证码功能, 若启用则需完善167-172行的发送验证码方法|
 | ifRule| 否| Boolean| false| 是否需要用户同意某规则或协议|
 | ruleArray| ifRule为true时是| Array| []| 需要用户同意某规则或协议的数组|
 | v-on:chaildOpenEvent| ifRule为true时是| Function| | 打开某规则或协议的方法|
@@ -202,6 +202,7 @@
 | title| 否| String| ''| 该项图片的标题|
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
 | ignore| 否| Boolean| false| 可以为空， 不判断是否为空,默认为必填，必填则在title前面有 * 标识|
+注：若启用此项，则需完善245-251行的上传图片至服务器方法
 ### 三、radio(单选)
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
