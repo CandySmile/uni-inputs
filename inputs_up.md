@@ -7,7 +7,7 @@
 
 | 序号 | 更新说明 |
 |---|------|
-| 6 | 新增cssMode属性，可控制非input类型的项内布局方式,可在父组件传入，也可在项内属性中传入 |
+| 6 | 新增cssMode属性，可控制非input类型的项内布局方式,可在父组件传入，也可在项内属性中传入,默认为wrap |
 | 5 | ruleName属性修改为ruleArray, 可以支持一个以上的规则或协议 |
 | 4 | 新增radio(单选)类型，checkbox（多选）类型 |
 | 3 | 为提升用户体验，在循环项数较多的情况下，防止超屏，新增overflow_x为scroll(x轴滚动) |
@@ -173,7 +173,7 @@
 |---|---|
 | wrap| 布局方式: 全显+换行  |
 | scrollX| 布局方式: 非全显+滑动 |
-注：cssMode属性可在父级中传入，也可在项内属性中传入,优先级: 项内属性>父级属性.
+注：cssMode属性可在父级中传入， 默认为wrap，也可在项内属性中传入,优先级: 项内属性>父级属性.
 
 
 ## inputs属性说明
@@ -195,6 +195,7 @@
 | picsArray| 是| Array| []| 循环的图片数组，下方说明|
 | title| 是| String| ''| 该项图片的标题|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
+| cssMode| 否| String| 'wrap'| 非input类型的项内布局方式|
 #### picsArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
@@ -209,6 +210,7 @@
 | radioArray| 是| Array| []| 需循环的radio数组|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
+| cssMode| 否| String| 'wrap'| 非input类型的项内布局方式|
 #### radioArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
@@ -222,6 +224,7 @@
 | checkboxArray| 是| Array| []| 需循环的checkbox数组|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
+| cssMode| 否| String| 'wrap'| 非input类型的项内布局方式|
 #### checkboxArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
