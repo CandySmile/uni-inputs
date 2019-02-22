@@ -11,7 +11,7 @@
 | 序号 | 更新说明 |
 |---|------|
 | 1.8 | 新增日期选择控件 —— picker-date |
-| 1.7 | 新增cssMode属性，可控制非input类型的项内布局方式,可在父组件传入，也可在项内属性中传入,默认为wrap |
+| 1.7 | 新增cssMode属性，可控制非input、picker-date类型的项内布局方式,可在父组件传入，也可在项内属性中传入,默认为wrap |
 | 1.6 | ruleName属性修改为ruleArray, 可以支持一个以上的规则或协议 |
 | 1.5 | 新增radio(单选)类型，checkbox（多选）类型 |
 |  | 为提升用户体验，在循环项数较多的情况下，防止超屏，新增overflow_x为scroll(x轴滚动) |
@@ -172,7 +172,7 @@
 | fontSize| 否| Number| '2.1' | title的文字大小|
 | fontColor| 否| String| '#666666'| title的文字颜色|
 | input_fontSize| 否| Number| '2.1'| input的文字大小|
-| cssMode| 否| String| 'wrap'| 非input类型的项内布局方式|
+| cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
 
 ### ruleArray属性说明
 | 属性 | 说明|
@@ -256,6 +256,7 @@
 | startYear| 否| Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
 | endYear| 否| Number| new Date().getFullYear() + 5 (后五年)|  结束年份, 可直接输入四位数字|
 | defaultDate| 否| Date日期对象| new Date()|  默认日期, 可传new Date(年,月,日),为空则默认为今天|
+注：所传的defaultDate若不在范围中，则将显示范围内的最后一年最后一月最后一日;
 
 
 
