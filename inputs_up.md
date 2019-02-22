@@ -252,7 +252,7 @@
 | type| 是| String| ''| 传固定值 type: 'picker-date'|
 | title| 否| String| ''| 该项picker的标题|
 | indicatorStyle| 否| String| 'height: 5vh;'| picker的行内样式|
-| height| 否| String| '20'| picker的高度）|
+| height| 否| String| '20'| picker的高度(vh)|
 | startYear| 否| Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
 | endYear| 否| Number| new Date().getFullYear() + 5 (后五年)|  结束年份, 可直接输入四位数字|
 | defaultDate| 否| Date日期对象| new Date()|  默认日期, 可传new Date(年,月,日),为空则默认为今天|
