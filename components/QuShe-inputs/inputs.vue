@@ -1,9 +1,9 @@
 <template>
 	<view class="width100">
-		<view :class="item.type=='pics'||item.type=='date'?'flex_column':'flex_row'" class="width100 padding2vh3vw box-sizing-border-box"
+		<view :class="item.type=='pics'||item.type=='picker-date'?'flex_column':'flex_row'" class="width100 padding2vh3vw box-sizing-border-box"
 		 v-for="(item, index) in inputs" :key="index">
 			<view class="input_title" :style="{'fontSize': fontSize + 'vh', 'color': fontColor}">
-				<view class="width100 word_wrap" :class="item.type=='pics'||item.type=='date'?'flex_row_none_c':item.cssMode=='scrollX'||cssMode=='scrollX'?'flex_row_e_c':'flex_row_e_none'">
+				<view class="width100 word_wrap" :class="item.type=='pics'||item.type=='picker-date'?'flex_row_none_c':item.cssMode=='scrollX'||cssMode=='scrollX'?'flex_row_e_c':'flex_row_e_none'">
 					<view class="fontSize1Point8vh fontColorF1505C" v-if="item.type!='pics'&&!item.ignore">*</view>{{item.title || ''}}:
 				</view>
 			</view>
@@ -45,6 +45,11 @@
 					</label>
 				</checkbox-group>
 			</view>
+			<view class="width100 marginTop2vh" v-else-if="item.type&&item.type=='picker-date'">
+				<pickers :years="getYearsArray(item.startYear||new Date().getFullYear() - 5, item.endYear||new Date().getFullYear() + 5)" 
+				:defaultDate="item.defaultDate" v-on:getDate="getDate($event, index)"
+				:indicatorStyle="item.indicatorStyle" :height="item.height"/>
+			</view>
 			<view class="input_item" v-else>
 				<input :type="item.inputType||'text'" value="" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
 				 class="width100 borderBottom1pxf2f2f2" :style="{'fontSize': input_fontSize + 'vh'}" />
@@ -73,6 +78,7 @@
 <script>
 	import _app from './app.js';
 	import uniIcon from './uni-icon.vue';
+	import pickers from './pickers.vue';
 	export default {
 		props: {
 			inputs: { // 需循环遍历的input
@@ -126,6 +132,19 @@
 				picsObj: {}
 			};
 		},
+		computed: {
+			getYearsArray() {
+				return function(sy, ey) {
+					let _this = this;
+					let y = [];
+					let c = ey - sy;
+					for (let i = 0; i <= c; i++) {
+						y.push(sy + i);
+					}
+					return y;
+				}
+			}
+		},
 		methods: {
 			IgreeFc(e) { // 用户是否同意规则
 				this.Igree = e.detail.value;
@@ -135,6 +154,10 @@
 			},
 			inputs_change(e, index) { // 用户输入时，根据index赋值
 				this[this.onLoadData + index] = e.detail.value;
+			},
+			getDate(date, index) {
+				console.log('获取日期:' + date);
+				this[this.onLoadData + index] = date;
 			},
 			getCode() { // 判断是否正确输入手机号后发送验证码并倒计时
 				let _this = this;
@@ -292,7 +315,8 @@
 			}
 		},
 		components: {
-			uniIcon
+			uniIcon,
+			pickers
 		}
 	}
 </script>

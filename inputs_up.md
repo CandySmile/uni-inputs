@@ -3,10 +3,14 @@
 如果该组件有什么问题还请大家说出来哦，还有如果有什么建议的话也可以提下呐 ~
 如果觉得好用，可以回来给个五星好评么~~(❁´◡`❁)*✲ﾟ*  蟹蟹~拜托啦~
 
+## 组件简介
+本组件目前支持 input、radio、checkbox、上传图片、日期选择等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！有需要的小伙伴快点下载吧
+
 ## 更新说明
 
 | 序号 | 更新说明 |
 |---|------|
+| 1.8 | 新增日期选择控件 —— picker-date |
 | 1.7 | 新增cssMode属性，可控制非input类型的项内布局方式,可在父组件传入，也可在项内属性中传入,默认为wrap |
 | 1.6 | ruleName属性修改为ruleArray, 可以支持一个以上的规则或协议 |
 | 1.5 | 新增radio(单选)类型，checkbox（多选）类型 |
@@ -39,6 +43,14 @@
     data() {
       return {
 	    inputsArray: [{
+			type: 'picker-date',
+			title: '日期',
+			indicatorStyle: 'height: 5vh;',
+			height: '20',
+			startYear: new Date().getFullYear() - 10,
+			endYear: new Date().getFullYear() + 10,
+			defaultDate: new Date()
+		},{
 			type: 'radio',
 			title: 'radioName',
 			cssMode: 'scrollX',
@@ -193,7 +205,7 @@
 |------|---|----|---|-------|
 | type| 是| String| ''| 传固定值 type: 'pics'|
 | picsArray| 是| Array| []| 循环的图片数组，下方说明|
-| title| 是| String| ''| 该项图片的标题|
+| title| 否| String| ''| 该项图片的标题|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | cssMode| 否| String| 'wrap'| 非input类型的项内布局方式|
 #### picsArray属性说明
@@ -207,7 +219,7 @@
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
 | type| 是| String| ''| 传固定值 type: 'radio'|
-| title| 是| String| ''| 该项radio的标题|
+| title| 否| String| ''| 该项radio的标题|
 | radioArray| 是| Array| []| 需循环的radio数组|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
@@ -221,7 +233,7 @@
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
 | type| 是| String| ''| 传固定值 type: 'checkbox'|
-| title| 是| String| ''| 该项checkbox的标题|
+| title| 否| String| ''| 该项checkbox的标题|
 | checkboxArray| 是| Array| []| 需循环的checkbox数组|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
@@ -233,6 +245,17 @@
 | value| 是| | | 该项checkbox的值|
 
 注： checkbox类型与radio类型差不多，只是取值时checkbox为数组，根据需求使用
+
+### 五、日期控件
+| 属性名| 是否必填| 值类型| 默认值| 说明|
+|------|---|----|---|-------|
+| type| 是| String| ''| 传固定值 type: 'picker-date'|
+| title| 否| String| ''| 该项picker的标题|
+| indicatorStyle| 否| String| 'height: 5vh;'| picker的行内样式|
+| height| 否| String| '20'| picker的高度）|
+| startYear| 否| Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
+| endYear| 否| Number| new Date().getFullYear() + 5 (后五年)|  结束年份, 可直接输入四位数字|
+| defaultDate| 否| Date日期对象| new Date()|  默认日期, 可传new Date(年,月,日),为空则默认为今天|
 
 
 
