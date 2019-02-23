@@ -199,19 +199,21 @@
 				let inputsDataObj = {};
 				// 先判断 inputs 的值是否为空, 后判断该值是否忽略
 				for (let i = 0; i < d.length; i++) {
+					let onLoadData = _this.onLoadData + i;
+					let variableName = d[i].variableName||onLoadData;
 					switch (d[i].type) {
 						case 'pics':
 							for (let j = 0; j < d[i].picsArray.length; j++) {
-								let pic = _this.picsObj[_this.onLoadData + i + _this.onLoadData + j];
+								let pic = _this.picsObj[onLoadData + _this.onLoadData + j];
 								if (pic) {
-									if (!inputsDataObj[_this.onLoadData + i])
-										inputsDataObj[_this.onLoadData + i] = [];
-									inputsDataObj[_this.onLoadData + i].push(pic);
+									if (!inputsDataObj[onLoadData])
+										inputsDataObj[variableName] = [];
+									inputsDataObj[variableName].push(pic);
 								} else {
 									if (d[i].picsArray[j].ignore) {
-										if (!inputsDataObj[_this.onLoadData + i])
-											inputsDataObj[_this.onLoadData + i] = [];
-										inputsDataObj[_this.onLoadData + i].push('');
+										if (!inputsDataObj[onLoadData])
+											inputsDataObj[variableName] = [];
+										inputsDataObj[variableName].push('');
 									} else {
 										_app.showToast(d[i].picsArray[j].nullErr || d[i].picsArray[j].title + '不能为空');
 										return;
@@ -220,15 +222,15 @@
 							}
 							break;
 						default:
-							if (!_this[_this.onLoadData + i]) {
+							if (!_this[onLoadData]) {
 								if (d[i].ignore) {
-									inputsDataObj[_this.onLoadData + i] = '';
+									inputsDataObj[variableName] = '';
 								} else {
 									_app.showToast(d[i].nullErr || d[i].title + '不能为空');
 									return;
 								}
 							} else {
-								inputsDataObj[_this.onLoadData + i] = _this[_this.onLoadData + i];
+								inputsDataObj[variableName] = _this[onLoadData];
 							}
 							break;
 					}
@@ -260,12 +262,14 @@
 				// 如果用了图片类型， 则上传并返回数据
 				let pic_promise = [];
 				for (let i = 0; i < d.length; i++) {
+					let onLoadData = _this.onLoadData + i;
+					let variableName = d[i].variableName||onLoadData;
 					if (d[i].type && d[i].type == 'pics') {
 						for (let j = 0; j < d[i].picsArray.length; j++) {
-							if (inputsDataObj[_this.onLoadData + i][j]) {
+							if (inputsDataObj[variableName][j]) {
 								pic_promise.push(new Promise(function(reslove, reject) {
 									// push Promise 上传图片到服务器并返回图片在服务器的地址并拼接的方法
-									_app.UpLoadFile(_app.interface.upLoadImg, {}, 'name', inputsDataObj[_this.onLoadData + i][j], function(res) {
+									_app.UpLoadFile(_app.interface.upLoadImg, {}, 'name', inputsDataObj[variableName][j], function(res) {
 										reslove({
 											index1: i,
 											index2: j,
@@ -287,11 +291,13 @@
 				}
 				Promise.all(pic_promise).then(res => { // Promise返回一个图片的数组, 根据res.index1 给 inputsDataObj[_this.onLoadData + res[i].index1] 赋值
 					if (res.length > 0)
-						for (let i = 0; i < res.length; i++) { // 注： 此处根据自己的需求拼接数据   (在下返回数据后的拼接是以 ‘|’ 分隔)
-							/* if(typeof(inputsDataObj[_this.onLoadData + res[i].index1]) != 'string')
-								inputsDataObj[_this.onLoadData + res[i].index1] = res[i].data || '|'; // res[i].data有可能为空
+						for (let i = 0; i < res.length; i++) { // 注: 此处根据自己的需求拼接数据   (在下返回数据后的拼接是以 ‘|’ 分隔)
+							let onLoadData = _this.onLoadData + res[i].index1;
+							let variableName = d[res[i].index1].variableName||onLoadData; // 自定义变量名或默认变量名
+							/* if (typeof(inputsDataObj[onLoadData]) != 'string')
+								inputsDataObj[variableName] = res[i].data || '|';
 							else
-								inputsDataObj[_this.onLoadData + res[i].index1] += res[i].data?'|' + res[i].data : '|'; */
+								inputsDataObj[variableName] += res[i].data ? '|' + res[i].data : '|'; */
 						}
 					_this.$emit('activeFc', inputsDataObj); // 把用户输入数据封装成对象输出给父级
 					_this.inputs_reSet(); //提交后重置验证码

@@ -1,7 +1,7 @@
 ## 作者想说
 
 如果该组件有什么问题还请大家说出来哦，还有如果有什么建议的话也可以提下呐 ~
-如果觉得好用，可以回来给个五星好评么~~(❁´◡`❁)*✲ﾟ*  蟹蟹~拜托啦~
+如果觉得好用，可以回来给个五星好评么~~(❁´◡`❁)\*✲ﾟ\*  蟹蟹~拜托啦~
 
 ## 组件简介
 本组件目前支持 input、radio、checkbox、上传图片、日期选择等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！有需要的小伙伴快点下载吧
@@ -10,6 +10,7 @@
 
 | 序号 | 更新说明 |
 |---|------|
+| 1.9 | 新增variableName属性，可自定义该项的变量名, 修复pickers组件的样式问题 |
 | 1.8 | 新增日期选择控件 —— picker-date |
 | 1.7 | 新增cssMode属性，可控制非input、picker-date类型的项内布局方式,可在父组件传入，也可在项内属性中传入,默认为wrap |
 | 1.6 | ruleName属性修改为ruleArray, 可以支持一个以上的规则或协议 |
@@ -17,7 +18,9 @@
 |  | 为提升用户体验，在循环项数较多的情况下，防止超屏，新增overflow_x为scroll(x轴滚动) |
 |  | 判断类型使用type判断 |
 |  | 完善213-226行的判断写法不正确问题 |
-
+### variableName属性说明
+variableName是项内属性，取值时的优先级: 项内属性variableName>父级属性onloadData + index>默认值:‘data_’ + index
+ ,页面中请不要使用‘deta_’ + 数字或已定义的变量名， 避免变量名冲突
 # inputs组件使用说明
 注：有引入官方的uni-Icon组件（删除图片的叉叉），可自行修改
 	  `单位使用为vh、vw`， 有样式需求自行修改
@@ -49,7 +52,8 @@
 			height: '20',
 			startYear: new Date().getFullYear() - 10,
 			endYear: new Date().getFullYear() + 10,
-			defaultDate: new Date()
+			defaultDate: new Date(),
+			variableName: 'date'   // 自定义变量名
 		},{
 			type: 'radio',
 			title: 'radioName',
@@ -69,7 +73,8 @@
 			}, {
 				name: '测试五',
 				value: '测试五值'
-			}]
+			}],
+			variableName: 'radio_variableName'   // 自定义变量名
 		},{
 			type: 'checkbox',
 			title: 'checkboxName',
@@ -129,7 +134,7 @@
 			name:'隐私政策',
 			value: 'yinsizhengce'
 		}],
-		onLoadData： 'data_'	//获取数据时变量名前缀
+		onLoadData： 'data_'	//获取数据时默认变量名前缀
       };
     },
     methods: {
@@ -142,7 +147,8 @@
         //主方法，携带用户输入的数据对象
         let _this = this;
         console.log(JSON.stringify(res));
-        // 取值为 this.onloadData + index, onloadData默认值为'data_'
+        // 如果项内定义了variableName属性，则取值为定义的variableName，否则取值为 this.onloadData + index, onloadData默认值为'data_'
+        // 需要把数据传至服务器时也可以把整个对象传过去，由后端直接处理数据，这样可以实现整体的表单类型、布局、取值都由后端决定
         submitFc(res[_this.onLoadData + '0'], res[_this.onLoadData + '1'], ……, function(result) {
           console.log(JSON.stringify(result))
           if(result.data && result.data == 'success')
@@ -161,7 +167,7 @@
 ## 传给inputs组件的属性
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
-| inputs| 是| Array| []| 需循环的inputs数组|
+| inputs| 是| Array| []| 需循环的inputs数组（可从后端接口获取）|
 | activeName| 是| String| '发送'| 主功能按钮的文字说明|
 | ifCode| 否| Boolean| false| 是否启用验证码功能, 若启用则需完善167-172行的发送验证码方法|
 | ifRule| 否| Boolean| false| 是否需要用户同意某规则或协议|
@@ -200,6 +206,7 @@
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
 | inputType| 否| String| 'text'| 该项input的类型|
 | phone| 否| Boolean| false| 是否设此项为手机号input(判断时，判断此属性)|
+| variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
 ### 二、上传图片
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
@@ -207,7 +214,8 @@
 | picsArray| 是| Array| []| 循环的图片数组，下方说明|
 | title| 否| String| ''| 该项图片的标题|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
-| cssMode| 否| String| 'wrap'| 非input类型的项内布局方式|
+| cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
+| variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
 #### picsArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
@@ -223,7 +231,8 @@
 | radioArray| 是| Array| []| 需循环的radio数组|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
-| cssMode| 否| String| 'wrap'| 非input类型的项内布局方式|
+| cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
+| variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
 #### radioArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
@@ -237,7 +246,8 @@
 | checkboxArray| 是| Array| []| 需循环的checkbox数组|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
-| cssMode| 否| String| 'wrap'| 非input类型的项内布局方式|
+| cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
+| variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
 #### checkboxArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
@@ -256,6 +266,7 @@
 | startYear| 否| Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
 | endYear| 否| Number| new Date().getFullYear() + 5 (后五年)|  结束年份, 可直接输入四位数字|
 | defaultDate| 否| Date日期对象| new Date()|  默认日期, 可传new Date(年,月,日),为空则默认为今天|
+| variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
 注：所传的defaultDate若不在范围中，则将显示范围内的最后一年最后一月最后一日;
 
 

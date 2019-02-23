@@ -97,5 +97,20 @@
 	}
 </script>
 
-<style>
+<style scoped>
+	.flex_row_c_c{
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+	}
+	.width100{
+		width: 100%;
+	}
+	.fontSize1Point8vh{
+		font-size: 1.8vh;
+	}
+	.fontColor666666{
+		color: #666666;
+	}
 </style>
