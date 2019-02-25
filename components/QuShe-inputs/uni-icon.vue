@@ -1,5 +1,5 @@
 <template>
-    <view class="uni-icon" :class="['uni-icon-'+type]" :style="{color:color,'font-size':fontSize}" @click="onClick()"></view>
+    <view class="uni-icon" :class="['uni-icon-'+type]" :style="{color:color,'font-size':  fontSize}" @click="onClick()"></view>
 </template>
 
 <script>
@@ -16,11 +16,12 @@
             /**
              * 图标大小
              */
-            size: Number
+            size: Number,
+			pxSize: Number
         },
         computed: {
             fontSize() {
-                return `${this.size}vh`
+                return this.pxSize?`${this.pxSize}px`:`${this.size}vh`
             }
         },
         methods: {

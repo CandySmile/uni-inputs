@@ -6,10 +6,13 @@
 ## 组件简介
 本组件目前支持 input、radio、checkbox、上传图片、日期选择等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
 
-## 更新说明
+---
+
+# 更新说明
 
 | 序号 | 更新说明 |
 |---|------|
+| 2.0 | 1、修复input软键盘弹出式样式改变问题（统一单位使用px，数值使用windowHieght计算）<br>2、radio、checkbox、pics等类型统一指定项内数组名为itemArray<br>3、inputs属性改为inputsArray，便于区分<br>4、修复一些bug|
 | 1.9 | 新增variableName属性，可自定义该项的变量名, 修复pickers组件的样式问题 |
 | 1.8 | 新增日期选择控件 —— picker-date |
 | 1.7 | 新增cssMode属性，可控制非input、picker-date类型的项内布局方式,可在父组件传入，也可在项内属性中传入,默认为wrap |
@@ -18,21 +21,26 @@
 |  | 为提升用户体验，在循环项数较多的情况下，防止超屏，新增overflow_x为scroll(x轴滚动) |
 |  | 判断类型使用type判断 |
 |  | 完善213-226行的判断写法不正确问题 |
-### variableName属性说明
-variableName是项内属性，取值时的优先级: 项内属性variableName>父级属性onloadData + index>默认值:‘data_’ + index
- ,页面中请不要使用‘deta_’ + 数字或已定义的变量名， 避免变量名冲突
+### 新增的variableName属性说明
+variableName是项内属性，取值时的优先级: 项内属性variableName>父级属性onloadData + index>默认值:‘data\_’ + index
+ ,页面中请不要使用‘data\_’ + 数字或已定义的变量名， 避免变量名冲突
+
+---
+# 下次更新方向
+加上fontUnit属性，可以控制文字大小的单位（软键盘弹出时，不至于变样式），picker的time（时分秒）选择与日期融合，picker的城市选择。敬请期待
+
+---
+
 # inputs组件使用说明
 注：有引入官方的uni-Icon组件（删除图片的叉叉），可自行修改
 	  `单位使用为vh、vw`， 有样式需求自行修改
-## 下次更新方向
-picker的time（时分秒）选择与日期融合，picker的城市选择。敬请期待
 
 ## html中使用
 
 ```html
 <template>
   <view>
-	<inputs :inputs="inputsArray" activeName="申请入驻" :ifCode="true" 
+	<inputs :inputsArray="inputsArray" activeName="申请入驻" :ifCode="true" 
 			:ifRule="true" :ruleArray="ruleArray" 
 			v-on:chaildOpenEvent="openWin" 
 			v-on:activeFc="activeFc"  :onLoadData="onLoadData" 
@@ -166,10 +174,13 @@ picker的time（时分秒）选择与日期融合，picker的城市选择。敬�
   }
 </script>
 ```
+
+---
+
 ## 传给inputs组件的属性
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
-| inputs| 是| Array| []| 需循环的inputs数组（可从后端接口获取）|
+| inputsArray| 是| Array| []| 需循环的inputs数组（可从后端接口获取）|
 | activeName| 是| String| '发送'| 主功能按钮的文字说明|
 | ifCode| 否| Boolean| false| 是否启用验证码功能, 若启用则需完善167-172行的发送验证码方法|
 | ifRule| 否| Boolean| false| 是否需要用户同意某规则或协议|
@@ -196,7 +207,7 @@ picker的time（时分秒）选择与日期融合，picker的城市选择。敬�
 注：cssMode属性可在父级中传入， 默认为wrap，也可在项内属性中传入,优先级: 项内属性>父级属性.
 
 
-## inputs属性说明
+## inputsArray属性说明
 
 ### 一、input
 | 属性名| 是否必填| 值类型| 默认值| 说明|

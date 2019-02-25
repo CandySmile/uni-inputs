@@ -1,7 +1,7 @@
 <template>
 	<view class="width100">
-		<picker-view class="fontSize1Point8vh fontColor666666 width100" :indicator-style="indicatorStyle" :value="dateVlue"
-		 @change="bindPickerViewChange($event)" :style="{'height': height + 'vh'}">
+		<picker-view class="fontColor666666 width100" :indicator-style="indicatorStyle||'height: '+windowHeight*.05+'px;'" :value="dateVlue"
+		 @change="bindPickerViewChange($event)" :style="{'height': height||windowHeight*.2 + 'px', 'font-size': fontSize+'px'}">
 			<picker-view-column>
 				<view class="flex_row_c_c" v-for="(picker_item,picker_index) in years" :key="picker_index">{{picker_item}}年</view>
 			</picker-view-column>
@@ -22,17 +22,20 @@
 				type: Array,
 				default: null
 			},
-			indicatorStyle: {
-				type: String,
-				default: `height: 5vh;`
-			},
-			height: {
-				type: String,
-				default: '20'
-			},
+			indicatorStyle: String,
+			height: String,
+			windowHeight: Number,
 			defaultDate: {
 				type: Object,
 				default: new Date()
+			},
+			mode: {
+				type: String,
+				default: 'picker-date'
+			},
+			fontSize: {
+				type: Number,
+				default: 10
 			}
 		},
 		data() {
