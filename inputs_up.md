@@ -27,13 +27,12 @@ variableName是项内属性，取值时的优先级: 项内属性variableName>�
 
 ---
 # 下次更新方向
-加上fontUnit属性，可以控制文字大小的单位（软键盘弹出时，不至于变样式），picker的time（时分秒）选择与日期融合，picker的城市选择。敬请期待
+picker的time（时分秒）选择与日期融合，picker的城市选择。敬请期待
 
 ---
 
 # inputs组件使用说明
 注：有引入官方的uni-Icon组件（删除图片的叉叉），可自行修改
-	  `单位使用为vh、vw`， 有样式需求自行修改
 
 ## html中使用
 
@@ -44,7 +43,7 @@ variableName是项内属性，取值时的优先级: 项内属性variableName>�
 			:ifRule="true" :ruleArray="ruleArray" 
 			v-on:chaildOpenEvent="openWin" 
 			v-on:activeFc="activeFc"  :onLoadData="onLoadData" 
-			cssMode="scrollX"/>
+			cssMode="wrap"/>
   </view>
 </template>
 ```
@@ -58,8 +57,6 @@ variableName是项内属性，取值时的优先级: 项内属性variableName>�
 	    inputsArray: [{
 			type: 'picker-date',
 			title: '日期',
-			indicatorStyle: 'height: 5vh;',
-			height: '20',
 			startYear: new Date().getFullYear() - 10,
 			endYear: new Date().getFullYear() + 10,
 			defaultDate: new Date(),
@@ -68,7 +65,7 @@ variableName是项内属性，取值时的优先级: 项内属性variableName>�
 			type: 'radio',
 			title: 'radioName',
 			cssMode: 'scrollX',
-			radioArray: [{
+			itemArray: [{
 				name: '测试一',
 				value: '测试一值'
 			}, {
@@ -88,7 +85,7 @@ variableName是项内属性，取值时的优先级: 项内属性variableName>�
 		},{
 			type: 'checkbox',
 			title: 'checkboxName',
-			checkboxArray: [{
+			itemArray: [{
 				name: '测试一',
 				value: '测试一值'
 			}, {
@@ -111,7 +108,7 @@ variableName是项内属性，取值时的优先级: 项内属性variableName>�
 		},{
 			type: 'pics',
 			title: '营业执照',
-			picsArray: [{title: '营业执照(三合一)'}]
+			itemArray: [{title: '营业执照(三合一)'}]
 		},{
 			title: '银行名称'
 		},{
@@ -123,11 +120,11 @@ variableName是项内属性，取值时的优先级: 项内属性variableName>�
 		},{
 			type: 'pics',
 			title: '身份证截图',
-			picsArray: [{title: '身份证正面'}, {title: '身份证背面'}]
+			itemArray: [{title: '身份证正面'}, {title: '身份证背面'}]
 		},{
 			type: 'pics',
 			title: '门店图片',
-			picsArray: [
+			itemArray: [
                          {title: '门头照'}, 
                          {title: '店内样式1', ignore: true}, 
                          {title: '店内样式2', ignore: true}]
@@ -188,9 +185,9 @@ variableName是项内属性，取值时的优先级: 项内属性variableName>�
 | v-on:chaildOpenEvent| ifRule为true时是| Function| | 打开某规则或协议的方法|
 | v-on:activeFc| 是| Function| | 主功能方法，携带一个用户所输入的数据对象|
 | onLoadData| 否| String| 'data_'| activeFc返回的对象中的数据变量名前缀，后面跟index，看下方说明|
-| fontSize| 否| Number| '2.1' | title的文字大小|
-| fontColor| 否| String| '#666666'| title的文字颜色|
-| input_fontSize| 否| Number| '2.1'| input的文字大小|
+| titleFontSize| 否| Number| 屏幕高度*.021 px | title(左边)的文字大小|
+| titleFontColor| 否| String| '#666666'| title(左边)的文字颜色|
+| contentFontSize| 否| Number| 屏幕高度*.018 px| 内容(右边)的文字大小|
 | cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
 
 ### ruleArray属性说明
@@ -224,12 +221,12 @@ variableName是项内属性，取值时的优先级: 项内属性variableName>�
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
 | type| 是| String| ''| 传固定值 type: 'pics'|
-| picsArray| 是| Array| []| 循环的图片数组，下方说明|
+| itemArray| 是| Array| []| 循环的图片数组，下方说明|
 | title| 否| String| ''| 该项图片的标题|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
-#### picsArray属性说明
+#### pics的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
 | title| 否| String| ''| 该项图片的标题|
@@ -241,12 +238,12 @@ variableName是项内属性，取值时的优先级: 项内属性variableName>�
 |------|---|----|---|-------|
 | type| 是| String| ''| 传固定值 type: 'radio'|
 | title| 否| String| ''| 该项radio的标题|
-| radioArray| 是| Array| []| 需循环的radio数组|
+| itemArray| 是| Array| []| 需循环的radio数组|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
 | cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
-#### radioArray属性说明
+#### radio的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
 | name| 是| String| ''| 该radio的标题|
@@ -256,12 +253,12 @@ variableName是项内属性，取值时的优先级: 项内属性variableName>�
 |------|---|----|---|-------|
 | type| 是| String| ''| 传固定值 type: 'checkbox'|
 | title| 否| String| ''| 该项checkbox的标题|
-| checkboxArray| 是| Array| []| 需循环的checkbox数组|
+| itemArray| 是| Array| []| 需循环的checkbox数组|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
 | cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
-#### checkboxArray属性说明
+#### checkbox的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
 | name| 是| String| ''| 该checkbox的标题|
@@ -274,8 +271,8 @@ variableName是项内属性，取值时的优先级: 项内属性variableName>�
 |------|---|----|---|-------|
 | type| 是| String| ''| 传固定值 type: 'picker-date'|
 | title| 否| String| ''| 该项picker的标题|
-| indicatorStyle| 否| String| 'height: 5vh;'| picker的行内样式|
-| height| 否| String| '20'| picker的高度(vh)|
+| indicatorStyle| 否| String| 'height: '+ 屏幕高度*.05 +'px;'| picker的行内样式|
+| height| 否| String| 屏幕高度*.2 px| picker的高度(vh)|
 | startYear| 否| Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
 | endYear| 否| Number| new Date().getFullYear() + 5 (后五年)|  结束年份, 可直接输入四位数字|
 | defaultDate| 否| Date日期对象| new Date()|  默认日期, 可传new Date(年,月,日),为空则默认为今天|
