@@ -12,6 +12,7 @@
 
 | 序号 | 更新说明 |
 |---|------|
+| 2.1 | 修复pics类型问题，与cssMode为scrollX时样式问题|
 | 2.0 | 1、修复input软键盘弹出式样式改变问题（统一单位使用px，数值使用windowHieght计算）<br>2、radio、checkbox、pics等类型统一指定项内数组名为itemArray<br>3、inputs属性改为inputsArray，便于区分<br>4、修复一些bug|
 | 1.9 | 新增variableName属性，可自定义该项的变量名, 修复pickers组件的样式问题 |
 | 1.8 | 新增日期选择控件 —— picker-date |
@@ -64,7 +65,6 @@ picker的time（时分秒）选择与日期融合，picker的城市选择。敬�
 		},{
 			type: 'radio',
 			title: 'radioName',
-			cssMode: 'scrollX',
 			itemArray: [{
 				name: '测试一',
 				value: '测试一值'

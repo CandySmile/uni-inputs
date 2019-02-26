@@ -29,7 +29,7 @@
 					<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}" v-for="(radioItem, radioIndex) in item.itemArray"
 					 :key="radioIndex">
 						<radio :value="radioItem.value" :color="radioItem.color||item.color"/>
-						<view class="flex_row_none_c">{{radioItem.name}}</view>
+						<view class="flex_row_none_c" :class="cssMode=='scrollX'||item.cssMode=='scrollX'?'radio_Item':''">{{radioItem.name}}</view>
 					</label>
 				</radio-group>
 			</view>
@@ -211,19 +211,19 @@
 					let variableName = d[i].variableName||onLoadData;
 					switch (d[i].type) {
 						case 'pics':
-							for (let j = 0; j < d[i].picsArray.length; j++) {
+							for (let j = 0; j < d[i].itemArray.length; j++) {
 								let pic = _this.picsObj[onLoadData + _this.onLoadData + j];
 								if (pic) {
 									if (!inputsDataObj[onLoadData])
 										inputsDataObj[variableName] = [];
 									inputsDataObj[variableName].push(pic);
 								} else {
-									if (d[i].picsArray[j].ignore) {
+									if (d[i].itemArray[j].ignore) {
 										if (!inputsDataObj[onLoadData])
 											inputsDataObj[variableName] = [];
 										inputsDataObj[variableName].push('');
 									} else {
-										_app.showToast(d[i].picsArray[j].nullErr || d[i].picsArray[j].title + '不能为空');
+										_app.showToast(d[i].itemArray[j].nullErr || d[i].itemArray[j].title + '不能为空');
 										return;
 									}
 								}
@@ -273,7 +273,7 @@
 					let onLoadData = _this.onLoadData + i;
 					let variableName = d[i].variableName||onLoadData;
 					if (d[i].type && d[i].type == 'pics') {
-						for (let j = 0; j < d[i].picsArray.length; j++) {
+						for (let j = 0; j < d[i].itemArray.length; j++) {
 							if (inputsDataObj[variableName][j]) {
 								pic_promise.push(new Promise(function(reslove, reject) {
 									// push Promise 上传图片到服务器并返回图片在服务器的地址并拼接的方法
@@ -336,6 +336,9 @@
 </script>
 
 <style scoped>
+	.radio_Item {
+		width: 15vw;
+	}
 	.input_title {
 		width: 25%;
 		margin-right: 5%;
