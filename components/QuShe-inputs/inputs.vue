@@ -148,7 +148,7 @@
 				}
 			}
 		},
-		onLoad() {
+		created() {
 			const system = uni.getSystemInfoSync();
 			this.windowHeight = system.windowHeight;
 			this.windowWidth = system.windowWidth;
