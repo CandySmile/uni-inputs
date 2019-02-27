@@ -17,6 +17,7 @@
 				inputsArray: [{
 					type: 'picker-date',
 					title: '日期',
+					mode: 'picker-dateTime',
 					variableName: 'date'
 				}, {
 					type: 'pics',

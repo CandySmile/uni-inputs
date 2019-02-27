@@ -12,6 +12,7 @@
 
 | 序号 | 更新说明 |
 |---|------|
+| 2.2 | 新增时分秒选择与日期融合，详见 五、日期控件|
 | 2.1 | 修复pics类型问题，与cssMode为scrollX时样式问题，修复H5 picker-date类型，defaultDate报错问题，修复H5|
 | 2.0 | 1、修复input软键盘弹出式样式改变问题（统一单位使用px，数值使用windowHieght计算）<br>2、radio、checkbox、pics等类型统一指定项内数组名为itemArray<br>3、inputs属性改为inputsArray，便于区分<br>4、修复一些bug|
 | 1.9 | 新增variableName属性，可自定义该项的变量名, 修复pickers组件的样式问题 |
@@ -61,7 +62,8 @@ picker的time（时分秒）选择与日期融合，picker的城市选择。敬�
 			startYear: new Date().getFullYear() - 10,
 			endYear: new Date().getFullYear() + 10,
 			defaultDate: new Date(),
-			variableName: 'date'   // 自定义变量名
+			variableName: 'date',   // 自定义变量名
+			mode: 'picker-dateTime'
 		},{
 			type: 'radio',
 			title: 'radioName',
@@ -273,10 +275,18 @@ picker的time（时分秒）选择与日期融合，picker的城市选择。敬�
 | title| 否| String| ''| 该项picker的标题|
 | indicatorStyle| 否| String| 'height: '+ 屏幕高度*.05 +'px;'| picker的行内样式|
 | height| 否| String| 屏幕高度*.2 px| picker的高度(vh)|
+| mode| 否| String| 'picker-date'| picker-date的类型|
 | startYear| 否| Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
 | endYear| 否| Number| new Date().getFullYear() + 5 (后五年)|  结束年份, 可直接输入四位数字|
 | defaultDate| 否| Date日期对象| new Date()|  默认日期, 可传new Date(年,月,日),为空则默认为今天|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
+#### mode属性说明
+| 值|  值类型|说明|
+|------|---|----|---|-------|
+| picker-dateTime| String| 日期加时间|
+| picker-date| String| 日期|
+| picker-time| String| 时间|
+
 注：所传的defaultDate若不在范围中，则将显示范围内的最后一年最后一月最后一日;
 
 

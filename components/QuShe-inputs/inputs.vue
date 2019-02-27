@@ -45,7 +45,7 @@
 			<view class="width100" :style="{'margin-top': windowHeight*.02+'px'}" v-else-if="item.type&&item.type=='picker-date'">
 				<pickers :years="getYearsArray(item.startYear||new Date().getFullYear() - 5, item.endYear||new Date().getFullYear() + 5)" 
 				:defaultDate="item.defaultDate||new Date()" v-on:getDate="getDate($event, index)"
-				:indicatorStyle="item.indicatorStyle" :height="item.height" :windowHeight="windowHeight" :fontSize="contentFontSize||windowHeight*scale_two"/>
+				:indicatorStyle="item.indicatorStyle" :height="item.height" :windowHeight="windowHeight" :mode="item.mode" :fontSize="contentFontSize||windowHeight*scale_two"/>
 			</view>
 			<view class="input_item" v-else>
 				<input :type="item.inputType||'text'" value="" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
