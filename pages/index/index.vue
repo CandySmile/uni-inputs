@@ -3,7 +3,7 @@
         <image class="logo" src="../../static/logo.png"></image>
 		<view>
             <text class="title">{{title}}</text>
-			<inputs :inputsArray="inputsArray" v-on:activeFc="activeFc" :tFontSize="20"/>
+			<inputs :inputsArray="inputsArray" v-on:activeFc="activeFc"/>
         </view>
 	</view>
 </template>
@@ -21,16 +21,22 @@
 				}, {
 					type: 'pics',
 					title: '测试',
-					itemArray: [{title:'测试', ignore: true}],
+					itemArray: [{title:'测试'}],
 					variableName: 'pic'
 				}, {
 					title: 'radio',
 					type: 'radio',
 					itemArray: [{
-						name: 'aa',
+						name: '我的爱人啊',
 						value: 'aa'
 					}, {
-						name: 'bb',
+						name: '我的爱人呢',
+						value: 'bb'
+					}, {
+						name: '我的爱人呢',
+						value: 'bb'
+					}, {
+						name: '我的爱人呢',
 						value: 'bb'
 					}]
 				}, {
