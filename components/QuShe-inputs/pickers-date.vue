@@ -26,7 +26,7 @@
 			height: String,
 			windowHeight: Number,
 			defaultDate: {
-				type: Object,
+				type: Date,
 				default: new Date()
 			},
 			fontSize: {
