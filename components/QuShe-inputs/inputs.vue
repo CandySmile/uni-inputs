@@ -29,7 +29,7 @@
 					<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}" v-for="(radioItem, radioIndex) in item.itemArray"
 					 :key="radioIndex">
 						<radio :value="radioItem.value" :color="radioItem.color||item.color"/>
-						<view class="flex_row_none_c" :class="cssMode=='scrollX'||item.cssMode=='scrollX'?'radio_Item':''">{{radioItem.name}}</view>
+						<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{radioItem.name}}</view>
 					</label>
 				</radio-group>
 			</view>
@@ -38,14 +38,14 @@
 					<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}" v-for="(checkboxItem, checkboxIndex) in item.itemArray"
 					 :key="checkboxIndex">
 						<checkbox :value="checkboxItem.value" :color="checkboxItem.color||item.color"/>
-						<view class="flex_row_none_c">{{checkboxItem.name}}</view>
+						<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{checkboxItem.name}}</view>
 					</label>
 				</checkbox-group>
 			</view>
 			<view class="width100" :style="{'margin-top': windowHeight*.02+'px'}" v-else-if="item.type&&item.type=='picker-date'">
 				<pickers :years="getYearsArray(item.startYear||new Date().getFullYear() - 5, item.endYear||new Date().getFullYear() + 5)" 
 				:defaultDate="item.defaultDate||new Date()" v-on:getDate="getDate($event, index)"
-				:indicatorStyle="item.indicatorStyle" :height="item.height" :windowHeight="windowHeight" :mode="item.mode" :fontSize="contentFontSize||windowHeight*scale_two"/>
+				:indicatorStyle="item.indicatorStyle" :height="item.height" :windowHeight="windowHeight" :fontSize="contentFontSize||windowHeight*scale_two"/>
 			</view>
 			<view class="input_item" v-else>
 				<input :type="item.inputType||'text'" value="" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
@@ -336,9 +336,6 @@
 </script>
 
 <style scoped>
-	.radio_Item {
-		width: 15vw;
-	}
 	.input_title {
 		width: 25%;
 		margin-right: 5%;

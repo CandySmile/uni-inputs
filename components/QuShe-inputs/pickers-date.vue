@@ -29,10 +29,6 @@
 				type: Object,
 				default: new Date()
 			},
-			mode: {
-				type: String,
-				default: 'picker-date'
-			},
 			fontSize: {
 				type: Number,
 				default: 10
