@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<inputs :inputsArray="inputsArray" v-on:activeFc="activeFc" ifCode ifRule :ruleArray="ruleArray" />
+		<inputs :inputsArray="inputsArray" v-on:activeFc="activeFc" ifCode ifRule :ruleArray="ruleArray" :changeReSet="changeReSet"/>
 	</view>
 </template>
 
@@ -59,7 +59,7 @@
 					value: 'aa'
 				}],
 				text: '测试',
-				msg: 'wowanni'
+				changeReSet: false
 			}
 		},
 		onLoad() {
@@ -68,6 +68,23 @@
 		methods: {
 			activeFc(res) {
 				console.log(JSON.stringify(res))
+				let _this = this;
+				//若需重置
+				_this.inputsArray = [];
+				_this.activeName = '加载中';
+				setTimeout(function() {  // 若有重置表单组件需setTimeout后赋值
+					_this.inputsArray = [{
+						type: 'radio',
+						itemArray: [{
+							name: 'cc',
+							value: 'cc'
+						}, {
+							name: 'dd',
+							value: 'dd'
+						}]
+					}]
+					_this.activeName = '发送';
+				}, 500)
 			},
 		},
 		components: {

@@ -121,6 +121,10 @@
 			cssMode: {
 				type: String,
 				default: 'wrap'
+			},
+			changeReSet: {
+				type: Boolean,
+				default: false
 			}
 		},
 		data() {
@@ -154,8 +158,14 @@
 		},
 		watch: {
 			'inputsArray'(n, o) {
+				let _this = this;
 				console.log('监听到了inputsArray变化');
-				this.init();
+				if(_this.changeReSet)
+					for(let i = 0; i < o.length; i++) {
+						_this[_this.onLoadData+i] = '';
+					}
+				if(n)
+					this.init();
 			}
 		},
 		created() {

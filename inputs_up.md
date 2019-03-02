@@ -12,6 +12,7 @@
 
 | 序号 | 更新说明 |
 |---|------|
+| 2.4 | 1、新增changeReSet属性|
 | 2.3 | 1、新增defaultValue属性，支持input、radio、checkbox、pics的初始化默认值设置,详见一、input、二、pics、三、radio、四、checkbox， <br>2、新增选中的图片可大图预览|
 | 2.2 | 新增时分秒选择与日期融合，详见 五、日期控件|
 | 2.1 | 修复pics类型问题，与cssMode为scrollX时样式问题，修复H5 picker-date类型，defaultDate报错问题，修复H5|
@@ -24,6 +25,8 @@
 |  | 为提升用户体验，在循环项数较多的情况下，防止超屏，新增overflow_x为scroll(x轴滚动) |
 |  | 判断类型使用type判断 |
 |  | 完善213-226行的判断写法不正确问题 |
+### 新增的changeReSet属性说明(有重置需求的可使用)
+在父级传入的inputsArray改变时，可以选择重置数据，但是视图的重置需要先inputsArray=[ ]后setTimeout 300或者多少后重新赋值，过程中可以设置主按钮文字为‘加载中’等，可增强用户体验
 ### 新增的defaultValue属性说明
 支持input、radio、checkbox、pics的初始化默认值设置， radio仅能设置一个defaultValue为true，若有多个则取最先选中的值
 
@@ -154,7 +157,9 @@ picker的城市选择， picker自定义。敬请期待
 | titleFontColor| 否| String| '#666666'| title(左边)的文字颜色|
 | contentFontSize| 否| Number| 屏幕高度*.018 px| 内容(右边)的文字大小|
 | cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
-
+| changeReSet| 否| Boolean| false| 在inputsArray改变时可重置所有数据为空，但不重置视图，若需重置视图看下方说明|
+### changeReSet属性说明(有重置需求的可使用)
+在父级传入的inputsArray改变时，可以选择重置数据，但是视图的重置需要先inputsArray=[ ]后setTimeout 300或者多少后重新赋值，过程中可以设置主按钮文字为‘加载中’等，可增强用户体验
 ### ruleArray属性说明
 | 属性 | 说明|
 |---|---|
