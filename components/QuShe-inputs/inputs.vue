@@ -28,7 +28,7 @@
 				<radio-group @change="inputs_change($event, index)" class="width100 flex_row_none_c" :class="item.cssMode||cssMode||'wrap'">
 					<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}" v-for="(radioItem, radioIndex) in item.itemArray"
 					 :key="radioIndex">
-						<radio :value="radioItem.value" :color="radioItem.color||item.color"/>
+						<radio :value="radioItem.value" :checked="radioItem.defaultValue" :color="radioItem.color||item.color"/>
 						<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{radioItem.name}}</view>
 					</label>
 				</radio-group>
@@ -37,7 +37,7 @@
 				<checkbox-group @change="inputs_change($event, index)" class="width100 flex_row_none_c" :class="item.cssMode||cssMode||'wrap'">
 					<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}" v-for="(checkboxItem, checkboxIndex) in item.itemArray"
 					 :key="checkboxIndex">
-						<checkbox :value="checkboxItem.value" :color="checkboxItem.color||item.color"/>
+						<checkbox :value="checkboxItem.value" :checked="checkboxItem.defaultValue" :color="checkboxItem.color||item.color"/>
 						<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{checkboxItem.name}}</view>
 					</label>
 				</checkbox-group>
@@ -48,7 +48,7 @@
 				:indicatorStyle="item.indicatorStyle" :height="item.height" :windowHeight="windowHeight" :mode="item.mode" :fontSize="contentFontSize||windowHeight*scale_two"/>
 			</view>
 			<view class="input_item" v-else>
-				<input :type="item.inputType||'text'" value="" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
+				<input :type="item.inputType||'text'" :value="item.defaultValue" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
 				 class="width100 borderBottom1pxf2f2f2"  :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px'}" />
 			</view>
 		</view>
@@ -80,7 +80,9 @@
 		props: {
 			inputsArray: { // 需循环遍历的input
 				type: Array,
-				default: null
+				default () {
+					return [];
+				}
 			},
 			titleFontSize: { // title 的font-size
 				type: Number,
@@ -96,7 +98,9 @@
 			},
 			ruleArray: {
 				type: Array,
-				default: null
+				default () {
+					return [];
+				}
 			},
 			activeName: { // 发送按钮的名字
 				type: String,
@@ -148,12 +152,54 @@
 				}
 			}
 		},
+		watch: {
+			'inputsArray'(n, o) {
+				console.log('监听到了inputsArray变化');
+				this.init();
+			}
+		},
 		created() {
 			const system = uni.getSystemInfoSync();
 			this.windowHeight = system.windowHeight;
 			this.windowWidth = system.windowWidth;
+			this.init();
 		},
 		methods: {
+			init() { // 初始化默认数据
+				let _this = this;
+				console.log('初始化inputs');
+				let data = _this.inputsArray;
+				for(let i = 0; i < data.length; i++) {
+					let item = data[i];
+					let itemVariableName = _this.onLoadData + i;
+					switch (item.type){
+						case 'radio':
+							for(let j = 0; j < item.itemArray.length; j++) {
+								if(item.itemArray[j].defaultValue) {
+									_this[itemVariableName] = item.itemArray[j].value;
+									break;
+								}
+							}
+							break;
+						case 'checkbox':
+							let checkboxValue = [];
+							for(let j = 0; j < item.itemArray.length; j++) {
+								if(item.itemArray[j].defaultValue) {
+									checkboxValue.push(item.itemArray[j].value);
+								}
+							}
+							_this[itemVariableName] = checkboxValue||'';
+							break;
+						case 'pics':
+							break;
+						case 'picker-date':
+							break;
+						default:
+							_this[itemVariableName] = item.defaultValue || '';
+							break;
+					}
+				}
+			},
 			IgreeFc(e) { // 用户是否同意规则
 				this.Igree = e.detail.value;
 			},
@@ -174,9 +220,10 @@
 				for (let i = 0; i < d.length; i++) {
 					if (d[i].phone) {
 						phone = _this[_this.onLoadData + i];
+						console.log('手机号: ' + phone);
 					}
 				}
-				if (phone && phone != null && !isNaN(phone) && phone.length == 11)
+				if (phone && phone.length == 11)
 					_this.sendSMS(phone);
 				else {
 					_app.showToast('请正确输入11位手机号');
@@ -326,6 +373,9 @@
 			},
 			clearPic(index, picsIndex) { //清除图片
 				this.picsObj[this.onLoadData + index + this.onLoadData + picsIndex] = '';
+			},
+			showImg(imgPath) { //大图预览选中的图片
+				_app.previewImage(imgPath);
 			}
 		},
 		components: {

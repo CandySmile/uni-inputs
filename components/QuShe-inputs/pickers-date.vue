@@ -130,6 +130,7 @@
 				for (let i = 1; i <= today.getDate(); i++) {
 					days.push(i);
 				}
+				console.log(JSON.stringify(days));
 				if(_this.days != days)
 					_this.days = days;
 				if (val) {

@@ -34,6 +34,13 @@ var _app = {
 				if (fcb && typeof(fcb) == 'function') fcb(err);
 			}
 		})
+	},
+	previewImage(imgPath) {
+		if(typeof(imgPath)!='array')
+			imgPath = [imgPath];
+		uni.previewImage({
+			urls: imgPath
+		})
 	}
 }
 export default _app;

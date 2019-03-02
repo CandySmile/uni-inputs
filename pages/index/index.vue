@@ -1,10 +1,6 @@
 <template>
 	<view class="content">
-        <image class="logo" src="../../static/logo.png"></image>
-		<view>
-            <text class="title">{{title}}</text>
-			<inputs :inputsArray="inputsArray" v-on:activeFc="activeFc"/>
-        </view>
+		<inputs :inputsArray="inputsArray" v-on:activeFc="activeFc" ifCode ifRule :ruleArray="ruleArray" />
 	</view>
 </template>
 
@@ -21,23 +17,21 @@
 					variableName: 'date'
 				}, {
 					type: 'pics',
-					title: '测试',
-					itemArray: [{title:'测试'}],
+					title: '图片',
+					itemArray: [{
+						title: '测试',
+						ignore: true
+					}],
 					variableName: 'pic'
 				}, {
 					title: 'radio',
 					type: 'radio',
 					itemArray: [{
-						name: '我的爱人啊',
-						value: 'aa'
+						name: 'aa',
+						value: 'aa',
+						defaultValue: true
 					}, {
-						name: '我的爱人呢',
-						value: 'bb'
-					}, {
-						name: '我的爱人呢',
-						value: 'bb'
-					}, {
-						name: '我的爱人呢',
+						name: 'bb',
 						value: 'bb'
 					}]
 				}, {
@@ -45,36 +39,50 @@
 					type: 'checkbox',
 					itemArray: [{
 						name: 'aa',
-						value: 'aa'
+						value: 'aa',
+						defaultValue: true
 					}, {
 						name: 'bb',
-						value: 'bb'
+						value: 'bb',
+						defaultValue: true
 					}]
 				}, {
-					title: '测试'
-				}]
+					title: '测试',
+					defaultValue: '今天也要加油呀'
+				}, {
+					title: '手机号',
+					defaultValue: '13856954623',
+					phone: true
+				}],
+				ruleArray: [{
+					name: '某规则',
+					value: 'aa'
+				}],
+				text: '测试',
+				msg: 'wowanni'
 			}
 		},
 		onLoad() {
 
 		},
 		methods: {
-activeFc(res) {
-	console.log(JSON.stringify(res))
-}
+			activeFc(res) {
+				console.log(JSON.stringify(res))
+			},
 		},
-		components:{
+		components: {
 			inputs
 		}
 	}
 </script>
 
 <style>
-    .logo{
-        height: 200upx;
-        width: 200upx;
-        margin-top: 200upx;
-    }
+	.logo {
+		height: 200upx;
+		width: 200upx;
+		margin-top: 200upx;
+	}
+
 	.title {
 		font-size: 36upx;
 		color: #8f8f94;
