@@ -106,8 +106,6 @@ picker的城市选择， picker自定义。敬请期待
 			name: '某规则',
 			value: 'aa'
 		}],
-		text: '测试',
-		msg: 'wowanni',
 		onLoadData： 'data_'	//获取数据时默认变量名前缀
       };
     },
@@ -144,11 +142,11 @@ picker的城市选择， picker自定义。敬请期待
 ## 传给inputs组件的属性
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
-| inputsArray| 是| Array| []| 需循环的inputs数组（可从后端接口获取）|
+| inputsArray| 是| Array\<Object\>| []| 需循环的inputs数组（可从后端接口获取）|
 | activeName| 是| String| '发送'| 主功能按钮的文字说明|
 | ifCode| 否| Boolean| false| 是否启用验证码功能, 若启用则需完善167-172行的发送验证码方法|
 | ifRule| 否| Boolean| false| 是否需要用户同意某规则或协议|
-| ruleArray| ifRule为true时是| Array| []| 需要用户同意某规则或协议的数组|
+| ruleArray| ifRule为true时是| Array\<Object\>| []| 需要用户同意某规则或协议的数组|
 | v-on:chaildOpenEvent| ifRule为true时是| Function| | 打开某规则或协议的方法|
 | v-on:activeFc| 是| Function| | 主功能方法，携带一个用户所输入的数据对象|
 | onLoadData| 否| String| 'data_'| activeFc返回的对象中的数据变量名前缀，后面跟index，看下方说明|
@@ -189,7 +187,7 @@ picker的城市选择， picker自定义。敬请期待
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
 | type| 是| String| ''| 传固定值 type: 'pics'|
-| itemArray| 是| Array| []| 循环的图片数组，下方说明|
+| itemArray| 是| Array\<Object\>| []| 循环的图片数组，下方说明|
 | title| 否| String| ''| 该项图片的标题|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
@@ -207,7 +205,7 @@ picker的城市选择， picker自定义。敬请期待
 |------|---|----|---|-------|
 | type| 是| String| ''| 传固定值 type: 'radio'|
 | title| 否| String| ''| 该项radio的标题|
-| itemArray| 是| Array| []| 需循环的radio数组|
+| itemArray| 是| Array\<Object\>| []| 需循环的radio数组|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
 | cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
@@ -223,7 +221,7 @@ picker的城市选择， picker自定义。敬请期待
 |------|---|----|---|-------|
 | type| 是| String| ''| 传固定值 type: 'checkbox'|
 | title| 否| String| ''| 该项checkbox的标题|
-| itemArray| 是| Array| []| 需循环的checkbox数组|
+| itemArray| 是| Array\<Object\>| []| 需循环的checkbox数组|
 | ignore| 否| Boolean| false| 是否可忽略该项（判断时可以为空）|
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
 | cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
