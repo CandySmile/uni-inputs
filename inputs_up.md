@@ -25,7 +25,7 @@
 |  | 判断类型使用type判断 |
 |  | 完善213-226行的判断写法不正确问题 |
 ### 新增的defaultValue属性说明
-支持input、radio、checkbox的初始化默认值设置， radio仅能设置一个defaultValue为true，若有多个则取最先选中的值
+支持input、radio、checkbox、pics的初始化默认值设置， radio仅能设置一个defaultValue为true，若有多个则取最先选中的值
 
 ---
 # 下次更新方向
