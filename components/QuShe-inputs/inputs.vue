@@ -12,7 +12,7 @@
 					<view class="flex_column_c_c box-sizing-border-box" :style="{'padding': windowHeight*.01 + 'px'}" v-for="(picsItem, picsIndex) in item.itemArray" :key="picsIndex">
 						<view class="flex_row_c_c border1pxf2f2f2" :style="{'position': 'relative', 'height': windowHeight*.07+'px', 'width': windowWidth*.2+'px'}" 
 						@tap="!picsObj[onLoadData + index + onLoadData + picsIndex]?chooseImg(index, picsIndex): ''">
-							<image :src="picsObj[onLoadData + index + onLoadData + picsIndex]" mode="aspectFill" :style="{'height': windowHeight*.07+'px', 'width': windowWidth*.2+'px'}" v-if="picsObj[onLoadData + index + onLoadData + picsIndex]"></image>
+							<image :src="picsObj[onLoadData + index + onLoadData + picsIndex]" mode="aspectFill" :style="{'height': windowHeight*.07+'px', 'width': windowWidth*.2+'px'}" v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap="showImg(picsObj[onLoadData + index + onLoadData + picsIndex])"></image>
 							<view class="fontColorADADAD" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px'}" v-else>+</view>
 							<view :style="{'position': 'absolute', 'top': 0-windowHeight*.03+'px', 'right': 0-windowHeight*.025+'px', 'padding': windowHeight*.01+'px'}" v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap.stop.prevent="clearPic(index, picsIndex)">
 								<uni-icon type="clear" color="#f5105c" :pxSize="windowHeight*.03"/>
@@ -191,6 +191,11 @@
 							_this[itemVariableName] = checkboxValue||'';
 							break;
 						case 'pics':
+							for(let j = 0; j < item.itemArray.length; j++) {
+								if(item.itemArray[j].defaultValue) {
+									_this.$set(_this.picsObj, itemVariableName + _this.onLoadData + j, item.itemArray[j].defaultValue);
+								}
+							}
 							break;
 						case 'picker-date':
 							break;

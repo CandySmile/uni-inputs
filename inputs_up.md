@@ -12,7 +12,7 @@
 
 | 序号 | 更新说明 |
 |---|------|
-| 2.3 | 1、新增defaultValue属性，支持input、radio、checkbox的初始化默认值设置,详见一、input、三、radio、四、checkbox， <br>2、新增选中的图片可大图预览|
+| 2.3 | 1、新增defaultValue属性，支持input、radio、checkbox、pics的初始化默认值设置,详见一、input、二、pics、三、radio、四、checkbox， <br>2、新增选中的图片可大图预览|
 | 2.2 | 新增时分秒选择与日期融合，详见 五、日期控件|
 | 2.1 | 修复pics类型问题，与cssMode为scrollX时样式问题，修复H5 picker-date类型，defaultDate报错问题，修复H5|
 | 2.0 | 1、修复input软键盘弹出式样式改变问题（统一单位使用px，数值使用windowHieght计算）<br>2、radio、checkbox、pics等类型统一指定项内数组名为itemArray<br>3、inputs属性改为inputsArray，便于区分<br>4、修复一些bug|
@@ -67,7 +67,8 @@ picker的城市选择， picker自定义。敬请期待
 			title: '图片',
 			itemArray: [{
 				title: '测试',
-				ignore: true
+				ignore: true，
+				defaultValue: '' // 本地图片路径
 			}],
 			variableName: 'pic'
 		}, {
@@ -199,6 +200,7 @@ picker的城市选择， picker自定义。敬请期待
 | title| 否| String| ''| 该项图片的标题|
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
 | ignore| 否| Boolean| false| 可以为空， 不判断是否为空,默认为必填，必填则在title前面有 * 标识|
+| defaultValue| 否| String| ''| 该项pics的初始化默认图片路径(本地图片路径)|
 注：若启用此项，则需完善245-251行的上传图片至服务器方法
 ### 三、radio(单选)
 | 属性名| 是否必填| 值类型| 默认值| 说明|
