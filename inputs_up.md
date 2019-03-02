@@ -12,7 +12,7 @@
 
 | 序号 | 更新说明 |
 |---|------|
-| 2.3 | 新增defaultValue属性，支持input、radio、checkbox的初始化默认值设置,详见一、input、三、radio、四、checkbox|
+| 2.3 | 1、新增defaultValue属性，支持input、radio、checkbox的初始化默认值设置,详见一、input、三、radio、四、checkbox， <br>2、新增选中的图片可大图预览|
 | 2.2 | 新增时分秒选择与日期融合，详见 五、日期控件|
 | 2.1 | 修复pics类型问题，与cssMode为scrollX时样式问题，修复H5 picker-date类型，defaultDate报错问题，修复H5|
 | 2.0 | 1、修复input软键盘弹出式样式改变问题（统一单位使用px，数值使用windowHieght计算）<br>2、radio、checkbox、pics等类型统一指定项内数组名为itemArray<br>3、inputs属性改为inputsArray，便于区分<br>4、修复一些bug|
@@ -56,93 +56,57 @@ picker的城市选择， picker自定义。敬请期待
   export default {
     data() {
       return {
-	    inputsArray: [{
+	    title: 'Hello',
+		inputsArray: [{
 			type: 'picker-date',
 			title: '日期',
-			startYear: new Date().getFullYear() - 10,
-			endYear: new Date().getFullYear() + 10,
-			defaultDate: new Date(),
-			variableName: 'date',   // 自定义变量名
-			mode: 'picker-dateTime'
-		},{
+			mode: 'picker-dateTime',
+			variableName: 'date'
+		}, {
+			type: 'pics',
+			title: '图片',
+			itemArray: [{
+				title: '测试',
+				ignore: true
+			}],
+			variableName: 'pic'
+		}, {
+			title: 'radio',
 			type: 'radio',
-			title: 'radioName',
 			itemArray: [{
-				name: '测试一',
-				value: '测试一值'
+				name: 'aa',
+				value: 'aa',
+				defaultValue: true
 			}, {
-				name: '测试二',
-				value: '测试二值'
-			}, {
-				name: '测试三',
-				value: '测试三值'
-			}, {
-				name: '测试四',
-				value: '测试四值'
-			}, {
-				name: '测试五',
-				value: '测试五值'
-			}],
-			variableName: 'radio_variableName'   // 自定义变量名
-		},{
+				name: 'bb',
+				value: 'bb'
+			}]
+		}, {
+			title: 'checkbox',
 			type: 'checkbox',
-			title: 'checkboxName',
 			itemArray: [{
-				name: '测试一',
-				value: '测试一值'
+				name: 'aa',
+				value: 'aa',
+				defaultValue: true
 			}, {
-				name: '测试二',
-				value: '测试二值'
-			}, {
-				name: '测试三',
-				value: '测试三值'
-			}, {
-				name: '测试四',
-				value: '测试四值'
-			}, {
-				name: '测试五',
-				value: '测试五值'
-			}],
-		},{
-			title: '商家名称'
-		},{
-			title: '商家地址'
-		},{
-			type: 'pics',
-			title: '营业执照',
-			itemArray: [{title: '营业执照(三合一)'}]
-		},{
-			title: '银行名称'
-		},{
-			title: '银行账户'
-		},{
-			title: '开户人'
-		},{
-			title: '身份证号'
-		},{
-			type: 'pics',
-			title: '身份证截图',
-			itemArray: [{title: '身份证正面'}, {title: '身份证背面'}]
-		},{
-			type: 'pics',
-			title: '门店图片',
-			itemArray: [
-                         {title: '门头照'}, 
-                         {title: '店内样式1', ignore: true}, 
-                         {title: '店内样式2', ignore: true}]
-		},{
-			title: '商家折扣'
-		},{
+				name: 'bb',
+				value: 'bb',
+				defaultValue: true
+			}]
+		}, {
+			title: '测试',
+			ignore: true
+		}, {
 			title: '手机号',
+			defaultValue: '13856954623',
 			phone: true
-		}]，
-		ruleArray: [{
-			name:'用户协议',
-			value: 'yonghuxieyi'
-		},{
-			name:'隐私政策',
-			value: 'yinsizhengce'
 		}],
+		ruleArray: [{
+			name: '某规则',
+			value: 'aa'
+		}],
+		text: '测试',
+		msg: 'wowanni',
 		onLoadData： 'data_'	//获取数据时默认变量名前缀
       };
     },
