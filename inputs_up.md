@@ -33,7 +33,7 @@
 
 ---
 # 下次更新方向
-picker的城市选择， picker自定义。敬请期待
+picker自定义。敬请期待
 
 ---
 
@@ -271,5 +271,5 @@ picker的城市选择， picker自定义。敬请期待
 | defaultValue|否|Array| [0, 0, 0]|默认城市(需注意对应的项是否存在)|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
 
-
+注：picker-city取值时返回对象，可根据需求修改
 
