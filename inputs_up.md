@@ -12,7 +12,8 @@
 
 | 序号 | 更新说明 |
 |---|------|
-| 2.4 | 1、新增changeReSet属性|
+| 2.5 | 1、引入官方picker-city城市选择(稍做修改)<br>2、更改日期控件的默认值defaultDate属性为defaultValue|
+| 2.4 | 新增changeReSet属性|
 | 2.3 | 1、新增defaultValue属性，支持input、radio、checkbox、pics的初始化默认值设置,详见一、input、二、pics、三、radio、四、checkbox， <br>2、新增选中的图片可大图预览|
 | 2.2 | 新增时分秒选择与日期融合，详见 五、日期控件|
 | 2.1 | 修复pics类型问题，与cssMode为scrollX时样式问题，修复H5 picker-date类型，defaultDate报错问题，修复H5|
@@ -246,11 +247,11 @@ picker的城市选择， picker自定义。敬请期待
 | type| 是| String| ''| 传固定值 type: 'picker-date'|
 | title| 否| String| ''| 该项picker的标题|
 | indicatorStyle| 否| String| 'height: '+ 屏幕高度*.05 +'px;'| picker的行内样式|
-| height| 否| String| 屏幕高度*.2 px| picker的高度(vh)|
+| height| 否| String| 屏幕高度*.2 px| picker的高度|
 | mode| 否| String| 'picker-date'| picker-date的类型|
 | startYear| 否| Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
 | endYear| 否| Number| new Date().getFullYear() + 5 (后五年)|  结束年份, 可直接输入四位数字|
-| defaultDate|否|Date日期对象| new Date()|默认日期, 可传new Date(年,月,日,时,分,秒),为空则默认为现在|
+| defaultValue|否|Date日期对象| new Date()|默认日期, 可传new Date(年,月,日,时,分,秒),为空则默认为现在|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
 #### mode属性说明
 | 值|  值类型|说明|
@@ -260,6 +261,15 @@ picker的城市选择， picker自定义。敬请期待
 | picker-time| String| 时间|
 
 注：所传的defaultDate若不在范围中，则将显示范围内的最后一年最后一月最后一日;
+### 六、城市选择
+| 属性名| 是否必填| 值类型| 默认值| 说明|
+|------|---|----|---|-------|
+| type| 是| String| ''| 传固定值 type: 'picker-city'|
+| title| 否| String| ''| 该项picker的标题|
+| indicatorStyle| 否| String| 'height: '+ 屏幕高度*.05 +'px;'| picker的行内样式|
+| height| 否| String| 屏幕高度*.2 px| picker的高度|
+| defaultValue|否|Array| [0, 0, 0]|默认城市(需注意对应的项是否存在)|
+| variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
 
 
 

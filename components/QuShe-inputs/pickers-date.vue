@@ -2,24 +2,28 @@
 	<view class="width100">
 		<picker-view class="fontColor666666 width100" :indicator-style="indicatorStyle||'height: '+windowHeight*.05+'px;'" :value="dateVlue"
 		 @change="bindPickerViewChange($event)" :style="{'height': height||windowHeight*.2 + 'px', 'font-size': fontSize+'px'}">
-			<picker-view-column v-if="mode!=time">
-				<view class="flex_row_c_c" v-for="(picker_item,picker_index) in years" :key="picker_index">{{picker_item}}年</view>
-			</picker-view-column>
-			<picker-view-column v-if="mode!=time">
-				<view class="flex_row_c_c" v-for="(picker_item,picker_index) in months" :key="picker_index">{{picker_item}}月</view>
-			</picker-view-column>
-			<picker-view-column v-if="mode!=time">
-				<view class="flex_row_c_c" v-for="(picker_item,picker_index) in days" :key="picker_index">{{picker_item}}日</view>
-			</picker-view-column>
-			<picker-view-column v-if="mode!=date">
-				<view class="flex_row_c_c" v-for="(picker_item,picker_index) in Hours" :key="picker_index">{{picker_item}}时</view>
-			</picker-view-column>
-			<picker-view-column v-if="mode!=date">
-				<view class="flex_row_c_c" v-for="(picker_item,picker_index) in minutes" :key="picker_index">{{picker_item}}分</view>
-			</picker-view-column>
-			<picker-view-column v-if="mode!=date">
-				<view class="flex_row_c_c" v-for="(picker_item,picker_index) in seconds" :key="picker_index">{{picker_item}}秒</view>
-			</picker-view-column>
+			<block v-if="mode!=time">
+				<picker-view-column>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in years" :key="picker_index">{{picker_item}}年</view>
+				</picker-view-column>
+				<picker-view-column>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in months" :key="picker_index">{{picker_item}}月</view>
+				</picker-view-column>
+				<picker-view-column>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in days" :key="picker_index">{{picker_item}}日</view>
+				</picker-view-column>
+			</block>
+			<block v-if="mode!=date">
+				<picker-view-column>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in Hours" :key="picker_index">{{picker_item}}时</view>
+				</picker-view-column>
+				<picker-view-column>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in minutes" :key="picker_index">{{picker_item}}分</view>
+				</picker-view-column>
+				<picker-view-column>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in seconds" :key="picker_index">{{picker_item}}秒</view>
+				</picker-view-column>
+			</block>
 		</picker-view>
 	</view>
 </template>
@@ -113,7 +117,7 @@
 		},
 		methods: {
 			bindPickerViewChange(e) {
-				console.log(JSON.stringify(e));
+				// console.log(JSON.stringify(e));
 				const val = e.detail.value
 				this.changeDays(this.years[val[0]], this.months[val[1]], val);
 			},
@@ -130,7 +134,7 @@
 				for (let i = 1; i <= today.getDate(); i++) {
 					days.push(i);
 				}
-				console.log(JSON.stringify(days));
+				// console.log(JSON.stringify(days));
 				if(_this.days != days)
 					_this.days = days;
 				if (val) {

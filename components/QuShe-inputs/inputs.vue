@@ -1,12 +1,14 @@
 <template>
 	<view class="width100">
-		<view :class="item.type=='pics'||item.type=='picker-date'?'flex_column':'flex_row'" class="width100 box-sizing-border-box" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px'}"
+		<!-- title -->
+		<view :class="item.type=='pics'||item.type=='picker-date'||item.type=='picker-city'?'flex_column':'flex_row'" class="width100 box-sizing-border-box" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px'}"
 		 v-for="(item, index) in inputsArray" :key="index">
 			<view class="input_title flex_row_e_c" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px', 'color': titleFontColor}">
-				<view class="width100 word_wrap" :class="item.type=='pics'||item.type=='picker-date'?'flex_row_none_c':'flex_row_e_c'">
+				<view class="width100 word_wrap" :class="item.type=='pics'||item.type=='picker-date'||item.type=='picker-city'?'flex_row_none_c':'flex_row_e_c'">
 					<view class="fontColorF1505C" v-if="item.type!='pics'&&!item.ignore">*</view>{{item.title?item.title + ':':''}}
 				</view>
 			</view>
+			<!-- pics -->
 			<view class="width100 box-sizing-border-box" v-if="item.type&&item.type=='pics'" :style="{'padding': windowHeight*.01 + 'px ' + windowWidth*.03 + 'px'}">
 				<view class="flex_row width100" :class="item.cssMode||cssMode||'wrap'">
 					<view class="flex_column_c_c box-sizing-border-box" :style="{'padding': windowHeight*.01 + 'px'}" v-for="(picsItem, picsIndex) in item.itemArray" :key="picsIndex">
@@ -24,6 +26,7 @@
 					</view>
 				</view>
 			</view>
+			<!-- radio -->
 			<view class="input_item" v-else-if="item.type&&item.type=='radio'">
 				<radio-group @change="inputs_change($event, index)" class="width100 flex_row_none_c" :class="item.cssMode||cssMode||'wrap'">
 					<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}" v-for="(radioItem, radioIndex) in item.itemArray"
@@ -33,6 +36,7 @@
 					</label>
 				</radio-group>
 			</view>
+			<!-- checkbox -->
 			<view class="input_item" v-else-if="item.type&&item.type=='checkbox'">
 				<checkbox-group @change="inputs_change($event, index)" class="width100 flex_row_none_c" :class="item.cssMode||cssMode||'wrap'">
 					<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}" v-for="(checkboxItem, checkboxIndex) in item.itemArray"
@@ -42,16 +46,25 @@
 					</label>
 				</checkbox-group>
 			</view>
+			<!-- picker-date -->
 			<view class="width100" :style="{'margin-top': windowHeight*.02+'px'}" v-else-if="item.type&&item.type=='picker-date'">
-				<pickers :years="getYearsArray(item.startYear||new Date().getFullYear() - 5, item.endYear||new Date().getFullYear() + 5)" 
-				:defaultDate="item.defaultDate||new Date()" v-on:getDate="getDate($event, index)"
+				<pickers-date :years="getYearsArray(item.startYear||new Date().getFullYear() - 5, item.endYear||new Date().getFullYear() + 5)" 
+				:defaultDate="item.defaultValue||new Date()" v-on:getDate="pickerChange($event, index)"
 				:indicatorStyle="item.indicatorStyle" :height="item.height" :windowHeight="windowHeight" :mode="item.mode" :fontSize="contentFontSize||windowHeight*scale_two"/>
 			</view>
+			<!-- picker-city -->
+			<view class="width100" :style="{'margin-top': windowHeight*.02+'px'}" v-else-if="item.type&&item.type=='picker-city'">
+				<pickers-city :indicatorStyle="item.indicatorStyle" :height="item.height" 
+				:windowHeight="windowHeight" :fontSize="contentFontSize||windowHeight*scale_two" 
+				v-on:onChange="pickerChange($event, index)" :pickerValueDefault="item.defaultValue"/>
+			</view>
+			<!-- input -->
 			<view class="input_item" v-else>
 				<input :type="item.inputType||'text'" :value="item.defaultValue" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
 				 class="width100 borderBottom1pxf2f2f2"  :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px'}" />
 			</view>
 		</view>
+		<!-- 验证码 -->
 		<view class="flex_row width100 box-sizing-border-box" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px'}" v-if="ifCode">
 			<view class="flex_row_e_c input_title" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px', 'color': titleFontColor}">
 				<view class="fontColorF1505C">*</view>验证码:
@@ -60,6 +73,7 @@
 				<input type="text" value="" v-model="userCode" placeholder="请输入验证码" class="width100 borderBottom1pxf2f2f2" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px'}" />
 			</view>
 		</view>
+		<!-- rule -->
 		<view class="flex_row_between_c box-sizing-border-box" :style="{'padding': windowHeight*.01 + 'px ' + windowWidth*.03 + 'px'}">
 			<view class="flex_row_c_c fontColor666666" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px'}" v-if="ifRule">
 				<label class="flex_row_c_c">
@@ -68,6 +82,7 @@
 			</view>
 			<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="!startCode?getCode():''">{{startCode?codeCount + 's后重新获取':'获取验证码'}}</button>
 		</view>
+		<!-- 主按钮 -->
 		<button type="primary" @tap="activeFc" :style="{'margin': windowHeight*.02 + 'px ' + windowHeight*.03 + 'px'}">{{activeName}}</button>
 	</view>
 </template>
@@ -75,7 +90,8 @@
 <script>
 	import _app from './app.js';
 	import uniIcon from './uni-icon.vue';
-	import pickers from './pickers-date.vue';
+	import pickersDate from './pickers-date.vue';
+	import pickersCity from '../mpvue-citypicker/mpvueCityPicker.vue';
 	export default {
 		props: {
 			inputsArray: { // 需循环遍历的input
@@ -224,9 +240,9 @@
 			inputs_change(e, index) { // 用户输入时，根据index赋值
 				this[this.onLoadData + index] = e.detail.value;
 			},
-			getDate(date, index) {
-				console.log('获取日期:' + date);
-				this[this.onLoadData + index] = date;
+			pickerChange(data, index) {
+				console.log('pickerValue：' +  JSON.stringify(data));
+				this[this.onLoadData + index] = data;
 			},
 			getCode() { // 判断是否正确输入手机号后发送验证码并倒计时
 				let _this = this;
@@ -382,6 +398,7 @@
 				let _this = this
 				uni.chooseImage({
 					success: function(res) {
+						console.log(res.tempFilePaths[0]);
 						_this.$set(_this.picsObj, _this.onLoadData + index + _this.onLoadData + picsIndex, res.tempFilePaths[0]);
 					}
 				})
@@ -395,7 +412,8 @@
 		},
 		components: {
 			uniIcon,
-			pickers
+			pickersDate,
+			pickersCity
 		}
 	}
 </script>

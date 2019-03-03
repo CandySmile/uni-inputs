@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<inputs :inputsArray="inputsArray" v-on:activeFc="activeFc" ifCode ifRule :ruleArray="ruleArray" :changeReSet="changeReSet"/>
+		<inputs :inputsArray="inputsArray" v-on:activeFc="activeFc" :activeName="activeName" :changeReSet="changeReSet"/>
 	</view>
 </template>
 
@@ -9,17 +9,26 @@
 	export default {
 		data() {
 			return {
-				title: 'Hello',
 				inputsArray: [{
 					type: 'picker-date',
-					title: '日期',
 					mode: 'picker-dateTime',
+					title: '日期',
 					variableName: 'date'
 				}, {
+					type: 'picker-city',
+					title: '城市',
+					defaultValue: [15, 2, 3]
+				},{
 					type: 'pics',
 					title: '图片',
 					itemArray: [{
-						title: '测试',
+						title: '测试1',
+						ignore: true
+					},{
+						title: '测试2',
+						ignore: true
+					},{
+						title: '测试3',
 						ignore: true
 					}],
 					variableName: 'pic'
@@ -48,7 +57,7 @@
 					}]
 				}, {
 					title: '测试',
-					defaultValue: '今天也要加油呀'
+					ignore: true
 				}, {
 					title: '手机号',
 					defaultValue: '13856954623',
@@ -58,7 +67,7 @@
 					name: '某规则',
 					value: 'aa'
 				}],
-				text: '测试',
+				activeName: '发送',
 				changeReSet: false
 			}
 		},
@@ -67,9 +76,8 @@
 		},
 		methods: {
 			activeFc(res) {
-				console.log(JSON.stringify(res))
-				let _this = this;
-				//若需重置
+				console.log(JSON.stringify(res));
+				/* let _this = this;
 				_this.inputsArray = [];
 				_this.activeName = '加载中';
 				setTimeout(function() {  // 若有重置表单组件需setTimeout后赋值
@@ -84,7 +92,7 @@
 						}]
 					}]
 					_this.activeName = '发送';
-				}, 500)
+				}, 500) */
 			},
 		},
 		components: {
