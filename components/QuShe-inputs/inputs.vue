@@ -225,6 +225,8 @@
 							break;
 						case 'picker-date':
 							break;
+						case 'picker-city':
+							break;
 						default:
 							_this[itemVariableName] = item.defaultValue || '';
 							break;
