@@ -56,10 +56,10 @@
 					<view class="fontColor666666" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px'}">
 						{{pickerObj[onLoadData+index]}}
 					</view>
-					<button type="primary" @tap="showPicker(item, index)" size="mini" :style="{'margin-left': windowWidth*.03+'px'}">更改</button>
+					<button type="primary" @tap="showPicker(item, index)" size="mini" :style="{'margin-left': windowWidth*.03+'px'}">{{item.editorName||'更改'}}</button>
 				</view>
 				<view class="flex_row_e_c" v-else>
-					<button type="primary" @tap="showPicker(item, index)" size="mini">选择日期</button>
+					<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择日期'}}</button>
 				</view>
 			</view>
 			<!-- picker-city -->
@@ -68,10 +68,10 @@
 					<view class="fontColor666666" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px'}">
 						{{pickerObj[onLoadData+index].label}}
 					</view>
-					<button type="primary" @tap="showPicker(item, index)" size="mini" :style="{'margin-left': windowWidth*.03+'px'}">更改</button>
+					<button type="primary" @tap="showPicker(item, index)" size="mini" :style="{'margin-left': windowWidth*.03+'px'}">{{item.editorName||'更改'}}</button>
 				</view>
 				<view class="flex_row_e_c" v-else>
-					<button type="primary" @tap="showPicker(item, index)" size="mini">选择城市</button>
+					<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择城市'}}</button>
 				</view>
 			</view>
 			<!-- input -->
@@ -109,13 +109,13 @@
 			<pickers-date :years="getYearsArray(P_data.startYear||new Date().getFullYear() - 5, P_data.endYear||new Date().getFullYear() + 5)"
 			 :defaultDate="P_data.defaultValue||new Date()" @getDate="pickerChange($event)" :mode="P_data.mode"
 			 :windowHeight="windowHeight" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" 
-			 :fontSize="contentFontSize||windowHeight*scale_two" :index="P_data.index" />
+			 :fontSize="contentFontSize||windowHeight*scale_two" :confirmName="P_data.confirmName" :index="P_data.index" />
 		</view>
 		<!-- 城市选择 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerCityShow">
 			<pickers-city :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :windowHeight="windowHeight" 
 			:fontSize="contentFontSize||windowHeight*scale_two" @getCity="pickerChange($event)" 
-			:pickerValueDefault="P_data.defaultValue" :index="P_data.index"/>
+			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index"/>
 		</view>
 	</view>
 </template>
@@ -273,11 +273,9 @@
 			},
 			showPicker(obj, index) {
 				let _this = this;
-				console.log(JSON.stringify(obj) + '--------' + index);
 				obj.index = index;
 				_this.P_data = obj;
 				_this.maskShow = true;
-				console.log(JSON.stringify(_this.P_data));
 				if (obj && obj.type)
 					switch (obj.type) {
 						case 'picker-date':

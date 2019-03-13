@@ -1,4 +1,5 @@
 ## 作者想说
+感谢各位小伙伴的不断建议，inputs组件的进步都是因为你们哦~！
 
 如果该组件有什么问题还请大家说出来哦，还有如果有什么建议的话也可以提下呐 ~
 如果觉得好用，可以回来给个五星好评么~~(❁´◡`❁)\*✲ﾟ\*  蟹蟹~拜托啦~
@@ -12,7 +13,7 @@
 
 | 序号 | 更新说明 |
 |---|------|
-| 2.6 | 修改picker类型选择方式为弹出, picker-date类型在较为复杂的页面，可能会有例如从3月31日切换为2月时的28日跳到的bug， 还请注意测试,目前不知道原因，有知道的小伙伴麻烦和我说下|
+| 2.6 | 修改picker类型选择方式为弹出,并增加picker按钮名属性, picker-date类型在较为复杂的页面，可能会有例如从3月31日切换为2月时的28日跳到的27日bug， 还请注意测试,目前不知道原因，有知道的小伙伴麻烦和我说下|
 | 2.5 | 1、引入官方picker-city城市选择(稍做修改)<br>2、更改日期控件的默认值defaultDate属性为defaultValue<br>3、修复未判断picker-city的bug|
 | 2.4 | 新增changeReSet属性|
 | 2.3 | 1、新增defaultValue属性，支持input、radio、checkbox、pics的初始化默认值设置,详见一、input、二、pics、三、radio、四、checkbox， <br>2、新增选中的图片可大图预览|
@@ -254,6 +255,9 @@ picker自定义。敬请期待
 | endYear| 否| Number| new Date().getFullYear() + 5 (后五年)|  结束年份, 可直接输入四位数字|
 | defaultValue|否|Date日期对象| new Date()|默认日期, 可传new Date(年,月,日,时,分,秒),为空则默认为现在|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
+| chooseName| 否| String| 选择日期| 选择日期按钮命名|
+| editorName| 否| String| 更改| 更改日期按钮命名|
+| confirmName| 否| String| 确定| 弹出时,确定选择日期按钮命名|
 #### mode属性说明
 | 值|  值类型|说明|
 |------|---|----|---|-------|
@@ -271,6 +275,9 @@ picker自定义。敬请期待
 | height| 否| String| 屏幕高度*.2 px| picker的高度|
 | defaultValue|否|Array| [0, 0, 0]|默认城市(需注意对应的项是否存在)|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
+| chooseName| 否| String| 选择日期| 选择城市按钮命名|
+| editorName| 否| String| 更改| 更改城市按钮命名|
+| confirmName| 否| String| 确定| 弹出时,确定选择城市按钮命名|
 
 注：picker-city取值时返回对象，可根据需求修改
 

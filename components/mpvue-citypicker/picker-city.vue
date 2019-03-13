@@ -13,7 +13,7 @@
 					<view class="flex_row_c_c" v-for="(item,index) in areaDataList" :key="index">{{item.label}}</view>
 				</picker-view-column>
 		</picker-view>
-		<button type="primary" :style="{'margin-top': windowHeight*.05 + 'px'}" @tap="_$emit">确定</button>
+		<button type="primary" :style="{'margin-top': windowHeight*.05 + 'px'}" @tap="_$emit">{{confirmName}}</button>
 	</view>
 </template>
 
@@ -54,6 +54,10 @@
 			fontSize: {
 				type: Number,
 				default: 10
+			},
+			confirmName: {
+				type: String,
+				default: '确定'
 			},
 			index: {
 				type: Number

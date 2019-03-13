@@ -26,7 +26,7 @@
 				</picker-view-column>
 			</block>
 		</picker-view>
-		<button type="primary" :style="{'margin-top': windowHeight*.05 + 'px'}" @tap="confirmFc">确定</button>
+		<button type="primary" :style="{'margin-top': windowHeight*.05 + 'px'}" @tap="confirmFc">{{confirmName}}</button>
 	</view>
 </template>
 
@@ -51,6 +51,10 @@
 			fontSize: {
 				type: Number,
 				default: 10
+			},
+			confirmName: {
+				type: String,
+				default: '确定'
 			},
 			index: {
 				type: Number
