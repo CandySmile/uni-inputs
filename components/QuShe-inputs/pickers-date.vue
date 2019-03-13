@@ -1,13 +1,14 @@
 <template>
-	<view class="width100">
-		<picker-view class="fontColor666666 width100" :indicator-style="indicatorStyle||'height: '+windowHeight*.05+'px;'" :value="dateVlue"
-		 @change="bindPickerViewChange($event)" :style="{'height': height||windowHeight*.2 + 'px', 'font-size': fontSize+'px'}">
+	<view class="width100 refadIn" @touchmove.prevent.stop="voidFc">
+		<picker-view class="fontColor666666 width100 bg_white border_radius_10px over_hidden box_shadow padding05px box-sizing-border-box"
+		 :indicator-style="indicatorStyle||'height: '+windowHeight*.05+'px;'" :value="dateVlue" @change="bindPickerViewChange($event)"
+		 :style="{'height': height||windowHeight*.2 + 'px', 'font-size': fontSize+'px'}">
 			<block v-if="mode!=time">
 				<picker-view-column>
 					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in years" :key="picker_index">{{picker_item}}年</view>
 				</picker-view-column>
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in months" :key="picker_index">{{picker_item}}月</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 12" :key="picker_index">{{picker_item+1}}月</view>
 				</picker-view-column>
 				<picker-view-column>
 					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in days" :key="picker_index">{{picker_item}}日</view>
@@ -15,16 +16,17 @@
 			</block>
 			<block v-if="mode!=date">
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in Hours" :key="picker_index">{{picker_item}}时</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 24" :key="picker_index">{{picker_item}}时</view>
 				</picker-view-column>
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in minutes" :key="picker_index">{{picker_item}}分</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 60" :key="picker_index">{{picker_item}}分</view>
 				</picker-view-column>
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in seconds" :key="picker_index">{{picker_item}}秒</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 60" :key="picker_index">{{picker_item}}秒</view>
 				</picker-view-column>
 			</block>
 		</picker-view>
+		<button type="primary" :style="{'margin-top': windowHeight*.05 + 'px'}" @tap="confirmFc">确定</button>
 	</view>
 </template>
 
@@ -49,6 +51,9 @@
 			fontSize: {
 				type: Number,
 				default: 10
+			},
+			index: {
+				type: Number
 			}
 		},
 		data() {
@@ -56,21 +61,17 @@
 			const dateTime = 'picker-dateTime';
 			const date = 'picker-date';
 			const time = 'picker-time';
-			let months = [];
-			for (let i = 1; i <= 12; i++) {
-				months.push(i);
-			}
 			let thisYear = _this.years;
 			let endYear = thisYear[thisYear.length - 1];
 			let defaultYear = _this.defaultDate.getFullYear();
-			let defaultMonth = _this.defaultDate.getMonth() + 1;
+			let defaultMonth = _this.defaultDate.getMonth();
 			let defaultDay = _this.defaultDate.getDate();
 			let defaultHour = _this.defaultDate.getHours();
 			let defaultMinute = _this.defaultDate.getMinutes();
 			let defaultSecond = _this.defaultDate.getSeconds();
 			let year = endYear > defaultYear ? defaultYear : endYear;
-			let month = endYear > defaultYear ? defaultMonth : months[11];
-			let days = _this.changeDays(year, month, false, endYear > defaultYear, defaultDay, date, time, defaultHour, defaultMinute, defaultSecond);
+			let month = endYear > defaultYear ? defaultMonth : 11;
+			let days = _this.changeDays(year, month, false, date, time);
 			let day = endYear > defaultYear ? defaultDay : days[days.length - 1];
 			let Hours = [];
 			let minutes = [];
@@ -82,17 +83,10 @@
 						dateVlue[0] = i;
 					}
 				}
-				dateVlue[1] = month - 1;
+				dateVlue[1] = month;
 				dateVlue[2] = day - 1;
 			}
-			if(_this.mode != date){
-				for (let i = 0; i <= 24; i++) {
-					Hours.push(i);
-				}
-				for (let i = 0; i <= 60; i++) {
-					minutes.push(i);
-					seconds.push(i);
-				}
+			if (_this.mode != date) {
 				if (_this.mode == time) {
 					dateVlue[0] = defaultHour;
 					dateVlue[1] = defaultMinute;
@@ -104,11 +98,7 @@
 				}
 			}
 			return {
-				months,
 				days,
-				Hours,
-				minutes,
-				seconds,
 				dateVlue,
 				dateTime,
 				date,
@@ -119,41 +109,43 @@
 			bindPickerViewChange(e) {
 				// console.log(JSON.stringify(e));
 				const val = e.detail.value
-				this.changeDays(this.years[val[0]], this.months[val[1]], val);
+				this.changeDays(this.years[val[0]], val[1], val);
 			},
-			changeDays(Y, M, val, compare, defaultDay, d, t, H, m, s) {
+			changeDays(Y, M, val, d, t) {
 				let _this = this;
-				let mode = _this.mode;
-				let date = _this.date || d;
-				let time = _this.time || t;
-				let today = new Date();
-				let days = [];
+
+				const mode = _this.mode;
+				const date = _this.date || d;
+				const time = _this.time || t;
+				const today = new Date();
+				const days = [];
 				today.setFullYear(Y);
-				today.setMonth(M);
+				today.setMonth(M+1);
 				today.setDate(0);
-				for (let i = 1; i <= today.getDate(); i++) {
+				const daysLen = today.getDate();
+				for (let i = 1; i <= daysLen; i++) {
 					days.push(i);
 				}
 				// console.log(JSON.stringify(days));
-				if(_this.days != days)
-					_this.days = days;
-				if (val) {
-					let commitDay = null;
-					if(mode!=time) {
-						if (val[2] + 1 < days[days.length - 1]) {
-							commitDay = val[2] + 1;
-						} else {
-							commitDay = days[days.length - 1];
-						}
+				_this.days = days;
+				if (mode != time)
+					if (val){
+						val[2] = val[2]<days.length-1?val[2]:days.length-1;
+						this.dateVlue = val;
 					}
-					_this.$emit('getDate', mode == date ? `${Y}-${M}-${commitDay}` : mode == time ? `${val[0]}:${val[1]}:${val[2]}` :
-						`${Y}-${M}-${commitDay} ${val[3]}:${val[4]}:${val[5]}`);
-				} else {
-					_this.$emit('getDate', mode == date ? `${Y}-${M}-${compare?defaultDay:days[days.length-1]}` : mode == time ?
-						`${H}:${m}:${s}` : `${Y}-${M}-${compare?defaultDay:days[days.length-1]} ${H}:${m}:${s}`);
-				}
-				return !val?days:'';
-			}
+				return !val ? days : '';
+			},
+			confirmFc() {
+				console.log(JSON.stringify(this.dateVlue));
+				let _this = this;
+				const dateValue = _this.dateVlue;
+				let data =  _this.mode == _this.date ?
+					`${_this.years[dateValue[0]]}-${dateValue[1]+1}-${_this.days[dateValue[2]]}` : _this.mode == _this.time ?
+					`${dateValue[0]}:${dateValue[1]}:${dateValue[2]}` :
+					`${_this.years[dateValue[0]]}-${dateValue[1]+1}-${_this.days[dateValue[2]]} ${dateValue[3]}:${dateValue[4]}:${dateValue[5]}`;
+				_this.$emit('getDate',{data, index: _this.index});
+			},
+			voidFc() {}
 		},
 	}
 </script>
@@ -162,13 +154,71 @@
 	.width100 {
 		width: 100%;
 	}
+
 	.flex_row_c_c {
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
 	}
+
 	.fontColor666666 {
 		color: #666666;
+	}
+
+	.bg_white {
+		background-color: white;
+	}
+
+	.border_radius_10px {
+		border-radius: 10px;
+	}
+
+	.over_hidden {
+		overflow: hidden;
+	}
+
+	.box_shadow {
+		box-shadow: 3px 3px 3px rgba(0, 0, 0, .2);
+	}
+
+	/* 新增 */
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: scale(.8);
+		}
+
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+
+	@keyframes refadeIn {
+		from {
+			transform: scale(1.2);
+		}
+
+		to {
+			transform: scale(1);
+		}
+	}
+
+	.fadIn {
+		animation: fadeIn .3s 1;
+	}
+
+	.refadIn {
+		animation: refadeIn .3s 1;
+		animation-fill-mode: forwards;
+	}
+
+	.padding05px {
+		padding: 0 5px;
+	}
+
+	.box-sizing-border-box {
+		box-sizing: border-box;
 	}
 </style>
