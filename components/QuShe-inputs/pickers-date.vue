@@ -140,7 +140,6 @@
 				return !val ? days : '';
 			},
 			confirmFc() {
-				console.log(JSON.stringify(this.dateVlue));
 				let _this = this;
 				const dateValue = _this.dateVlue;
 				let data =  _this.mode == _this.date ?

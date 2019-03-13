@@ -2,7 +2,7 @@
 	<view class="width100">
 		<!-- title -->
 		<view class="width100 box-sizing-border-box" :class="item.type=='pics'?'flex_column':'flex_row'" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px'}"
-		 v-for="(item, index) in inputsArray" :key="item">
+		 v-for="(item, index) in inputsArray" :key="item.title||index">
 			<view class="input_title flex_row_e_c" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px', 'color': titleFontColor}">
 				<view class="width100 word_wrap" :class="item.type=='pics'?'flex_row_none_c':'flex_row_e_c'">
 					<view class="fontColorF1505C" v-if="item.type!='pics'&&!item.ignore">*</view>{{item.title?item.title + ':':''}}
