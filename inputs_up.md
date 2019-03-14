@@ -275,7 +275,7 @@ picker自定义。敬请期待
 | height| 否| String| 屏幕高度*.2 px| picker的高度|
 | defaultValue|否|Array| [0, 0, 0]|默认城市(需注意对应的项是否存在)|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
-| chooseName| 否| String| 选择日期| 选择城市按钮命名|
+| chooseName| 否| String| 选择城市| 选择城市按钮命名|
 | editorName| 否| String| 更改| 更改城市按钮命名|
 | confirmName| 否| String| 确定| 弹出时,确定选择城市按钮命名|
 
