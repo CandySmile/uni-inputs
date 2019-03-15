@@ -15,6 +15,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 序号 | 更新说明 |
 |---|------|
+| 2.8 | 紧急修复开发者工具更新后出现从后台进入前台input视图为空bug（数据还在）,例如选择图片后返回时input视图为空 |
 | 2.7 | 修复picker初始值显示，并增加该属性，详见picker类型 |
 | 2.6 | 修复h5报错问题，修改picker类型选择方式为弹出,并增加picker按钮名属性 |
 | 2.5 | 1、引入官方picker-city城市选择(稍做修改)<br>2、更改日期控件的默认值defaultDate属性为defaultValue<br>3、修复未判断picker-city的bug|

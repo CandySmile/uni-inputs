@@ -76,7 +76,7 @@
 			</view>
 			<!-- input -->
 			<view class="input_item" v-else>
-				<input :type="item.inputType||'text'" :value="item.defaultValue" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
+				<input :type="item.inputType||'text'" :value="inputObj[onLoadData+index]||item.defaultValue" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
 				 class="width100 borderBottom1pxf2f2f2" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px'}" />
 			</view>
 		</view>
@@ -194,7 +194,8 @@
 				pickerDateShow: false,
 				pickerCityShow: false,
 				P_data: {},
-				pickerObj: {}
+				pickerObj: {},
+				inputObj: {}
 			};
 		},
 		computed: {
@@ -341,6 +342,7 @@
 				this.$emit('chaildOpenEvent', value);
 			},
 			inputs_change(e, index) { // 用户输入时，根据index赋值
+				this.inputObj[this.onLoadData + index] = e.detail.value;
 				this[this.onLoadData + index] = e.detail.value;
 			},
 			pickerChange(res) {
@@ -378,7 +380,7 @@
 				}, 1000)
 				_this.startCode = true;
 			},
-			sendSMS(phone) { // 生成验证码并发送给手机的方法， 可根据需求在父组件导入(可变通性高)或直接写在此处
+			sendSMS(phone) { // 生成验证码并发送给手机的方法
 				//生成验证码
 				this.code = '生成的验证码';
 				//发送验证码
