@@ -8,12 +8,15 @@
 本组件目前支持 input、radio、checkbox、上传图片、日期选择、城市选择等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
 
 ---
+### 警告
+picker-date类型在较为复杂的页面，“日”一列的picker-view-column可能会有例如从3月31日切换为2月时的28日跳到27日的bug，并且滑动至28时，值不会变成28而是27，只能点击选择28才能变更，这是在我自己的项目中发现的问题，是嵌套在官方组件segmented-control的tab切换显示或隐藏环境中出现此bug， 还请大家注意测试, 目前不知道原因，有知道的小伙伴麻烦和我说下
 
 # 更新说明
 
 | 序号 | 更新说明 |
 |---|------|
-| 2.6 | 修复h5报错问题，修改picker类型选择方式为弹出,并增加picker按钮名属性, picker-date类型在较为复杂的页面，可能会有例如从3月31日切换为2月时的28日跳到的27日bug， 还请注意测试,目前不知道原因，有知道的小伙伴麻烦和我说下|
+| 2.7 | 修复picker初始值显示，并增加该属性，详见picker类型 |
+| 2.6 | 修复h5报错问题，修改picker类型选择方式为弹出,并增加picker按钮名属性 |
 | 2.5 | 1、引入官方picker-city城市选择(稍做修改)<br>2、更改日期控件的默认值defaultDate属性为defaultValue<br>3、修复未判断picker-city的bug|
 | 2.4 | 新增changeReSet属性|
 | 2.3 | 1、新增defaultValue属性，支持input、radio、checkbox、pics的初始化默认值设置,详见一、input、二、pics、三、radio、四、checkbox， <br>2、新增选中的图片可大图预览|
@@ -150,7 +153,7 @@ picker自定义。敬请期待
 |------|---|----|---|-------|
 | inputsArray| 是| Array\<Object\>| []| 需循环的inputs数组（可从后端接口获取）|
 | activeName| 是| String| '发送'| 主功能按钮的文字说明|
-| ifCode| 否| Boolean| false| 是否启用验证码功能, 若启用则需完善167-172行的发送验证码方法|
+| ifCode| 否| Boolean| false| 是否启用验证码功能, 若启用则需完善381-386行的发送验证码方法|
 | ifRule| 否| Boolean| false| 是否需要用户同意某规则或协议|
 | ruleArray| ifRule为true时是| Array\<Object\>| []| 需要用户同意某规则或协议的数组|
 | v-on:chaildOpenEvent| ifRule为true时是| Function| | 打开某规则或协议的方法|
@@ -207,7 +210,7 @@ picker自定义。敬请期待
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
 | ignore| 否| Boolean| false| 可以为空， 不判断是否为空,默认为必填，必填则在title前面有 * 标识|
 | defaultValue| 否| String| ''| 该项pics的初始化默认图片路径(本地图片路径)|
-注：若启用此项，则需完善245-251行的上传图片至服务器方法
+注：若启用此项，则需完善463-470行的上传图片至服务器方法
 ### 三、radio(单选)
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
@@ -253,11 +256,12 @@ picker自定义。敬请期待
 | mode| 否| String| 'picker-date'| picker-date的类型|
 | startYear| 否| Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
 | endYear| 否| Number| new Date().getFullYear() + 5 (后五年)|  结束年份, 可直接输入四位数字|
-| defaultValue|否|Date日期对象| new Date()|默认日期, 可传new Date(年,月,日,时,分,秒),为空则默认为现在|
+| defaultValue|否|Date日期对象| new Date()|默认日期, 可传new Date(年,月,日,时,分,秒),为空则默认为现在，注意:所传月份需-1|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
 | chooseName| 否| String| 选择日期| 选择日期按钮命名|
 | editorName| 否| String| 更改| 更改日期按钮命名|
 | confirmName| 否| String| 确定| 弹出时,确定选择日期按钮命名|
+| onceShowDefaultValue| 否| Boolean| false| 在设置defaultValue时，初始化时是否显示初始值|
 #### mode属性说明
 | 值|  值类型|说明|
 |------|---|----|---|-------|
@@ -265,7 +269,7 @@ picker自定义。敬请期待
 | picker-date| String| 日期|
 | picker-time| String| 时间|
 
-注：所传的defaultDate若不在范围中，则将显示范围内的最后一年最后一月最后一日;
+注：所传的defaultDate若不在范围中，则将显示范围内的最后一年最后一月最后一日, defaultValue中所传的月份需-1;
 ### 六、城市选择
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
@@ -278,6 +282,7 @@ picker自定义。敬请期待
 | chooseName| 否| String| 选择城市| 选择城市按钮命名|
 | editorName| 否| String| 更改| 更改城市按钮命名|
 | confirmName| 否| String| 确定| 弹出时,确定选择城市按钮命名|
+| onceShowDefaultValue| 否| Boolean| false| 在设置defaultValue时，初始化时是否显示初始值|
 
 注：picker-city取值时返回对象，可根据需求修改
 

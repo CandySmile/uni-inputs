@@ -1,23 +1,25 @@
 <template>
-	<view class="content">
-		<inputs :inputsArray="inputsArray" v-on:activeFc="activeFc" :activeName="activeName" :changeReSet="changeReSet"/>
+	<view class="">
+		<inputs :inputsArray="inputsArray" @activeFc="activeFc"/>
 	</view>
 </template>
 
 <script>
-	import inputs from '../../components/QuShe-inputs/inputs.vue';
+	import inputs from '@/components/QuShe-inputs/inputs.vue';
 	export default {
 		data() {
 			return {
 				inputsArray: [{
 					type: 'picker-date',
-					mode: 'picker-dateTime',
+					mode: 'picker-date',
 					title: '日期',
-					variableName: 'date'
+					defaultValue: new Date(),
+					onceShowDefaultValue: true
 				}, {
 					type: 'picker-city',
 					title: '城市',
-					defaultValue: [15, 2, 3]
+					defaultValue: [15,2,3],
+					onceShowDefaultValue: true
 				},{
 					type: 'pics',
 					title: '图片',
@@ -58,58 +60,30 @@
 				}, {
 					title: '测试',
 					ignore: true
-				}, {
-					title: '手机号',
-					defaultValue: '13856954623',
-					phone: true
 				}],
 				ruleArray: [{
 					name: '某规则',
 					value: 'aa'
 				}],
-				activeName: '发送',
+				activeName: '完成',
 				changeReSet: false
 			}
 		},
-		onLoad() {
-
-		},
-		methods: {
+		methods:{
+			getdate(e) {
+				console.log(JSON.stringify(e));
+			},
+			showDate() {
+				this.dateShow = true;
+			},
+			voidFc() {},
 			activeFc(res) {
 				console.log(JSON.stringify(res));
-				/* let _this = this;
-				_this.inputsArray = [];
-				_this.activeName = '加载中';
-				setTimeout(function() {  // 若有重置表单组件需setTimeout后赋值
-					_this.inputsArray = [{
-						type: 'radio',
-						itemArray: [{
-							name: 'cc',
-							value: 'cc'
-						}, {
-							name: 'dd',
-							value: 'dd'
-						}]
-					}]
-					_this.activeName = '发送';
-				}, 500) */
-			},
+			}
 		},
-		components: {
-			inputs
-		}
+		components:{inputs}
 	}
 </script>
 
 <style>
-	.logo {
-		height: 200upx;
-		width: 200upx;
-		margin-top: 200upx;
-	}
-
-	.title {
-		font-size: 36upx;
-		color: #8f8f94;
-	}
 </style>

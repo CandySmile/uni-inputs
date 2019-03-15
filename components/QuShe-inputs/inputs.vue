@@ -262,8 +262,51 @@
 							}
 							break;
 						case 'picker-date':
+							if(item.defaultValue) {
+								if(item.onceShowDefaultValue) {
+									let data = '';
+									switch (item.mode){
+										case 'picker-date':
+											data = `${item.defaultValue.getFullYear()}-${item.defaultValue.getMonth()+1}-${item.defaultValue.getDate()}`;
+											break;
+										case 'picker-time':
+											data = `${item.defaultValue.getHours()}:${item.defaultValue.getMinutes()}:${item.defaultValue.getSeconds()}`;
+											break;
+										case 'picker-dateTime':
+											data = `${item.defaultValue.getFullYear()}-${item.defaultValue.getMonth()+1}-${item.defaultValue.getDate()} ${item.defaultValue.getHours()}:${item.defaultValue.getMinutes()}:${item.defaultValue.getSeconds()}`;
+											break;
+										default:
+											break;
+									}
+									_this[itemVariableName] = _this.pickerObj[itemVariableName] = data;
+								}
+							}
 							break;
 						case 'picker-city':
+							if(item.defaultValue) {
+								if(item.defaultValue.length==3) {
+									if(item.onceShowDefaultValue) {
+										let provinceDataList = require('../mpvue-citypicker/city-data/province.js').default;
+										let cityDataList =  require('../mpvue-citypicker/city-data/city.js').default[item.defaultValue[0]];
+										let areaDataList =  require('../mpvue-citypicker/city-data/area.js').default[item.defaultValue[0]][item.defaultValue[1]];
+										let pcikerLabel =
+											provinceDataList[item.defaultValue[0]].label +
+											'-' +
+											cityDataList[item.defaultValue[1]].label +
+											'-' +
+											areaDataList[item.defaultValue[2]].label;
+										let data = {
+											label: pcikerLabel,
+											value: item.defaultValue,
+											cityCode: areaDataList[item.defaultValue[2]].value
+										};
+										_this[itemVariableName] = _this.pickerObj[itemVariableName] = data;
+									}
+								}else{
+									//_app.showToast('picker-city默认初始值错误');
+									console.log('picker-city默认初始值错误');
+								}
+							}
 							break;
 						default:
 							_this[itemVariableName] = item.defaultValue || '';
