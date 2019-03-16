@@ -1,7 +1,7 @@
 <template>
 	<view class="width100">
 		<!-- title -->
-		<view class="width100 box-sizing-border-box" :class="item.type=='pics'?'flex_column':'flex_row'" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px'}"
+		<view class="width100 box-sizing-border-box" :class="[item.type=='pics'?'flex_column':'flex_row', item.animationType||animationType||'']" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px', 'animation-duration': (index+1)*(item.animationDuration||animationDuration||.2) + 's'}"
 		 v-for="(item, index) in inputsArray" :key="item.title||index">
 			<view class="input_title flex_row_e_c" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px', 'color': titleFontColor}">
 				<view class="width100 word_wrap" :class="item.type=='pics'?'flex_row_none_c':'flex_row_e_c'">
@@ -81,7 +81,7 @@
 			</view>
 		</view>
 		<!-- 验证码 -->
-		<view class="flex_row width100 box-sizing-border-box" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px'}"
+		<view class="flex_row width100 box-sizing-border-box"  :class="[animationType||'']" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px', 'animation-duration': (inputsArray.length+1)*(animationDuration||.2) + 's'}"
 		 v-if="ifCode">
 			<view class="flex_row_e_c input_title" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px', 'color': titleFontColor}">
 				<view class="fontColorF1505C">*</view>验证码:
@@ -91,7 +91,7 @@
 			</view>
 		</view>
 		<!-- rule -->
-		<view class="flex_row_between_c box-sizing-border-box" :style="{'padding': windowHeight*.01 + 'px ' + windowWidth*.03 + 'px'}">
+		<view class="flex_row_between_c box-sizing-border-box"  :class="[animationType||'']" :style="{'padding': windowHeight*.01 + 'px ' + windowWidth*.03 + 'px', 'animation-duration': (inputsArray.length+1)*(animationDuration||.2) + 's'}">
 			<view class="flex_row_c_c fontColor666666" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px'}"
 			 v-if="ifRule">
 				<label class="flex_row_c_c">
@@ -101,7 +101,7 @@
 			<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="!startCode?getCode():''">{{startCode?codeCount + 's后重新获取':'获取验证码'}}</button>
 		</view>
 		<!-- 主按钮 -->
-		<button type="primary" @tap="activeFc" :style="{'margin': windowHeight*.02 + 'px ' + windowHeight*.03 + 'px'}">{{activeName}}</button>
+		<button type="primary" @tap="activeFc" :class="[animationType||'']" :style="{'margin': windowHeight*.02 + 'px ' + windowHeight*.03 + 'px', 'animation-duration': (ifRule||ifCode?inputsArray.length+2:inputsArray.length+1)*(animationDuration||.2) + 's'}">{{activeName}}</button>
 		<!-- mask -->
 		<view class="mask" @touchmove.prevent.stop="hideFc" @tap.prevent.stop="hideFc" v-show="maskShow"></view>
 		<!-- 日期选择 -->
@@ -174,6 +174,14 @@
 			changeReSet: {
 				type: Boolean,
 				default: false
+			},
+			animationType: {
+				type: String,
+				default: ''
+			},
+			animationDuration: {
+				type: Number,
+				default: .2
 			}
 		},
 		data() {
@@ -654,5 +662,116 @@
 		left: 50%;
 		z-index: 1000;
 		transform: translate(-50%, -70%);
+	}
+	/* 新增 */
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: scale(.8);
+		}
+		
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+		
+	@keyframes refadeIn {
+		from {
+			transform: scale(1.2);
+			opacity: 0;
+		}
+		
+		to {
+			transform: scale(1);
+			opacity: 1;
+		}
+	}
+	@keyframes slide-left {
+		from {
+			transform: translateX(-100%);
+		}
+		
+		to {
+			transform: translateX(0);
+		}
+	}
+	@keyframes slide-fade-left {
+		from {
+			transform: translateX(-100%);
+			opacity: 0;
+		}
+		
+		to {
+			transform: translateX(0);
+			opacity: 1;
+		}
+	}
+	@keyframes slide-right {
+		from {
+			transform: translateX(100%);
+		}
+		
+		to {
+			transform: translateX(0);
+		}
+	}
+	@keyframes slide-fade-right {
+		from {
+			transform: translateX(100%);
+			opacity: 0;
+		}
+		
+		to {
+			transform: translateX(0);
+			opacity: 1;
+		}
+	}
+	@keyframes slide-fade-bottom {
+		from {
+			transform: translateY(100%);
+			opacity: 0;
+		}
+		
+		to {
+			transform: translateX(0);
+			opacity: 1;
+		}
+	}
+	@keyframes rotate3d-fade {
+		from {
+			transform: rotate3d(10,10,10,360deg);
+			opacity: 0;
+		}
+		
+		to {
+			transform: rotate3d(10,10,10,0deg);
+			opacity: 1;
+		}
+	}
+	.fadIn {
+		animation: fadeIn;
+	}
+		
+	.refadIn {
+		animation: refadeIn;
+	}
+	.slide-left{
+		animation: slide-left;
+	}
+	.slide-fade-left{
+		animation: slide-fade-left;
+	}
+	.slide-right{
+		animation: slide-right;
+	}
+	.slide-fade-right{
+		animation: slide-fade-right;
+	}
+	.slide-fade-bottom{
+		animation: slide-fade-bottom;
+	}
+	.rotate3d-fade{
+		animation: rotate3d-fade;
 	}
 </style>

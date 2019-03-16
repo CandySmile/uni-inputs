@@ -15,7 +15,8 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 序号 | 更新说明 |
 |---|------|
-| 2.8 | 紧急修复开发者工具更新后出现从后台进入前台input视图为空bug（数据还在）,例如选择图片后返回时input视图为空 |
+| 2.8 | 新增入场动画，animationType动画类型属性，animationDuration动画时长系数属性，这两个属性可以以父级属性统一传入，亦可以项内属性单独传入,详见下方 |
+| 2.8 | 紧急修复从后台进入前台input视图为空bug（数据还在）,例如选择图片后返回时input视图为空 |
 | 2.7 | 修复picker初始值显示，并增加该属性，详见picker类型 |
 | 2.6 | 修复h5报错问题，修改picker类型选择方式为弹出,并增加picker按钮名属性 |
 | 2.5 | 1、引入官方picker-city城市选择(稍做修改)<br>2、更改日期控件的默认值defaultDate属性为defaultValue<br>3、修复未判断picker-city的bug|
@@ -165,6 +166,11 @@ picker自定义。敬请期待
 | contentFontSize| 否| Number| 屏幕高度*.018 px| 内容(右边)的文字大小|
 | cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
 | changeReSet| 否| Boolean| false| 在inputsArray改变时可重置所有数据为空，但不重置视图，若需重置视图看下方说明|
+| animationType| 否| String| ''| 入场动画类型|
+| animationDuration| 否| Number| ''| 入场动画时长系数(index+1 ， 乘以此系数为动画时长)|
+### animationType属性说明
+目前支持的类型有：fadIn、refadIn、slide-left、slide-fade-left、slide-right、slide-fade-right、slide-fade-bottom、rotate3d-fade等。动画也可自定义，只要定义动画后定义好class属性就可以了。
+
 ### changeReSet属性说明(有重置需求的可使用)
 在父级传入的inputsArray改变时，可以选择重置数据，但是视图的重置需要先inputsArray=[ ]后setTimeout 300或者多少后重新赋值，过程中可以设置主按钮文字为‘加载中’等，可增强用户体验
 ### ruleArray属性说明

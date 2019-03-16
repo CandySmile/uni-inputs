@@ -1,6 +1,6 @@
 <template>
 	<view class="">
-		<inputs :inputsArray="inputsArray" @activeFc="activeFc"/>
+		<inputs :inputsArray="inputsArray" @activeFc="activeFc" animationType="slide-fade-bottom" animationDuration=".4"/>
 	</view>
 </template>
 
