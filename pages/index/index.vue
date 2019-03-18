@@ -1,6 +1,6 @@
 <template>
-	<view class="">
-		<inputs :inputsArray="inputsArray" @activeFc="activeFc" animationType="slide-fade-bottom" animationDuration=".4"/>
+	<view>
+		<inputs :inputsArray="inputsArray" @activeFc="activeFc" animationType="slide-fade-right" :animationDuration=".4"/>
 	</view>
 </template>
 
@@ -35,6 +35,18 @@
 					}],
 					variableName: 'pic'
 				}, {
+					type: 'slider',
+					title: 'slider',
+					min:0,
+					max:100,
+					show_value:true,
+					disabled:false,
+					step: 1
+				},{
+					type: 'switch',
+					title: 'switch',
+					defaultValue: true
+				},{
 					title: 'radio',
 					type: 'radio',
 					itemArray: [{
@@ -49,12 +61,17 @@
 					title: 'checkbox',
 					type: 'checkbox',
 					itemArray: [{
-						name: 'aa',
-						value: 'aa',
+						name: 'a',
+						value: 'a',
 						defaultValue: true
 					}, {
-						name: 'bb',
-						value: 'bb',
+						name: 'b',
+						value: 'b',
+						defaultValue: true,
+						disabled: true
+					}, {
+						name: 'c',
+						value: 'c',
 						defaultValue: true
 					}]
 				}, {

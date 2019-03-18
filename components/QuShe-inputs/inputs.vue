@@ -30,22 +30,32 @@
 					</view>
 				</view>
 			</view>
+			<!-- switch -->
+			<view class="input_item" v-else-if="item.type&&item.type=='switch'">
+				<switch :checked="inputsObj[onLoadData+index]||item.defaultValue" :disabled="item.disabled" :type="item.mode||'switch'" :color="item.color" @change="inputs_change($event, index)" />
+			</view>
+			<!-- slider -->
+			<view class="input_item" v-else-if="item.type&&item.type=='slider'">
+				<slider @change="inputs_change($event, index)" :min="item.min||0" :max="item.max||100" :step="item.step||1" :disabled="item.disabled" :value="inputsObj[onLoadData+index]"
+				:color="item.color" :selected-color="item.selected_color" :activeColor="item.activeColor" :backgroundColor="item.backgroundColor"
+				:block-size="item.block_size" :block-color="item.block_color" :show-value="item.show_value"/>
+			</view>
 			<!-- radio -->
 			<view class="input_item" v-else-if="item.type&&item.type=='radio'">
 				<radio-group @change="inputs_change($event, index)" class="width100 flex_row_none_c" :class="item.cssMode||cssMode||'wrap'">
 					<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}"
 					 v-for="(radioItem, radioIndex) in item.itemArray" :key="radioIndex">
-						<radio :value="radioItem.value" :checked="radioItem.defaultValue" :color="radioItem.color||item.color" />
+						<radio :value="radioItem.value" :checked="inputsObj[onLoadData+index]==radioItem.value" :disabled="radioItem.disabled" :color="radioItem.color||item.color" />
 						<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{radioItem.name}}</view>
 					</label>
 				</radio-group>
 			</view>
 			<!-- checkbox -->
 			<view class="input_item" v-else-if="item.type&&item.type=='checkbox'">
-				<checkbox-group @change="inputs_change($event, index)" class="width100 flex_row_none_c" :class="item.cssMode||cssMode||'wrap'">
+				<checkbox-group @change="checkbox_change($event, index)" class="width100 flex_row_none_c" :class="item.cssMode||cssMode||'wrap'">
 					<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}"
 					 v-for="(checkboxItem, checkboxIndex) in item.itemArray" :key="checkboxIndex">
-						<checkbox :value="checkboxItem.value" :checked="checkboxItem.defaultValue" :color="checkboxItem.color||item.color" />
+						<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index][checkboxIndex]==checkboxItem.value" :disabled="checkboxItem.disabled" :color="checkboxItem.color||item.color" />
 						<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{checkboxItem.name}}</view>
 					</label>
 				</checkbox-group>
@@ -76,8 +86,8 @@
 			</view>
 			<!-- input -->
 			<view class="input_item" v-else>
-				<input :type="item.inputType||'text'" :value="inputObj[onLoadData+index]||item.defaultValue" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
-				 class="width100 borderBottom1pxf2f2f2" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px'}" />
+				<input :type="item.inputType||'text'" :value="inputsObj[onLoadData+index]||item.defaultValue" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
+				 class="width100 borderBottom1pxf2f2f2" :disabled="item.disabled" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px'}" />
 			</view>
 		</view>
 		<!-- 验证码 -->
@@ -203,7 +213,7 @@
 				pickerCityShow: false,
 				P_data: {},
 				pickerObj: {},
-				inputObj: {}
+				inputsObj: {}
 			};
 		},
 		computed: {
@@ -249,7 +259,7 @@
 						case 'radio':
 							for (let j = 0; j < item.itemArray.length; j++) {
 								if (item.itemArray[j].defaultValue) {
-									_this[itemVariableName] = item.itemArray[j].value;
+									_this[itemVariableName] = _this.inputsObj[itemVariableName] = item.itemArray[j].value;
 									break;
 								}
 							}
@@ -261,7 +271,7 @@
 									checkboxValue.push(item.itemArray[j].value);
 								}
 							}
-							_this[itemVariableName] = checkboxValue || '';
+							_this[itemVariableName] = _this.inputsObj[itemVariableName] = checkboxValue || [];
 							break;
 						case 'pics':
 							for (let j = 0; j < item.itemArray.length; j++) {
@@ -317,8 +327,15 @@
 								}
 							}
 							break;
+						case 'switch':
+							_this[itemVariableName] =_this.inputsObj[itemVariableName] = item.defaultValue || false;
+							break;
+						case 'slider':
+							_this[itemVariableName] =_this.inputsObj[itemVariableName] = item.defaultValue || item.min || 0;
+							break;
 						default:
-							_this[itemVariableName] = item.defaultValue || '';
+							if(item.defaultValue)
+								_this[itemVariableName] =_this.inputsObj[itemVariableName] = item.defaultValue || '';
 							break;
 					}
 				}
@@ -349,8 +366,28 @@
 			openRuleFc(value) { // 打开规则页面的父级方法
 				this.$emit('chaildOpenEvent', value);
 			},
+			checkbox_change(e, index) {
+				let _this = this;
+				let data = e.detail.value;
+				let checkboxArray = _this.inputsArray[index].itemArray;
+				let newArray = [];
+				let oldArray = [];
+				if(checkboxArray.length>0&&data.length>0) {
+					checkboxArray.forEach(item=>{
+						newArray.push('');
+						oldArray.push(item.value);
+					});
+					data.forEach(item=>{
+						let num = oldArray.indexOf(item);
+						if(num>=0)
+							newArray[num] = item;
+					});
+					_this.inputsObj[_this.onLoadData + index] = newArray;
+				}
+				_this[_this.onLoadData + index] = e.detail.value;
+			},
 			inputs_change(e, index) { // 用户输入时，根据index赋值
-				this.inputObj[this.onLoadData + index] = e.detail.value;
+				this.inputsObj[this.onLoadData + index] = e.detail.value;
 				this[this.onLoadData + index] = e.detail.value;
 			},
 			pickerChange(res) {
@@ -421,6 +458,12 @@
 									}
 								}
 							}
+							break;
+						case 'switch':
+							inputsDataObj[variableName] = _this[onLoadData]?true:false;
+							break;
+						case 'slider':
+							inputsDataObj[variableName] = _this[onLoadData];
 							break;
 						default:
 							if (!_this[onLoadData]) {

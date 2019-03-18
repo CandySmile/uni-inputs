@@ -5,7 +5,7 @@
 如果觉得好用，可以回来给个五星好评么~~(❁´◡`❁)\*✲ﾟ\*  蟹蟹~拜托啦~
 
 ## 组件简介
-本组件目前支持 input、radio、checkbox、上传图片、日期选择、城市选择等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
+本组件目前支持 input、radio、checkbox、switch、slider、上传图片、日期选择、城市选择等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
 
 ---
 ### 警告
@@ -15,7 +15,8 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 序号 | 更新说明 |
 |---|------|
-| 2.8 | 新增入场动画，animationType动画类型属性，animationDuration动画时长系数属性，这两个属性可以以父级属性统一传入，亦可以项内属性单独传入,详见下方 |
+| 3.0 | 1、新增switch、slider，修复checkbox、radio、input（初始化后不改动的情况下）从后台进入前台视图还原为初始化问题（数据不变）<br />2、input、radio、checkbox、switch、slider，各增disabled属性<br />3、修复H5 picker-date类型月份显示不正确问题|
+| 2.9 | 新增入场动画（小程序不建议使用此动画，会卡），animationType动画类型属性，animationDuration动画时长系数属性（父级需v-bind传入Number类型，不然H5会报错），这两个属性可以以父级属性统一传入，亦可以项内属性单独传入,详见下方 |
 | 2.8 | 紧急修复从后台进入前台input视图为空bug（数据还在）,例如选择图片后返回时input视图为空 |
 | 2.7 | 修复picker初始值显示，并增加该属性，详见picker类型 |
 | 2.6 | 修复h5报错问题，修改picker类型选择方式为弹出,并增加picker按钮名属性 |
@@ -33,6 +34,9 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 |  | 为提升用户体验，在循环项数较多的情况下，防止超屏，新增overflow_x为scroll(x轴滚动) |
 |  | 判断类型使用type判断 |
 |  | 完善213-226行的判断写法不正确问题 |
+### animationType属性说明
+
+（小程序不建议使用此动画，会卡）可作为父级属性统一传入，也可项内属性单独传入，目前支持的类型有：fadIn、refadIn、slide-left、slide-fade-left、slide-right、slide-fade-right、slide-fade-bottom、rotate3d-fade等。动画也可自定义，只要定义动画后定义好class属性就可以了。
 ### 新增的changeReSet属性说明(有重置需求的可使用)
 在父级传入的inputsArray改变时，可以选择重置数据，但是视图的重置需要先inputsArray=[ ]后setTimeout 300或者多少后重新赋值，过程中可以设置主按钮文字为‘加载中’等，可增强用户体验
 ### 新增的defaultValue属性说明
@@ -67,52 +71,75 @@ picker自定义。敬请期待
   export default {
     data() {
       return {
-	    title: 'Hello',
 		inputsArray: [{
-			type: 'picker-date',
-			title: '日期',
-			mode: 'picker-dateTime',
-			variableName: 'date'
-		}, {
-			type: 'pics',
-			title: '图片',
-			itemArray: [{
-				title: '测试',
-				ignore: true，
-				defaultValue: '' // 本地图片路径
-			}],
-			variableName: 'pic'
-		}, {
-			title: 'radio',
-			type: 'radio',
-			itemArray: [{
-				name: 'aa',
-				value: 'aa',
-				defaultValue: true
-			}, {
-				name: 'bb',
-				value: 'bb'
-			}]
-		}, {
-			title: 'checkbox',
-			type: 'checkbox',
-			itemArray: [{
-				name: 'aa',
-				value: 'aa',
-				defaultValue: true
-			}, {
-				name: 'bb',
-				value: 'bb',
-				defaultValue: true
-			}]
-		}, {
-			title: '测试',
-			ignore: true
-		}, {
-			title: '手机号',
-			defaultValue: '13856954623',
-			phone: true
-		}],
+					type: 'picker-date',
+					mode: 'picker-date',
+					title: '日期',
+					defaultValue: new Date(),
+					onceShowDefaultValue: true
+				}, {
+					type: 'picker-city',
+					title: '城市',
+					defaultValue: [15,2,3],
+					onceShowDefaultValue: true
+				},{
+					type: 'pics',
+					title: '图片',
+					itemArray: [{
+						title: '测试1',
+						ignore: true
+					},{
+						title: '测试2',
+						ignore: true
+					},{
+						title: '测试3',
+						ignore: true
+					}],
+					variableName: 'pic'
+				}, {
+					type: 'slider',
+					title: 'slider',
+					min:0,
+					max:100,
+					show_value:true,
+					disabled:false,
+					step: 1
+				},{
+					type: 'switch',
+					title: 'switch',
+					defaultValue: true
+				},{
+					title: 'radio',
+					type: 'radio',
+					itemArray: [{
+						name: 'aa',
+						value: 'aa',
+						defaultValue: true
+					}, {
+						name: 'bb',
+						value: 'bb'
+					}]
+				}, {
+					title: 'checkbox',
+					type: 'checkbox',
+					itemArray: [{
+						name: 'a',
+						value: 'a',
+						defaultValue: true
+					}, {
+						name: 'b',
+						value: 'b',
+						defaultValue: true,
+						disabled: true
+					}, {
+						name: 'c',
+						value: 'c',
+						defaultValue: true
+					}]
+				}, {
+					title: '测试',
+					ignore: true
+				}],
 		ruleArray: [{
 			name: '某规则',
 			value: 'aa'
@@ -132,17 +159,8 @@ picker自定义。敬请期待
         console.log(JSON.stringify(res));
         // 如果项内定义了variableName属性，则取值为定义的variableName，否则取值为 this.onloadData + index, onloadData默认值为'data_'
         // 需要把数据传至服务器时也可以把整个对象传过去，由后端直接处理数据，这样可以实现整体的表单类型、布局、取值都由后端决定
-        submitFc(res[_this.onLoadData + '0'], res[_this.onLoadData + '1'], ……, function(result) {
-          console.log(JSON.stringify(result))
-          if(result.data && result.data == 'success')
-            _app.showToast('申请发送成功');
-          else
-            _app.showToast('出了些问题:' + JSON.stringify(result));
-          }, function(err) {
-            _app.showToast('申请发送失败:' + JSON.stringify(err));
-          });
         }
-      },
+    },
     components: {inputs}
   }
 </script>
@@ -169,7 +187,8 @@ picker自定义。敬请期待
 | animationType| 否| String| ''| 入场动画类型|
 | animationDuration| 否| Number| ''| 入场动画时长系数(index+1 ， 乘以此系数为动画时长)|
 ### animationType属性说明
-目前支持的类型有：fadIn、refadIn、slide-left、slide-fade-left、slide-right、slide-fade-right、slide-fade-bottom、rotate3d-fade等。动画也可自定义，只要定义动画后定义好class属性就可以了。
+
+（小程序不建议使用此动画，会卡）可作为父级属性统一传入，也可项内属性单独传入，目前支持的类型有：fadIn、refadIn、slide-left、slide-fade-left、slide-right、slide-fade-right、slide-fade-bottom、rotate3d-fade等。动画也可自定义，只要定义动画后定义好class属性就可以了。
 
 ### changeReSet属性说明(有重置需求的可使用)
 在父级传入的inputsArray改变时，可以选择重置数据，但是视图的重置需要先inputsArray=[ ]后setTimeout 300或者多少后重新赋值，过程中可以设置主按钮文字为‘加载中’等，可增强用户体验
@@ -201,6 +220,7 @@ picker自定义。敬请期待
 | phone| 否| Boolean| false| 是否设此项为手机号input(判断时，判断此属性)|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
 | defaultValue| 否| String| ''| 该项input的初始化默认值|
+| disabled| 否| Boolean| false| 是否禁用|
 ### 二、上传图片
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
@@ -228,12 +248,17 @@ picker自定义。敬请期待
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
 | cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
+| color| 否| Color| | radio的颜色|
 #### radio的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
 | name| 是| String| ''| 该radio的标题|
 | value| 是| | | 该项radio的值|
 | defaultValue| 否| Boolean| false| 该项radio的初始化默认值,(只能设置一个true，若设置多个为true，则取最先为true的值)|
+| disabled| 否| Boolean| false| 是否禁用|
+| color| 否| Color| | radio的颜色|
+
+注：itemArray的color优先于外部的color
 ### 四、checkbox(多选)
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
@@ -244,16 +269,49 @@ picker自定义。敬请期待
 | nullErr| 否| String| this.title + '不能为空'| 为空时提示|
 | cssMode| 否| String| 'wrap'| 非input、picker-date类型的项内布局方式|
 | variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
+| color| 否| Color| | checkbox的颜色|
 #### checkbox的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
 | name| 是| String| ''| 该checkbox的标题|
 | value| 是| | | 该项checkbox的值|
 | defaultValue| 否| Boolean| false| 该项checkbox的初始化默认值|
+| disabled| 否| Boolean| false| 是否禁用|
+| color| 否| Color| | checkbox的颜色|
 
-注： checkbox类型与radio类型差不多，只是取值时checkbox为数组，根据需求使用
-
-### 五、日期控件
+注： checkbox类型与radio类型差不多，只是取值时checkbox为数组，根据需求使用,itemArray的color优先于外部的color
+### 五、switch
+| 属性名| 是否必填| 值类型| 默认值| 说明|
+|------|---|----|---|-------|
+| type| 是| String| ''| 传固定值 type: 'switch'|
+| title| 否| String| ''| 该项switch的标题|
+| ignore| 否| Boolean| false| switch可忽略该属性|
+| nullErr| 否| String| this.title + '不能为空'| 为空时提示,switch可忽略该属性|
+| variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
+| defaultValue| 否| Boolean| false| 初始值|
+| disabled| 否| Boolean| false| 是否禁用|
+| mode| 否| String| switch| switch的type|
+| color| 否| Color| | switch的颜色|
+### 六、slider
+| 属性名| 是否必填| 值类型| 默认值| 说明|
+|------|---|----|---|-------|
+| type| 是| String| ''| 传固定值 type: 'slider'|
+| title| 否| String| ''| 该项slider的标题|
+| ignore| 否| Boolean| false| slider可忽略该属性|
+| nullErr| 否| String| this.title + '不能为空'| 为空时提示,slider可忽略该属性|
+| variableName| 否| String| this.onloadData\|\|'data_' + index| 自定义变量名,取值时用|
+| min| 否| Number| 0| slider的最小值|
+| max| 否| Number| 100| slider的最大值|
+| step| 否| Number| 1| 步长，取值必须大于 0，并且可被(max - min)整除|
+| disabled| 否| Boolean| false| 是否禁用|
+| color| 否| Color| #e9e9e9| 背景条的颜色（请使用 backgroundColor）|
+| selected_color| 否| Color| #1aad19| 已选择的颜色（请使用 activeColor）|
+| activeColor| 否| Color| #1aad19| 已选择的颜色|
+| backgroundColor| 否| Color| #e9e9e9| 背景条的颜色|
+| block_size| 否| Number| 28| 滑块的大小，取值范围为 12 - 28|
+| block_color| 否| Color| #ffffff| 滑块的颜色|
+| show_value| 否| Boolean| false| 是否显示当前 value|
+### 七、日期控件
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
 | type| 是| String| ''| 传固定值 type: 'picker-date'|
@@ -277,7 +335,7 @@ picker自定义。敬请期待
 | picker-time| String| 时间|
 
 注：所传的defaultDate若不在范围中，则将显示范围内的最后一年最后一月最后一日, defaultValue中所传的月份需-1;
-### 六、城市选择
+### 八、城市选择
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
 | type| 是| String| ''| 传固定值 type: 'picker-city'|

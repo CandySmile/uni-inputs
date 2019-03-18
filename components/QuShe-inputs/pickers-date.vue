@@ -8,7 +8,12 @@
 					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in years" :key="picker_index">{{picker_item}}年</view>
 				</picker-view-column>
 				<picker-view-column>
+					<!-- #ifndef H5 -->
 					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 12" :key="picker_index">{{picker_item+1}}月</view>
+					<!-- #endif -->
+					<!-- #ifdef H5 -->
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 12" :key="picker_index">{{picker_item}}月</view>
+					<!-- #endif -->
 				</picker-view-column>
 				<picker-view-column>
 					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in days" :key="picker_index">{{picker_item}}日</view>
