@@ -10,38 +10,46 @@
 		data() {
 			return {
 				inputsArray: [{
+					segmentationTitle: '日期与时间',
 					type: 'picker-date',
 					mode: 'picker-date',
-					title: '日期',
+					title: 'date',
 					defaultValue: new Date(),
-					onceShowDefaultValue: true
+					onceShowDefaultValue: true,
+					border_top: '1px solid #f2f2f2'
 				}, {
 					type: 'picker-city',
-					title: '城市',
-					defaultValue: [15,2,3],
+					title: 'city',
+					defaultValue: [10,6,0],
 					onceShowDefaultValue: true
 				},{
+					segmentationTitle: '上传图片',
 					type: 'pics',
-					title: '图片',
+					title: 'pics',
 					itemArray: [{
 						title: '测试1',
 						ignore: true
 					},{
 						title: '测试2',
 						ignore: true
-					},{
-						title: '测试3',
-						ignore: true
 					}],
-					variableName: 'pic'
+					variableName: 'pic',
+					border_top: '1px solid #f2f2f2'
 				}, {
+					segmentationTitle: '表单组件',
 					type: 'slider',
 					title: 'slider',
+					defaultValue: 50,
 					min:0,
 					max:100,
 					show_value:true,
 					disabled:false,
-					step: 1
+					step: 1,
+					border_top: '1px solid #f2f2f2'
+				},{
+					type:'textarea',
+					title:'textarea',
+					defaultValue: '今天也要加油鸭~'
 				},{
 					type: 'switch',
 					title: 'switch',
@@ -75,8 +83,9 @@
 						defaultValue: true
 					}]
 				}, {
-					title: '测试',
-					ignore: true
+					title: 'input',
+					ignore: true,
+					defaultValue: '今天也要加油鸭~'
 				}],
 				ruleArray: [{
 					name: '某规则',

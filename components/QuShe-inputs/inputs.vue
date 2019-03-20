@@ -1,108 +1,131 @@
 <template>
-	<view class="width100">
-		<!-- title -->
-		<view class="width100 box-sizing-border-box" :class="[item.type=='pics'?'flex_column':'flex_row', item.animationType||animationType||'']" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px', 'animation-duration': (index+1)*(item.animationDuration||animationDuration||.2) + 's'}"
+	<view class="width100 overflow_x_hidden">
+		<view class="width100 box-sizing-border-box" :class="[item.animationType||animationType||'']" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px', 'animation-duration': (index+1)*(item.animationDuration||animationDuration||.2) + 's'}"
 		 v-for="(item, index) in inputsArray" :key="item.title||index">
-			<view class="input_title flex_row_e_c" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px', 'color': titleFontColor}">
-				<view class="width100 word_wrap" :class="item.type=='pics'?'flex_row_none_c':'flex_row_e_c'">
-					<view class="fontColorF1505C" v-if="item.type!='pics'&&!item.ignore">*</view>{{item.title?item.title + ':':''}}
-				</view>
+			<!-- segmentationTitle -->
+			<view class="width100 flex_row view_Title_Left" :style="{'font-size': windowHeight*.024+'px', 'padding': windowHeight*.015+'px '+ windowWidth*.03+'px'}"
+			 v-if="item.segmentationTitle">
+				{{item.segmentationTitle}}
 			</view>
-			<!-- pics -->
-			<view class="width100 box-sizing-border-box" v-if="item.type&&item.type=='pics'" :style="{'padding': windowHeight*.01 + 'px ' + windowWidth*.03 + 'px'}">
-				<view class="flex_row width100" :class="item.cssMode||cssMode||'wrap'">
-					<view class="flex_column_c_c box-sizing-border-box" :style="{'padding': windowHeight*.01 + 'px'}" v-for="(picsItem, picsIndex) in item.itemArray"
-					 :key="picsIndex">
-						<view class="flex_row_c_c border1pxf2f2f2" :style="{'position': 'relative', 'height': windowHeight*.07+'px', 'width': windowWidth*.2+'px'}"
-						 @tap="!picsObj[onLoadData + index + onLoadData + picsIndex]?chooseImg(index, picsIndex): ''">
-							<image :src="picsObj[onLoadData + index + onLoadData + picsIndex]" mode="aspectFill" :style="{'height': windowHeight*.07+'px', 'width': windowWidth*.2+'px'}"
-							 v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap="showImg(picsObj[onLoadData + index + onLoadData + picsIndex])"></image>
-							<view class="fontColorADADAD" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px'}" v-else>+</view>
-							<view :style="{'position': 'absolute', 'top': 0-windowHeight*.03+'px', 'right': 0-windowHeight*.025+'px', 'padding': windowHeight*.01+'px'}"
-							 v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap.stop.prevent="clearPic(index, picsIndex)">
-								<uni-icon type="clear" color="#f5105c" :pxSize="windowHeight*.03" />
+			<view class="flex_row" :style="{'padding-bottom': item.border_bottom?windowHeight*.015+'px':'none','border-bottom': item.border_bottom||'none', 'padding-top':item.border_top?windowHeight*.015+'px':'none','border-top': item.border_top||'none'}">
+				<!-- title -->
+				<view class="input_title flex_row_e_c" :style="{'fontSize': (titleFontSize||windowHeight*scale_one) + 'px', 'color': titleFontColor}">
+					<view class="width100 word_wrap flex_row_e_c">
+						<view class="fontColorF1505C" v-if="item.type!='pics'&&!item.ignore">*</view>{{item.title?item.title + ':':''}}
+					</view>
+				</view>
+				<!-- pics -->
+				<view class="input_item box-sizing-border-box" v-if="item.type&&item.type=='pics'" :style="{'padding': windowHeight*.01 + 'px 0px'}">
+					<view class="flex_row_e_c width100" :class="item.cssMode||cssMode||'wrap'">
+						<view class="flex_column_c_c box-sizing-border-box" :style="{'padding': windowHeight*.01 + 'px'}" v-for="(picsItem, picsIndex) in item.itemArray"
+						 :key="picsIndex">
+							<view class="flex_row_c_c border1pxf2f2f2" :style="{'position': 'relative', 'height': windowHeight*.07+'px', 'width': windowWidth*.2+'px'}"
+							 @tap="!picsObj[onLoadData + index + onLoadData + picsIndex]?chooseImg(index, picsIndex): ''">
+								<image :src="picsObj[onLoadData + index + onLoadData + picsIndex]" mode="aspectFill" :style="{'height': windowHeight*.07+'px', 'width': windowWidth*.2+'px'}"
+								 v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap="showImg(picsObj[onLoadData + index + onLoadData + picsIndex])"></image>
+								<view class="fontColorADADAD" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px'}" v-else>+</view>
+								<view :style="{'position': 'absolute', 'top': 0-windowHeight*.03+'px', 'right': 0-windowHeight*.025+'px', 'padding': windowHeight*.01+'px'}"
+								 v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap.stop.prevent="clearPic(index, picsIndex)">
+									<uni-icon type="clear" color="#f5105c" :pxSize="windowHeight*.03" />
+								</view>
+							</view>
+							<view class="flex_row_c_c fontColorADADAD" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px', 'width': windowWidth*.2+'px', 'margin-top': windowHeight*.01+'px'}"
+							 v-if="picsItem.title">
+								<view class="fontColorF1505C" v-if="!picsItem.ignore">*</view>{{picsItem.title}}
 							</view>
 						</view>
-						<view class="flex_row_c_c fontColorADADAD" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px', 'width': windowWidth*.2+'px', 'margin-top': windowHeight*.01+'px'}"
-						 v-if="picsItem.title">
-							<view class="fontColorF1505C" v-if="!picsItem.ignore">*</view>{{picsItem.title}}
+					</view>
+				</view>
+				<!-- switch -->
+				<view class="input_item flex_row_e_c" v-else-if="item.type&&item.type=='switch'">
+					<switch :checked="inputsObj[onLoadData+index]" :disabled="item.disabled" :type="item.mode||'switch'" :color="item.color"
+					 @change="inputs_change($event, index)" />
+				</view>
+				<!-- slider -->
+				<view class="input_item" v-else-if="item.type&&item.type=='slider'">
+					<slider @change="inputs_change($event, index)" :min="item.min||0" :max="item.max||100" :step="item.step||1"
+					 :disabled="item.disabled" :value="inputsObj[onLoadData+index]" :color="item.color" :selected-color="item.selected_color"
+					 :activeColor="item.activeColor" :backgroundColor="item.backgroundColor" :block-size="item.block_size"
+					 :block-color="item.block_color" :show-value="item.show_value" />
+				</view>
+				<!-- radio -->
+				<view class="input_item" v-else-if="item.type&&item.type=='radio'">
+					<radio-group @change="inputs_change($event, index)" class="width100 flex_row_e_c" :class="item.cssMode||cssMode||'wrap'">
+						<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}"
+						 v-for="(radioItem, radioIndex) in item.itemArray" :key="radioIndex">
+							<radio :value="radioItem.value" :checked="inputsObj[onLoadData+index]==radioItem.value" :disabled="radioItem.disabled"
+							 :color="radioItem.color||item.color" />
+							<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{radioItem.name}}</view>
+						</label>
+					</radio-group>
+				</view>
+				<!-- checkbox -->
+				<view class="input_item" v-else-if="item.type&&item.type=='checkbox'">
+					<checkbox-group @change="checkbox_change($event, index)" class="width100 flex_row_e_c" :class="item.cssMode||cssMode||'wrap'">
+						<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}"
+						 v-for="(checkboxItem, checkboxIndex) in item.itemArray" :key="checkboxIndex">
+							<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index][checkboxIndex]==checkboxItem.value"
+							 :disabled="checkboxItem.disabled" :color="checkboxItem.color||item.color" />
+							<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{checkboxItem.name}}</view>
+						</label>
+					</checkbox-group>
+				</view>
+				<!-- textarea -->
+				<view class="input_item" v-else-if="item.type&&item.type=='textarea'">
+					<textarea :value="inputsObj[onLoadData+index]||item.defaultValue" :placeholder="item.placeholder||'请输入' + item.title"
+					 :placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class" :style="{'font-size': (contentFontSize||windowHeight*scale_two) + 'px', 'height': !item.auto_height?(item.height||windowHeight*.1)+'px':''}"
+					 class="border1pxf2f2f2 width100" :disabled="item.disabled" :maxlength="item.maxlength||140" :focus="item.focus"
+					 :auto-height="item.auto_height" :fixed="item.fixed" :cursor-spacing="item.cursor_spacing" :cursor="item.cursor"
+					 :show-confirm-bar="item.show_confirm_bar" :selection-start="item.selection_start" :selection-end="item.selection_end"
+					 :adjust-position="item.adjust_position" @input="inputs_change($event, index)" />
+					</view>
+				<!-- picker-date -->
+				<view class="input_item flex_row_e_c" :style="{'padding': '0 ' + windowWidth*.03+'px'}" v-else-if="item.type&&item.type=='picker-date'">
+					<view class="flex_row_none_c" v-if="pickerObj[onLoadData+index]">
+						<view class="fontColor666666" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px'}">
+							{{pickerObj[onLoadData+index]}}
 						</view>
+						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="{'margin-left': windowWidth*.03+'px'}">{{item.editorName||'更改'}}</button>
+					</view>
+					<view class="flex_row_e_c" v-else>
+						<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择日期'}}</button>
 					</view>
 				</view>
-			</view>
-			<!-- switch -->
-			<view class="input_item" v-else-if="item.type&&item.type=='switch'">
-				<switch :checked="inputsObj[onLoadData+index]||item.defaultValue" :disabled="item.disabled" :type="item.mode||'switch'" :color="item.color" @change="inputs_change($event, index)" />
-			</view>
-			<!-- slider -->
-			<view class="input_item" v-else-if="item.type&&item.type=='slider'">
-				<slider @change="inputs_change($event, index)" :min="item.min||0" :max="item.max||100" :step="item.step||1" :disabled="item.disabled" :value="inputsObj[onLoadData+index]"
-				:color="item.color" :selected-color="item.selected_color" :activeColor="item.activeColor" :backgroundColor="item.backgroundColor"
-				:block-size="item.block_size" :block-color="item.block_color" :show-value="item.show_value"/>
-			</view>
-			<!-- radio -->
-			<view class="input_item" v-else-if="item.type&&item.type=='radio'">
-				<radio-group @change="inputs_change($event, index)" class="width100 flex_row_none_c" :class="item.cssMode||cssMode||'wrap'">
-					<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}"
-					 v-for="(radioItem, radioIndex) in item.itemArray" :key="radioIndex">
-						<radio :value="radioItem.value" :checked="inputsObj[onLoadData+index]==radioItem.value" :disabled="radioItem.disabled" :color="radioItem.color||item.color" />
-						<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{radioItem.name}}</view>
-					</label>
-				</radio-group>
-			</view>
-			<!-- checkbox -->
-			<view class="input_item" v-else-if="item.type&&item.type=='checkbox'">
-				<checkbox-group @change="checkbox_change($event, index)" class="width100 flex_row_none_c" :class="item.cssMode||cssMode||'wrap'">
-					<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}"
-					 v-for="(checkboxItem, checkboxIndex) in item.itemArray" :key="checkboxIndex">
-						<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index][checkboxIndex]==checkboxItem.value" :disabled="checkboxItem.disabled" :color="checkboxItem.color||item.color" />
-						<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{checkboxItem.name}}</view>
-					</label>
-				</checkbox-group>
-			</view>
-			<!-- picker-date -->
-			<view class="width100 flex_row_e_c" :style="{'padding': '0 ' + windowWidth*.03+'px'}" v-else-if="item.type&&item.type=='picker-date'">
-				<view class="flex_row_none_c" v-if="pickerObj[onLoadData+index]">
-					<view class="fontColor666666" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px'}">
-						{{pickerObj[onLoadData+index]}}
+				<!-- picker-city -->
+				<view class="input_item flex_row_e_c" :style="{'padding': '0 ' + windowWidth*.03+'px'}" v-else-if="item.type&&item.type=='picker-city'">
+					<view class="flex_row_none_c" v-if="pickerObj[onLoadData+index]">
+						<view class="fontColor666666" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px'}">
+							{{pickerObj[onLoadData+index].label}}
+						</view>
+						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="{'margin-left': windowWidth*.03+'px'}">{{item.editorName||'更改'}}</button>
 					</view>
-					<button type="primary" @tap="showPicker(item, index)" size="mini" :style="{'margin-left': windowWidth*.03+'px'}">{{item.editorName||'更改'}}</button>
-				</view>
-				<view class="flex_row_e_c" v-else>
-					<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择日期'}}</button>
-				</view>
-			</view>
-			<!-- picker-city -->
-			<view class="width100 flex_row_e_c" :style="{'padding': '0 ' + windowWidth*.03+'px'}" v-else-if="item.type&&item.type=='picker-city'">
-				<view class="flex_row_none_c" v-if="pickerObj[onLoadData+index]">
-					<view class="fontColor666666" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px'}">
-						{{pickerObj[onLoadData+index].label}}
+					<view class="flex_row_e_c" v-else>
+						<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择城市'}}</button>
 					</view>
-					<button type="primary" @tap="showPicker(item, index)" size="mini" :style="{'margin-left': windowWidth*.03+'px'}">{{item.editorName||'更改'}}</button>
 				</view>
-				<view class="flex_row_e_c" v-else>
-					<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择城市'}}</button>
+				<!-- input -->
+				<view class="input_item" v-else>
+					<input :type="item.inputType||'text'" :value="inputsObj[onLoadData+index]||item.defaultValue" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
+					 :password="item.password" :placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class"
+					 :maxlength="item.maxlength||140" :cursor-spacing="item.cursor_spacing" :focus="item.focus"
+					 :confirm-type="item.confirm_type" :confirm-hold="item.confirm_hold" :selection-start="item.selection_start" :selection-end="item.selection_end"
+					 :cursor="item.cursor" :adjust-position="item.adjust_position" class="width100 borderBottom1pxf2f2f2" :disabled="item.disabled" :style="{'fontSize': (titleFontSize||windowHeight*scale_one) + 'px'}" />
 				</view>
-			</view>
-			<!-- input -->
-			<view class="input_item" v-else>
-				<input :type="item.inputType||'text'" :value="inputsObj[onLoadData+index]||item.defaultValue" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
-				 class="width100 borderBottom1pxf2f2f2" :disabled="item.disabled" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px'}" />
 			</view>
 		</view>
 		<!-- 验证码 -->
 		<view class="flex_row width100 box-sizing-border-box"  :class="[animationType||'']" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px', 'animation-duration': (inputsArray.length+1)*(animationDuration||.2) + 's'}"
 		 v-if="ifCode">
-			<view class="flex_row_e_c input_title" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px', 'color': titleFontColor}">
+			<view class="flex_row_e_c input_title" :style="{'fontSize': (titleFontSize||windowHeight*scale_one) + 'px', 'color': titleFontColor}">
 				<view class="fontColorF1505C">*</view>验证码:
 			</view>
 			<view class="input_item">
-				<input type="text" value="" v-model="userCode" placeholder="请输入验证码" class="width100 borderBottom1pxf2f2f2" :style="{'fontSize': titleFontSize||windowHeight*scale_one + 'px'}" />
+				<input type="text" value="" v-model="userCode" placeholder="请输入验证码" class="width100 borderBottom1pxf2f2f2" :style="{'fontSize': (titleFontSize||windowHeight*scale_one) + 'px'}" />
 			</view>
 		</view>
 		<!-- rule -->
 		<view class="flex_row_between_c box-sizing-border-box"  :class="[animationType||'']" :style="{'padding': windowHeight*.01 + 'px ' + windowWidth*.03 + 'px', 'animation-duration': (inputsArray.length+1)*(animationDuration||.2) + 's'}">
-			<view class="flex_row_c_c fontColor666666" :style="{'fontSize': contentFontSize||windowHeight*scale_two + 'px'}"
+			<view class="flex_row_c_c fontColor666666" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px'}"
 			 v-if="ifRule">
 				<label class="flex_row_c_c">
 					<switch :checked="Igree" @change="IgreeFc" type="checkbox" />我已阅读并同意</label>
@@ -328,14 +351,15 @@
 							}
 							break;
 						case 'switch':
-							_this[itemVariableName] =_this.inputsObj[itemVariableName] = item.defaultValue || false;
+							_this[itemVariableName] = _this.inputsObj[itemVariableName] = item.defaultValue || false;
 							break;
 						case 'slider':
-							_this[itemVariableName] =_this.inputsObj[itemVariableName] = item.defaultValue || item.min || 0;
+							_this[itemVariableName] = _this.inputsObj[itemVariableName] = item.defaultValue || item.min || 0;
 							break;
 						default:
-							if(item.defaultValue)
-								_this[itemVariableName] =_this.inputsObj[itemVariableName] = item.defaultValue || '';
+							if(item.defaultValue) {
+								_this[itemVariableName] = item.defaultValue || '';
+							}
 							break;
 					}
 				}
@@ -387,6 +411,7 @@
 				_this[_this.onLoadData + index] = e.detail.value;
 			},
 			inputs_change(e, index) { // 用户输入时，根据index赋值
+			console.log(e.detail.value);
 				this.inputsObj[this.onLoadData + index] = e.detail.value;
 				this[this.onLoadData + index] = e.detail.value;
 			},
@@ -583,8 +608,11 @@
 </script>
 
 <style scoped>
+	.overflow_x_hidden{
+		overflow-x: hidden;
+	}
 	.input_title {
-		width: 25%;
+		width: 20%;
 		margin-right: 5%;
 	}
 
@@ -705,6 +733,11 @@
 		left: 50%;
 		z-index: 1000;
 		transform: translate(-50%, -70%);
+	}
+	.view_Title_Left {
+		font-weight: bold;
+		padding: 1.5vh 3vw;
+		box-sizing: border-box;
 	}
 	/* 新增 */
 	@keyframes fadeIn {
