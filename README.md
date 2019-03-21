@@ -30,7 +30,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 | 2.0 | 1、修复input软键盘弹出式样式改变问题（统一单位使用px，数值使用windowHieght计算）<br>2、radio、checkbox、pics等类型统一指定项内数组名为itemArray<br>3、inputs属性改为inputsArray，便于区分<br>4、修复一些bug|
 | 1.9 | 新增variableName属性，可自定义该项的变量名, 修复pickers组件的样式问题 |
 | 1.8 | 新增日期选择控件 —— picker-date |
-| 1.7 | 新增cssMode属性，可控制非input、picker-date类型的项内布局方式,可在父组件传入，也可在项内属性中传入,默认为wrap |
+| 1.7 | 新增cssMode属性，可控制拥有子项数组的类型的项内布局方式,可在父组件传入，也可在项内属性中传入,默认为wrap |
 | 1.6 | ruleName属性修改为ruleArray, 可以支持一个以上的规则或协议 |
 | 1.5 | 新增radio(单选)类型，checkbox（多选）类型 |
 |  | 为提升用户体验，在循环项数较多的情况下，防止超屏，新增overflow_x为scroll(x轴滚动) |
@@ -186,7 +186,7 @@ picker自定义。敬请期待
 | titleFontSize| | Number| 屏幕高度*.021 px | title(左边)的文字大小|
 | titleFontColor| | String| '#666666'| title(左边)的文字颜色|
 | contentFontSize| | Number| 屏幕高度*.018 px| 内容(右边)的文字大小|
-| cssMode| | String| 'wrap'| 非input、picker-date类型的项内布局方式|
+| cssMode| | String| 'wrap'| 可控制拥有子项数组的类型的项内布局方式的项内布局方式|
 | changeReSet| | Boolean| false| 在inputsArray改变时可重置所有数据为空，但不重置视图，若需重置视图看下方说明|
 | animationType| | String| | 入场动画类型|
 | animationDuration| | Number| | 入场动画时长系数(index+1 ， 乘以此系数为动画时长)|
@@ -279,7 +279,7 @@ picker自定义。敬请期待
 | type| 是| String| | 传固定值 type: 'pics'|
 | itemArray| 是| Array\<Object\>| | 循环的图片数组，下方说明|
 | title| | String| | 该项图片的标题|
-| cssMode| | String| 'wrap'| 非input、picker-date类型的项内布局方式|
+| cssMode| | String| 'wrap'| 项内布局方式|
 #### pics的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|---|----|---|-------|
@@ -295,7 +295,7 @@ picker自定义。敬请期待
 |------|---|----|---|-------|
 | type| 是| String| | 传固定值 type: 'radio'|
 | itemArray| 是| Array\<Object\>| | 需循环的radio数组|
-| cssMode| | String| 'wrap'| 非input、picker-date类型的项内布局方式|
+| cssMode| | String| 'wrap'| 项内布局方式|
 | color| | Color| | radio的颜色|
 #### radio的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
@@ -314,7 +314,7 @@ picker自定义。敬请期待
 |------|---|----|---|-------|
 | type| 是| String| | 传固定值 type: 'checkbox'|
 | itemArray| 是| Array\<Object\>| | 需循环的checkbox数组|
-| cssMode| | String| 'wrap'| 非input、picker-date类型的项内布局方式|
+| cssMode| | String| 'wrap'| 项内布局方式|
 | color| | Color| | checkbox的颜色|
 #### checkbox的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
