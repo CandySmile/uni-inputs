@@ -5,7 +5,7 @@
 如果觉得好用，可以回来给个五星好评么~~(❁´◡`❁)\*✲ﾟ\*  蟹蟹~拜托啦~
 
 ## 组件简介
-本组件目前支持 input、textarea、radio、checkbox、switch、slider、上传图片、日期选择、城市选择等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
+本组件目前支持 input、textarea、radio、checkbox、switch、slider、上传图片、日期选择、城市选择、picker可联动自定义等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
 
 ---
 ### 警告
@@ -13,8 +13,9 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 # 更新说明
 
-| 序号 | 更新说明 |
-|---|------|
+| 版本号 | 更新说明 |
+|----|------|
+| 3.3 | 新增picker可联动自定义类型——picker-custom，(无线无联动+自定义二、三级联动) 详见 十、picker-custom<br />2、修改更新方向|
 | 3.2 | 优化布局，新增segmentationTitle、border_bottom、border_top等项内公共属性，修复input无法输入问题|
 | 3.1 | 新增textarea类型,完善input类型|
 | 3.0 | 1、新增switch、slider，修复checkbox、radio、input（初始化后不改动的情况下）从后台进入前台视图还原为初始化问题（数据不变）<br />2、input、radio、checkbox、switch、slider，各增disabled属性<br />3、修复H5 picker-date类型月份显示不正确问题|
@@ -39,7 +40,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 ---
 # 下次更新方向
-picker自定义。敬请期待
+input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
 
 ---
 
@@ -55,7 +56,7 @@ picker自定义。敬请期待
 			:ifRule="true" :ruleArray="ruleArray" 
 			v-on:chaildOpenEvent="openWin" 
 			v-on:activeFc="activeFc"  :onLoadData="onLoadData" 
-			cssMode="wrap" animationType="slide-fade-right" :animationDuration=".4"/>
+			cssMode="wrap" animationType="rotate3d-fade" :animationDuration=".4"/>
   </view>
 </template>
 ```
@@ -67,83 +68,261 @@ picker自定义。敬请期待
     data() {
       return {
 		inputsArray: [{
-				segmentationTitle: '日期与时间',
-				type: 'picker-date',
-				mode: 'picker-date',
-				title: 'date',
-				defaultValue: new Date(),
-				onceShowDefaultValue: true,
-				border_top: '1px solid #f2f2f2'
-			}, {
-				type: 'picker-city',
-				title: 'city',
-				defaultValue: [10,6,0],
-				onceShowDefaultValue: true
-			},{
-				segmentationTitle: '上传图片',
-				type: 'pics',
-				title: 'pics',
-				itemArray: [{
-					title: '测试1',
-					ignore: true
-				},{
-					title: '测试2',
-					ignore: true
-				}],
-				variableName: 'pic',
-				border_top: '1px solid #f2f2f2'
-			}, {
-				segmentationTitle: '表单组件',
-				type: 'slider',
-				title: 'slider',
-				defaultValue: 50,
-				min:0,
-				max:100,
-				show_value:true,
-				disabled:false,
-				step: 1,
-				border_top: '1px solid #f2f2f2'
-			},{
-				type:'textarea',
-				title:'textarea',
-				defaultValue: '今天也要加油鸭~'
-			},{
-				type: 'switch',
-				title: 'switch',
-				defaultValue: true
-			},{
-				title: 'radio',
-				type: 'radio',
-				itemArray: [{
-					name: 'aa',
-					value: 'aa',
-					defaultValue: true
-				}, {
-					name: 'bb',
-					value: 'bb'
-				}]
-			}, {
-				title: 'checkbox',
-				type: 'checkbox',
-				itemArray: [{
-					name: 'a',
-					value: 'a',
-					defaultValue: true
+			segmentationTitle: 'picker类型',
+			type: 'picker-date',
+			mode: 'picker-date',
+			title: 'date',
+			defaultValue: new Date(),
+			onceShowDefaultValue: true,
+			border_top: '1px solid #f2f2f2'
+		}, {
+			type: 'picker-city',
+			title: 'city',
+			defaultValue: [10, 6, 0],
+			onceShowDefaultValue: true
+		}, { // 无联动示例1
+			segmentationTitle: 'picker-custom示例',
+			border_top: '1px solid #f2f2f2',
+			type: 'picker-custom',
+			title: 'custom-无联动示例1',
+			itemArray: [
+				[0, 1, 2],
+				[3, 4, 5]
+			],
+			defaultValue: [0, 0], //初始数据
+			onceShowDefaultValue: true, //是否显示初始数据
+		}, { // 无联动示例2
+			type: 'picker-custom',
+			title: 'custom-无联动示例2',
+			itemArray: [
+				[{
+					name: 'a', //name变量名需与下方steps.steps_1_value相同
+					value: 'a' //可添加多项自定义想要的数据
 				}, {
 					name: 'b',
-					value: 'b',
-					defaultValue: true,
-					disabled: true
+					value: 'b'
 				}, {
 					name: 'c',
-					value: 'c',
-					defaultValue: true
+					value: 'c'
+				}],
+				[{
+					name: 'd',
+					value: 'd'
+				}, {
+					name: 'e',
+					value: 'e'
+				}, {
+					name: 'f',
+					value: 'f'
+				}]
+			], //name变量名与下方steps.steps_1_value相同
+			defaultValue: [0, 0], //初始数据
+			onceShowDefaultValue: true, //是否显示初始数据
+			steps: {
+				steps_1_value: 'name'
+			}
+		}, { // 二级联动示例1
+			type: 'picker-custom',
+			title: 'custom-二级联动示例1',
+			defaultValue: [1, 0], //初始数据
+			onceShowDefaultValue: true, //是否显示初始数据
+			itemArray: [{
+				value_1: '蔬菜', //value_1变量名需与下方steps.steps_1_value相同
+				/*
+				可添加多项自定义想要的数据
+				*/
+				item_2: ['青菜'] //item_2变量名需与下方steps.steps_1_value相同
+			}, {
+				value_1: '荤菜',
+				item_2: ['猪肉']
+			}],
+			steps: {
+				steps_1_value: 'value_1',
+				steps_2_item: 'item_2'
+			},
+			linkageNum: 2, //2 表示为2级联动
+			linkage: true //true 表示开启联动
+		}, { // 二级联动示例2
+			type: 'picker-custom',
+			title: 'custom-二级联动示例2',
+			defaultValue: [0, 0], //初始数据
+			onceShowDefaultValue: true, //是否显示初始数据
+			itemArray: [{
+				value_1: '蔬菜', //value_1变量名需与下方steps.steps_1_value相同
+				/*
+				可添加多项自定义想要的数据
+				*/
+				item_2: [{
+					name: '青菜',
+					value: '青菜' //可添加多项自定义想要的数据
+				}] //item_2变量名需与下方steps.steps_1_value相同
+			}, {
+				value_1: '荤菜',
+				item_2: [{
+					name: '猪肉',
+					value: '猪肉'
+				}] //name变量名需与下方steps.steps_2_value相同
+			}],
+			steps: {
+				steps_1_value: 'value_1',
+				steps_2_value: 'name',
+				steps_2_item: 'item_2'
+			},
+			linkageNum: 2, //2 表示为2级联动
+			linkage: true //true 表示开启联动
+		}, { // 三级联动示例1
+			type: 'picker-custom',
+			title: 'custom-三级联动示例1',
+			itemArray: [{
+				value_1: '浙江', //value_1变量名需与下方steps.steps_1_value相同
+				/*
+				可添加多项自定义想要的数据
+				*/
+				item_2: [{		 //item_2变量名需与下方steps.steps_2_item相同
+					value_2: '金华', //value_2变量名需与下方steps.steps_2_value相同
+					/*
+					可添加多项自定义想要的数据
+					*/
+					item_3: ['婺城区'] //item_3变量名需与下方steps.steps_3_item相同
+				}, {
+					value_2: '绍兴',
+					item_3: ['越城区']
 				}]
 			}, {
-				title: 'input',
-				ignore: true,
-				defaultValue: '今天也要加油鸭~'
+				value_1: '江苏',
+				item_2: [{
+					value_2: '南京',
+					item_3: ['玄武区'],
+				}, {
+					value_2: '无锡',
+					item_3: ['锡山区']
+				}]
 			}],
+			steps: {
+				steps_1_value: 'value_1',
+				steps_2_value: 'value_2',
+				steps_2_item: 'item_2',
+				steps_3_item: 'item_3'
+			},
+			defaultValue: [1, 0, 0], //初始数据
+			onceShowDefaultValue: true, //是否显示初始数据
+			linkageNum: 3, //3 表示为3级联动
+			linkage: true //true 表示开启联动
+		}, { // 三级联动示例2
+			type: 'picker-custom',
+			title: 'custom-三级联动示例2',
+			itemArray: [{
+				value_1: '江西', //value_1变量名需与下方steps.steps_1_value相同
+				/*
+				可添加多项自定义想要的数据
+				*/
+				item_2: [{		 //item_2变量名需与下方steps.steps_2_item相同
+					value_2: '南昌', //value_2变量名需与下方steps.steps_2_value相同
+					/*
+					可添加多项自定义想要的数据
+					*/
+					item_3: [{ 	//item_3变量名需与下方steps.steps_3_item相同
+						name: '东湖' ,//name变量名需与下方steps.steps_3_value相同
+						/*
+						可添加多项自定义想要的数据
+						*/
+					}]
+				}, {
+					value_2: '九江',
+					item_3: [{
+						name: '德安'
+					}]
+				}]
+			}, {
+				value_1: '山东',
+				item_2: [{
+					value_2: '济南',
+					item_3: [{
+						name: '历下'
+					}],
+				}, {
+					value_2: '青岛',
+					item_3: [{
+						name: '市南'
+					}]
+				}]
+			}],
+			steps: {
+				steps_1_value: 'value_1',
+				steps_2_value: 'value_2',
+				steps_2_item: 'item_2',
+				steps_3_value: 'name',
+				steps_3_item: 'item_3'
+			},
+			defaultValue: [1, 0, 0], //初始数据
+			onceShowDefaultValue: true, //是否显示初始数据
+			linkageNum: 3, //3 表示为3级联动
+			linkage: true //true 表示开启联动
+		}, {
+			segmentationTitle: '上传图片',
+			type: 'pics',
+			title: 'pics',
+			itemArray: [{
+				title: '测试1',
+				ignore: true
+			}, {
+				title: '测试2',
+				ignore: true
+			}],
+			variableName: 'pic',
+			border_top: '1px solid #f2f2f2'
+		}, {
+			segmentationTitle: '表单组件',
+			type: 'slider',
+			title: 'slider',
+			defaultValue: 50,
+			min: 0,
+			max: 100,
+			show_value: true,
+			disabled: false,
+			step: 1,
+			border_top: '1px solid #f2f2f2'
+		}, {
+			type: 'textarea',
+			title: 'textarea',
+			defaultValue: '今天也要加油鸭~'
+		}, {
+			type: 'switch',
+			title: 'switch',
+			defaultValue: true
+		}, {
+			title: 'radio',
+			type: 'radio',
+			itemArray: [{
+				name: 'aa',
+				value: 'aa',
+				defaultValue: true
+			}, {
+				name: 'bb',
+				value: 'bb'
+			}]
+		}, {
+			title: 'checkbox',
+			type: 'checkbox',
+			itemArray: [{
+				name: 'a',
+				value: 'a',
+				defaultValue: true
+			}, {
+				name: 'b',
+				value: 'b',
+				defaultValue: true,
+				disabled: true
+			}, {
+				name: 'c',
+				value: 'c',
+				defaultValue: true
+			}]
+		}, {
+			title: 'input',
+			ignore: true,
+			defaultValue: '今天也要加油鸭~'
+		}],
 		ruleArray: [{
 			name: '某规则',
 			value: 'aa'
@@ -174,7 +353,7 @@ picker自定义。敬请期待
 
 ## 传给inputs组件的属性
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | inputsArray| 是| Array\<Object\>| | 需循环的inputs数组（可从后端接口获取）|
 | @activeFc| 是| Function| | 主功能方法，携带一个用户所输入的数据对象|
 | activeName| | String| '发送'| 主功能按钮的文字说明|
@@ -214,7 +393,7 @@ picker自定义。敬请期待
 ## inputsArray项内公共属性
 
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | type| 除input类型外是| String| | 该项的类型|
 | title| 是| String| | 该项的标题|
 | ignore| | Boolean| false| 是否可忽略该项（判断时可以为空）|
@@ -225,11 +404,11 @@ picker自定义。敬请期待
 | border_bottom| | String| | 下边框，例 '1px solid #F2F2F2'|
 | border_top| | String| | 上边框，例 '1px solid #F2F2F2'|
 
-## 目前共九种类型
+## 目前共十种类型
 
 ### 一、input
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | type| | String| | 不传该值(因默认为input)|
 | placeholder| | String| '请输入' + this.title| input的placeholder文字|
 | inputType| | String| 'text'| 该项input的类型|
@@ -253,7 +432,7 @@ picker自定义。敬请期待
 
 ### 二、textarea
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'textarea'|
 | height| | Number| 屏幕高度*.1| textarea的高度|
 | placeholder| | String| '请输入' + this.title| textarea的placeholder文字|
@@ -270,19 +449,19 @@ picker自定义。敬请期待
 | selection_start| | Number| -1| 光标起始位置，自动聚集时有效，需与selection-end搭配使用|
 | selection_end| | Number| -1| 光标结束位置，自动聚集时有效，需与selection-start搭配使用|
 | adjust_position| | Boolean| true| 详见官网textarea|
-注：最好看源码对照官网属性
+注：最好看源码对照官网属性，在微信小程序上 textarea类型尽量不要与picker类型同时使用
 
 ---
 ### 三、上传图片
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'pics'|
 | itemArray| 是| Array\<Object\>| | 循环的图片数组，下方说明|
 | title| | String| | 该项图片的标题|
 | cssMode| | String| 'wrap'| 项内布局方式|
 #### pics的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | title| | String| | 该项图片的标题|
 | nullErr| | String| this.title + '不能为空'| 为空时提示|
 | ignore| | Boolean| false| 可以为空， 不判断是否为空,默认为必填，必填则在title前面有 * 标识|
@@ -292,14 +471,14 @@ picker自定义。敬请期待
 ---
 ### 四、radio(单选)
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'radio'|
 | itemArray| 是| Array\<Object\>| | 需循环的radio数组|
 | cssMode| | String| 'wrap'| 项内布局方式|
 | color| | Color| | radio的颜色|
 #### radio的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | name| 是| String| | 该radio的标题|
 | value| 是| | | 该项radio的值|
 | defaultValue| | Boolean| false| 该项radio的初始化默认值,(只能设置一个true，若设置多个为true，则取最先为true的值)|
@@ -311,14 +490,14 @@ picker自定义。敬请期待
 ---
 ### 五、checkbox(多选)
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'checkbox'|
 | itemArray| 是| Array\<Object\>| | 需循环的checkbox数组|
 | cssMode| | String| 'wrap'| 项内布局方式|
 | color| | Color| | checkbox的颜色|
 #### checkbox的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|-----|----|----|-------|
 | name| 是| String| | 该checkbox的标题|
 | value| 是| | | 该项checkbox的值|
 | defaultValue| | Boolean| false| 该项checkbox的初始化默认值|
@@ -330,7 +509,7 @@ picker自定义。敬请期待
 ---
 ### 六、switch
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'switch'|
 | disabled| | Boolean| false| 是否禁用|
 | mode| | String| switch| switch的type|
@@ -339,7 +518,7 @@ picker自定义。敬请期待
 ---
 ### 七、slider
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'slider'|
 | min| | Number| 0| slider的最小值|
 | max| | Number| 100| slider的最大值|
@@ -354,23 +533,23 @@ picker自定义。敬请期待
 | show_value| | Boolean| false| 是否显示当前 value|
 
 ---
-### 八、日期控件
+### 八、picker-date 日期控件
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'picker-date'|
 | indicatorStyle| | String| 'height: '+ 屏幕高度*.05 +'px;'| picker的行内样式|
 | height| | String| 屏幕高度*.2 px| picker的高度|
 | mode| | String| 'picker-date'| picker-date的类型|
 | startYear| | Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
 | endYear| | Number| new Date().getFullYear() + 5 (后五年)|  结束年份, 可直接输入四位数字|
-| defaultValue||Date日期对象| new Date()|默认日期, 可传new Date(年,月,日,时,分,秒),为空则默认为现在，注意:所传月份需-1|
+| defaultValue| |Date日期对象| new Date()|默认日期, 可传new Date(年,月,日,时,分,秒),为空则默认为现在，注意:所传月份需-1|
 | chooseName| | String| 选择日期| 选择日期按钮命名|
 | editorName| | String| 更改| 更改日期按钮命名|
 | confirmName| | String| 确定| 弹出时,确定选择日期按钮命名|
 | onceShowDefaultValue| | Boolean| false| 在设置defaultValue时，初始化时是否显示初始值|
 #### mode属性说明
 | 值|  值类型|说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | picker-dateTime| String| 日期加时间|
 | picker-date| String| 日期|
 | picker-time| String| 时间|
@@ -378,19 +557,273 @@ picker自定义。敬请期待
 注：所传的defaultDate若不在范围中，则将显示范围内的最后一年最后一月最后一日, defaultValue中所传的月份需-1;
 
 ---
-### 九、城市选择
+### 九、picker-city 城市选择
 | 属性名| 是否必填| 值类型| 默认值| 说明|
-|------|---|----|---|-------|
+|------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'picker-city'|
 | indicatorStyle| | String| 'height: '+ 屏幕高度*.05 +'px;'| picker的行内样式|
 | height| | String| 屏幕高度*.2 px| picker的高度|
-| defaultValue||Array| [0, 0, 0]|默认城市(需注意对应的项是否存在)|
+| defaultValue| |Array| [0, 0, 0]|默认城市(需注意对应的项是否存在)|
 | chooseName| | String| 选择城市| 选择城市按钮命名|
 | editorName| | String| 更改| 更改城市按钮命名|
 | confirmName| | String| 确定| 弹出时,确定选择城市按钮命名|
 | onceShowDefaultValue| | Boolean| false| 在设置defaultValue时，初始化时是否显示初始值|
 
 注：picker-city取值时返回对象，可根据需求修改
+
+---
+### 十、picker-custom 自定义
+| 属性名| 是否必填| 值类型| 默认值| 说明|
+|------|----|----|----|-------|
+| type| 是| String| | 传固定值 type: 'picker-custom '|
+| itemArray|是 |Array| |自定义的picker数组，详见示例说明|
+|linkage| | Boolean| false| 是否联动|
+|steps|linkage为true时是| Object| | 自定义阶级变量名，详见下方示例与说明|
+|linkageNum| | Number| 2| 联动级数|
+| defaultValue| |Array| linkageNum\=\=2?[0,0]:linkageNum\=\=3?[0, 0, 0]:'none'|默认值(需注意对应的项是否存在)|
+| indicatorStyle| | String| 'height: '+ 屏幕高度*.05 +'px;'| picker的行内样式|
+| height| | String| 屏幕高度*.2 px| picker的高度|
+| chooseName| | String| 选择城市| 选择按钮命名|
+| editorName| | String| 更改| 更改按钮命名|
+| confirmName| | String| 确定| 弹出时,确定选择按钮命名|
+| onceShowDefaultValue| | Boolean| false| 在设置defaultValue时，初始化时是否显示初始值|
+
+#### picker-custom的steps属性说明
+| 属性名| 是否必填| 值类型| 默认值| 说明|
+|------|----|----|----|-------|
+| steps_1_value| | String| | 一级显示属性名|
+| steps_2_value| |String| |二级显示属性名|
+|steps_2_item| | String| | 二级联动数组属性名|
+|steps_3_value| | String| | 三级显示属性名|
+|steps_3_item| | String| | 三级联动数组属性名|
+注：详见下方示例
+
+##### 无联动示例1：
+
+```javascript
+{ // 无联动示例1
+	type: 'picker-custom',
+	title: 'custom-无联动1',
+	itemArray: [
+		[0, 1, 2],
+		[3, 4, 5]
+	],
+	defaultValue: [0, 0], //初始数据
+	onceShowDefaultValue: true, //是否显示初始数据
+}
+
+//返回数据格式: {"result":[0,3],"value":[0,0]}
+```
+
+
+##### 无联动示例2：
+
+```javascript
+{ // 无联动示例2
+	type: 'picker-custom',
+	title: 'custom-无联动2',
+	itemArray: [
+		[{
+			name: 'a', //name变量名需与下方steps.steps_1_value相同
+			value: 'a' //可添加多项自定义想要的数据
+		}, {
+			name: 'b',
+			value: 'b'
+		}, {
+			name: 'c',
+			value: 'c'
+		}],
+		[{
+			name: 'd',
+			value: 'd'
+		}, {
+			name: 'e',
+			value: 'e'
+		}, {
+			name: 'f',
+			value: 'f'
+		}]
+	], //name变量名与下方steps.steps_1_value相同
+	defaultValue: [0, 0], //初始数据
+	onceShowDefaultValue: true, //是否显示初始数据
+	steps: {
+		steps_1_value: 'name'
+	}
+}
+
+//返回数据格式: {"result":[{"name":"a","value":"a"},{"name":"d","value":"d"}],"value":[0,0]}
+```
+##### 二级联动示例1：
+
+```javascript
+{ // 二级联动示例1
+	type: 'picker-custom',
+	title: 'custom-二级联动示例1',
+	defaultValue: [1, 0], //初始数据
+	onceShowDefaultValue: true, //是否显示初始数据
+	itemArray: [{
+		value_1: '蔬菜', //value_1变量名需与下方steps.steps_1_value相同
+		/*
+		可添加多项自定义想要的数据
+		*/
+		item_2: ['青菜'] //item_2变量名需与下方steps.steps_1_value相同
+	}, {
+		value_1: '荤菜',
+		item_2: ['猪肉']
+	}],
+	steps: {
+		steps_1_value: 'value_1',
+		steps_2_item: 'item_2'
+	},
+	linkageNum: 2, //2 表示为2级联动
+	linkage: true //true 表示开启联动
+}
+
+//返回数据格式: {"result":{"steps1":{"value_1":"荤菜","item_2":["猪肉"]},"steps2":"猪肉"},"value":[1,0]}
+```
+
+##### 二级联动示例2：
+
+```javascript
+{ // 二级联动示例2
+	type: 'picker-custom',
+	title: 'custom-二级联动示例2',
+	defaultValue: [0, 0], //初始数据
+	onceShowDefaultValue: true, //是否显示初始数据
+	itemArray: [{
+		value_1: '蔬菜', //value_1变量名需与下方steps.steps_1_value相同
+		/*
+		可添加多项自定义想要的数据
+		*/
+		item_2: [{
+			name: '青菜',
+			value: '青菜' //可添加多项自定义想要的数据
+		}] //item_2变量名需与下方steps.steps_1_value相同
+	}, {
+		value_1: '荤菜',
+		item_2: [{
+			name: '猪肉',
+			value: '猪肉'
+		}] //name变量名需与下方steps.steps_2_value相同
+	}],
+	steps: {
+		steps_1_value: 'value_1',
+		steps_2_value: 'name',
+		steps_2_item: 'item_2'
+	},
+	linkageNum: 2, //2 表示为2级联动
+	linkage: true //true 表示开启联动
+}
+
+//返回数据格式: {"result":{"steps1":{"value_1":"蔬菜","item_2":[{"name":"青菜","value":"青菜"}]},"steps2":{"name":"青菜","value":"青菜"}},"value":[0,0]}
+```
+
+##### 三级联动示例1：
+
+```javascript
+{ // 三级联动示例1
+	type: 'picker-custom',
+	title: 'custom',
+	itemArray: [{
+		value_1: '浙江', //value_1变量名需与下方steps.steps_1_value相同
+		/*
+		可添加多项自定义想要的数据
+		*/
+		item_2: [{		 //item_2变量名需与下方steps.steps_2_item相同
+			value_2: '金华', //value_2变量名需与下方steps.steps_2_value相同
+			/*
+			可添加多项自定义想要的数据
+			*/
+			item_3: ['婺城区'] //item_3变量名需与下方steps.steps_3_item相同
+		}, {
+			value_2: '绍兴',
+			item_3: ['越城区']
+		}]
+	}, {
+		value_1: '江苏',
+		item_2: [{
+			value_2: '南京',
+			item_3: ['玄武区'],
+		}, {
+			value_2: '无锡',
+			item_3: ['锡山区']
+		}]
+	}],
+	steps: {
+		steps_1_value: 'value_1',
+		steps_2_value: 'value_2',
+		steps_2_item: 'item_2',
+		steps_3_item: 'item_3'
+	},
+	defaultValue: [1, 0, 0], //初始数据
+	onceShowDefaultValue: true, //是否显示初始数据
+	linkageNum: 3, //3 表示为3级联动
+	linkage: true //true 表示开启联动
+}
+
+//返回数据格式: {"result":{"steps1":{"value_1":"江苏","item_2":[{"value_2":"南京","item_3":["玄武区"]},{"value_2":"无锡","item_3":["锡山区"]}]},"steps2":{"value_2":"南京","item_3":["玄武区"]},"steps3":"玄武区"},"value":[1,0,0]}
+```
+
+##### 三级联动示例2：
+
+```javascript
+{ // 三级联动示例2
+	type: 'picker-custom',
+	title: 'custom-三级联动示例2',
+	itemArray: [{
+		value_1: '江西', //value_1变量名需与下方steps.steps_1_value相同
+		/*
+		可添加多项自定义想要的数据
+		*/
+		item_2: [{		 //item_2变量名需与下方steps.steps_2_item相同
+			value_2: '南昌', //value_2变量名需与下方steps.steps_2_value相同
+			/*
+			可添加多项自定义想要的数据
+			*/
+			item_3: [{ 	//item_3变量名需与下方steps.steps_3_item相同
+				name: '东湖' ,//name变量名需与下方steps.steps_3_value相同
+				/*
+				可添加多项自定义想要的数据
+				*/
+			}]
+		}, {
+			value_2: '九江',
+			item_3: [{
+				name: '德安'
+			}]
+		}]
+	}, {
+		value_1: '山东',
+		item_2: [{
+			value_2: '济南',
+			item_3: [{
+				name: '历下'
+			}],
+		}, {
+			value_2: '青岛',
+			item_3: [{
+				name: '市南'
+			}]
+		}]
+	}],
+	steps: {
+		steps_1_value: 'value_1',
+		steps_2_value: 'value_2',
+		steps_2_item: 'item_2',
+		steps_3_value: 'name',
+		steps_3_item: 'item_3'
+	},
+	defaultValue: [1, 0, 0], //初始数据
+	onceShowDefaultValue: true, //是否显示初始数据
+	linkageNum: 3, //3 表示为3级联动
+	linkage: true //true 表示开启联动
+}
+
+//返回数据格式: {"result":{"steps1":{"value_1":"山东","item_2":[{"value_2":"济南","item_3":[{"name":"历下"}]},{"value_2":"青岛","item_3":[{"name":"市南"}]}]},"steps2":{"value_2":"济南","item_3":[{"name":"历下"}]},"steps3":{"name":"历下"}},"value":[1,0,0]}
+```
+
+
+注：picker-cutsom取值时返回对象，可根据需求修改
 
 ---
 

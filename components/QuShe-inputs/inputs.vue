@@ -102,6 +102,26 @@
 					<view class="flex_row_e_c" v-else>
 						<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择城市'}}</button>
 					</view>
+				</view><!-- picker-custom -->
+				<view class="input_item flex_row_e_c" :style="{'padding': '0 ' + windowWidth*.03+'px'}" v-else-if="item.type&&item.type=='picker-custom'">
+					<view class="flex_row_none_c" v-if="pickerObj[onLoadData+index]">
+						<block v-if="item.linkage">
+							<view class="fontColor666666" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px'}">
+								{{item.linkageNum==2?pickerObj[onLoadData+index].result.steps1[item.steps.steps_1_value]+'-'+(item.steps.steps_2_value?pickerObj[onLoadData+index].result.steps2[item.steps.steps_2_value]:pickerObj[onLoadData+index].result.steps2):item.linkageNum==3?pickerObj[onLoadData+index].result.steps1[item.steps.steps_1_value]+'-'+pickerObj[onLoadData+index].result.steps2[item.steps.steps_2_value]+'-'+(item.steps.steps_3_value?pickerObj[onLoadData+index].result.steps3[item.steps.steps_3_value]:pickerObj[onLoadData+index].result.steps3):'不在范围中'}}
+							</view>
+						</block>
+						<block v-else>
+							<view class="flex_row_c_c fontColor666666" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px'}">
+								<view v-for="(i, d) in pickerObj[onLoadData+index].result" :key="d">
+									{{d==0?(item.steps?item.steps.steps_1_value?i[item.steps.steps_1_value]:i:i):'-' + (item.steps?item.steps.steps_1_value?i[item.steps.steps_1_value]:i:i)}}
+								</view>
+							</view>
+						</block>
+						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="{'margin-left': windowWidth*.03+'px'}">{{item.editorName||'更改'}}</button>
+					</view>
+					<view class="flex_row_e_c" v-else>
+						<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择'}}</button>
+					</view>
 				</view>
 				<!-- input -->
 				<view class="input_item" v-else>
@@ -150,6 +170,12 @@
 			:fontSize="contentFontSize||windowHeight*scale_two" @getCity="pickerChange($event)" 
 			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index"/>
 		</view>
+		<!-- picker自定义 -->
+		<view class="flex_row_c_c picker_view" v-if="pickerCustomShow">
+			<picker-custom :itemArray="P_data.itemArray" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :windowHeight="windowHeight" 
+			:fontSize="contentFontSize||windowHeight*scale_two" @getCustom="pickerChange($event)" 
+			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index"/>
+		</view>
 	</view>
 </template>
 
@@ -158,6 +184,7 @@
 	import uniIcon from './uni-icon.vue';
 	import pickersDate from './pickers-date.vue';
 	import pickersCity from '../mpvue-citypicker/picker-city.vue';
+	import pickerCustom from './picker-custom.vue';
 	export default {
 		props: {
 			inputsArray: { // 需循环遍历的input
@@ -234,6 +261,7 @@
 				maskShow: false,
 				pickerDateShow: false,
 				pickerCityShow: false,
+				pickerCustomShow: false,
 				P_data: {},
 				pickerObj: {},
 				inputsObj: {}
@@ -350,6 +378,61 @@
 								}
 							}
 							break;
+						case 'picker-custom':
+							if(item.defaultValue) {
+								if(item.onceShowDefaultValue) {
+									let datas = item.itemArray;
+									let v = [];
+									if(item.defaultValue)
+										v = item.defaultValue;
+									else{
+										if(item.linkage)
+											for(let i = 0; i < item.linkageNum; i++) {
+												v.push(0);
+											}
+										else
+											item.itemArray.forEach(item=>{
+												v.push(0);
+											});
+									}
+									let data = {result:{}, value:v};
+									let steps = item.steps;
+									if(item.linkage&&!steps){
+										_app.showToast('未设置steps');
+										return;
+									}
+									if(item.linkage) {
+										if(item.linkageNum == 2) {
+											data.result.steps1 = datas[v[0]]
+											if(!data.result.steps1)
+												_app.showToast('第一列中不存在第'+v[0]+'项');
+											data.result.steps2 = datas[v[0]][steps.steps_2_item][v[1]];
+											if(!data.result.steps2)
+												_app.showToast('第二列中不存在第'+v[1]+'项');
+										}else if(item.linkageNum == 3) {
+											data.result.steps1 = datas[v[0]];
+											if(!data.result.steps1)
+												_app.showToast('第一列中不存在第'+v[0]+'项');
+											data.result.steps2 = data.result.steps1[steps.steps_2_item][v[1]];
+											if(!data.result.steps2)
+												_app.showToast('第二列中不存在第'+v[1]+'项');
+											data.result.steps3 = data.result.steps2[steps.steps_3_item][v[2]];
+											if(!data.result.steps3)
+												_app.showToast('第三列中不存在第'+v[2]+'项');
+										}else{
+											_app.showToast('不在指定范围中');
+										}
+									}else{
+										data.result = [];
+										for(let i = 0; i < datas.length; i++) {
+											let d = datas[i];
+											data.result.push(d[v[i]]);
+										}
+									}
+									_this[itemVariableName] = _this.pickerObj[itemVariableName] = data;
+								}
+							}
+							break;
 						case 'switch':
 							_this[itemVariableName] = _this.inputsObj[itemVariableName] = item.defaultValue || false;
 							break;
@@ -365,6 +448,7 @@
 				}
 			},
 			showPicker(obj, index) {
+				console.log(JSON.stringify(obj));
 				let _this = this;
 				obj.index = index;
 				_this.P_data = obj;
@@ -376,6 +460,9 @@
 							break;
 						case 'picker-city':
 							_this.pickerCityShow = true;
+							break;
+						case 'picker-custom':
+							_this.pickerCustomShow = true;
 							break;
 						default:
 							_app.showToast('缺少必要参数-type');
@@ -595,6 +682,7 @@
 			hideFc() {
 				this.pickerDateShow = false;
 				this.pickerCityShow = false;
+				this.pickerCustomShow = false;
 				this.maskShow = false;
 				this.P_data = {};
 			}
@@ -602,7 +690,8 @@
 		components: {
 			uniIcon,
 			pickersDate,
-			pickersCity
+			pickersCity,
+			pickerCustom
 		}
 	}
 </script>
