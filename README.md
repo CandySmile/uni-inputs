@@ -43,7 +43,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 ---
 # 下次更新方向
-input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
+radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在这里), 敬请期待
 
 ---
 
@@ -589,11 +589,11 @@ input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
 | itemArray|是 |Array| |自定义的picker数组，详见示例说明|
 |linkage| | Boolean| false| 是否联动|
 |steps|linkage为true时是| Object| | 自定义阶级变量名，详见下方示例与说明|
-|linkageNum| | Number| 2| 联动级数|
+|linkageNum| | Number| | 联动级数|
 | defaultValue| |Array| linkageNum\=\=2?[0,0]:linkageNum\=\=3?[0, 0, 0]:'none'|默认值(需注意对应的项是否存在)|
 | indicatorStyle| | String| 'height: '+ 屏幕高度*.05 +'px;'| picker的行内样式|
 | height| | String| 屏幕高度*.2 px| picker的高度|
-| chooseName| | String| 选择城市| 选择按钮命名|
+| chooseName| | String| 选择| 选择按钮命名|
 | editorName| | String| 更改| 更改按钮命名|
 | confirmName| | String| 确定| 弹出时,确定选择按钮命名|
 | onceShowDefaultValue| | Boolean| false| 在设置defaultValue时，初始化时是否显示初始值|
@@ -833,7 +833,7 @@ input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
 ```
 
 
-注：picker-cutsom取值时返回对象，可根据需求修改
+注：picker-cutsom取值时无联动类型返回数组，联动类型返回对象
 
 ---
 
