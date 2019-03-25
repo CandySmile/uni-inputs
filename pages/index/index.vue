@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<inputs :inputsArray="inputsArray" activeName="申请入驻" :ifCode="true" :ifRule="true" :ruleArray="ruleArray"
+		<inputs :inputsArray="inputsArray" activeName="获取输入" :ruleArray="ruleArray"
 		 v-on:chaildOpenEvent="openWin" v-on:activeFc="activeFc" :onLoadData="onLoadData" cssMode="wrap" animationType="rotate3d-fade"
 		 :animationDuration=".4" />
 	</view>
@@ -59,7 +59,7 @@
 							name: 'f',
 							value: 'f'
 						}]
-					], //name变量名与下方steps.steps_1_value相同
+					], 
 					defaultValue: [0, 0], //初始数据
 					onceShowDefaultValue: true, //是否显示初始数据
 					steps: {
@@ -75,7 +75,7 @@
 						/*
 						可添加多项自定义想要的数据
 						*/
-						item_2: ['青菜'] //item_2变量名需与下方steps.steps_1_value相同
+						item_2: ['青菜'] //item_2变量名需与下方steps.steps_2_item相同
 					}, {
 						value_1: '荤菜',
 						item_2: ['猪肉']
@@ -96,16 +96,16 @@
 						/*
 						可添加多项自定义想要的数据
 						*/
-						item_2: [{
-							name: '青菜',
+						item_2: [{ //item_2变量名需与下方steps_2_item相同
+							name: '青菜', //name变量名需与下方steps.steps_2_value相同
 							value: '青菜' //可添加多项自定义想要的数据
-						}] //item_2变量名需与下方steps.steps_1_value相同
+						}]
 					}, {
 						value_1: '荤菜',
 						item_2: [{
 							name: '猪肉',
 							value: '猪肉'
-						}] //name变量名需与下方steps.steps_2_value相同
+						}]
 					}],
 					steps: {
 						steps_1_value: 'value_1',
@@ -265,7 +265,11 @@
 				}, {
 					title: 'input',
 					ignore: true,
-					defaultValue: '今天也要加油鸭~'
+					defaultValue: '今天也要加油鸭~',
+					tapClear: true,
+					password: true,
+					icon: 'search',
+					iconColor: '#33cc33'
 				}],
 				ruleArray: [{
 					name: '某规则',

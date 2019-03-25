@@ -1,3 +1,5 @@
+## 可直接拖进项目运行
+
 ## 作者想说
 感谢各位小伙伴的不断建议，inputs组件的进步都是因为你们哦~！
 
@@ -15,6 +17,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 版本号 | 更新说明 |
 |----|------|
+| 3.4 | input类型 新增 左边自定义图标、一键清除数据功能、密码显隐功能, 可直接拖进项目运行|
 | 3.3 | 新增picker可联动自定义类型——picker-custom，(无线无联动+自定义二、三级联动) 详见 十、picker-custom<br />2、修改更新方向|
 | 3.2 | 优化布局，新增segmentationTitle、border_bottom、border_top等项内公共属性，修复input无法输入问题|
 | 3.1 | 新增textarea类型,完善input类型|
@@ -45,14 +48,14 @@ input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
 ---
 
 # inputs组件使用说明
-注：有引入官方的uni-Icon组件（删除图片的叉叉），可自行修改
+注：有引入官方的uni-Icon组件（删除图片的叉叉、input一键清除叉叉、input左边自定义图标、密码显隐图标），可自行修改
 
 ## html中使用
 
 ```html
 <template>
   <view>
-	<inputs :inputsArray="inputsArray" activeName="申请入驻" :ifCode="true" 
+	<inputs :inputsArray="inputsArray" activeName="获取输入数据" :ifCode="true" 
 			:ifRule="true" :ruleArray="ruleArray" 
 			v-on:chaildOpenEvent="openWin" 
 			v-on:activeFc="activeFc"  :onLoadData="onLoadData" 
@@ -115,7 +118,7 @@ input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
 					name: 'f',
 					value: 'f'
 				}]
-			], //name变量名与下方steps.steps_1_value相同
+			], 
 			defaultValue: [0, 0], //初始数据
 			onceShowDefaultValue: true, //是否显示初始数据
 			steps: {
@@ -131,7 +134,7 @@ input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
 				/*
 				可添加多项自定义想要的数据
 				*/
-				item_2: ['青菜'] //item_2变量名需与下方steps.steps_1_value相同
+				item_2: ['青菜'] //item_2变量名需与下方steps.steps_2_item相同
 			}, {
 				value_1: '荤菜',
 				item_2: ['猪肉']
@@ -152,16 +155,16 @@ input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
 				/*
 				可添加多项自定义想要的数据
 				*/
-				item_2: [{
-					name: '青菜',
+				item_2: [{ //item_2变量名需与下方steps_2_item相同
+					name: '青菜', //name变量名需与下方steps.steps_2_value相同
 					value: '青菜' //可添加多项自定义想要的数据
-				}] //item_2变量名需与下方steps.steps_1_value相同
+				}]
 			}, {
 				value_1: '荤菜',
 				item_2: [{
 					name: '猪肉',
 					value: '猪肉'
-				}] //name变量名需与下方steps.steps_2_value相同
+				}]
 			}],
 			steps: {
 				steps_1_value: 'value_1',
@@ -178,7 +181,7 @@ input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
 				/*
 				可添加多项自定义想要的数据
 				*/
-				item_2: [{		 //item_2变量名需与下方steps.steps_2_item相同
+				item_2: [{ //item_2变量名需与下方steps.steps_2_item相同
 					value_2: '金华', //value_2变量名需与下方steps.steps_2_value相同
 					/*
 					可添加多项自定义想要的数据
@@ -216,13 +219,13 @@ input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
 				/*
 				可添加多项自定义想要的数据
 				*/
-				item_2: [{		 //item_2变量名需与下方steps.steps_2_item相同
+				item_2: [{ //item_2变量名需与下方steps.steps_2_item相同
 					value_2: '南昌', //value_2变量名需与下方steps.steps_2_value相同
 					/*
 					可添加多项自定义想要的数据
 					*/
-					item_3: [{ 	//item_3变量名需与下方steps.steps_3_item相同
-						name: '东湖' ,//name变量名需与下方steps.steps_3_value相同
+					item_3: [{ //item_3变量名需与下方steps.steps_3_item相同
+						name: '东湖', //name变量名需与下方steps.steps_3_value相同
 						/*
 						可添加多项自定义想要的数据
 						*/
@@ -321,7 +324,11 @@ input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
 		}, {
 			title: 'input',
 			ignore: true,
-			defaultValue: '今天也要加油鸭~'
+			defaultValue: '今天也要加油鸭~',
+			tapClear: true,
+			password: true,
+			icon: 'search',
+			iconColor: '#33cc33'
 		}],
 		ruleArray: [{
 			name: '某规则',
@@ -412,7 +419,7 @@ input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
 | type| | String| | 不传该值(因默认为input)|
 | placeholder| | String| '请输入' + this.title| input的placeholder文字|
 | inputType| | String| 'text'| 该项input的类型|
-| password| | Boolean| false| 是否是密码类型|
+| password| | Boolean| false| 是否是密码类型, 为true时自动开启密码显隐功能|
 | phone| | Boolean| false| 是否设此项为手机号input(判断时，判断此属性，最多设置一项)|
 | disabled| | Boolean| false| 是否禁用|
 | placeholder_style| | String| | 指定 placeholder 的样式|
@@ -426,6 +433,9 @@ input一键清除功能+密码显隐、sku(先写在这里), 敬请期待
 | selection_end| | Number| -1| 光标结束位置，自动聚集时有效，需与selection-start搭配使用|
 | cursor| | Number| | 指定focus时的光标位置|
 | adjust_position| | Boolean| true| 详见官网input|
+| tapClear| | Boolean| false| 是否开启一键清除功能|
+| icon| | String| | input左边自定义图标(目前使用官方uniIcon，可自行修改)|
+| iconColor| | String| #999999| 左边自定义图标与密码显示时图标颜色（密码显示默认颜色为#33CC33）|
 注：最好看源码对照官网属性
 
 ---
