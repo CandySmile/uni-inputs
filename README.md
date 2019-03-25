@@ -326,9 +326,9 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
 			ignore: true,
 			defaultValue: '今天也要加油鸭~',
 			tapClear: true,
-			password: true,
-			icon: 'search',
-			iconColor: '#33cc33'
+			password: true,  //password为true时，自动开启密码显隐功能
+			icon: 'search',  //input左边自定义图标，官方uniIcon的type类型名字
+			iconColor: '#33cc33'  //左边自定义图标与密码显示时的颜色
 		}],
 		ruleArray: [{
 			name: '某规则',
