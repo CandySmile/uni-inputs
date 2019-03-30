@@ -139,13 +139,13 @@
 						 :cursor="item.cursor" :adjust-position="item.adjust_position" :class="item.icon?'width85':'width100'" :disabled="item.disabled" :style="{'fontSize': (titleFontSize||windowHeight*scale_one) + 'px'}" />
 					</view>
 					<view class="width15" v-if="item.password">
-						<view class="flex_row_c_c width100">
-							<uni-icon type="eye" :pxSize="contentFontSize||windowHeight*scale_two+8" :color="inputsObj[onLoadData+index+'password']?'#999999':item.iconColor||'#33cc33'" @click="inputTap('passwordSwitch', index)"></uni-icon>
+						<view class="flex_row_c_c width100" @tap.prevent.stop="inputTap('passwordSwitch', index)">
+							<uni-icon type="eye" :pxSize="contentFontSize||windowHeight*scale_two+8" :color="inputsObj[onLoadData+index+'password']?'#999999':item.iconColor||'#33cc33'"></uni-icon>
 						</view>
 					</view>
 					<view class="width15" v-if="item.tapClear">
-						<view class="flex_row_c_c width100" v-if="inputsObj[onLoadData+index]!=''">
-							<uni-icon type="clear" :pxSize="contentFontSize||windowHeight*scale_two+8" color="#999999" @click="inputTap('clear', index)"></uni-icon>
+						<view class="flex_row_c_c width100" v-if="inputsObj[onLoadData+index]!=''" @tap.prevent.stop="inputTap('clear', index)">
+							<uni-icon type="clear" :pxSize="contentFontSize||windowHeight*scale_two+8" color="#999999"></uni-icon>
 						</view>
 					</view>
 				</view>
@@ -453,8 +453,11 @@
 							break;
 						default:
 							if(item.defaultValue) {
-								_this[itemVariableName] = item.defaultValue || '';
-								_this.$set(_this.inputsObj, itemVariableName, item.defaultValue || '');
+								_this[itemVariableName] = item.defaultValue;
+								_this.$set(_this.inputsObj, itemVariableName, item.defaultValue);
+							}else{
+								_this[itemVariableName] = '';
+								_this.$set(_this.inputsObj, itemVariableName, '');
 							}
 							if(item.password) {
 								_this.$set(_this.inputsObj, itemVariableName+'password', item.password);
