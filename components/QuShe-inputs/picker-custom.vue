@@ -30,7 +30,7 @@
 			</picker-view-column>
 		</block>
 		</picker-view>
-		<button type="primary" :style="{'margin-top': windowHeight*.05 + 'px'}" @tap="confirmFc">{{confirmName}}</button>
+		<button type="primary" :style="{'margin-top': windowHeight*.05 + 'px'}" @tap="confirmFc">{{confirmName||'确定'}}</button>
 	</view>
 </template>
 
@@ -57,15 +57,10 @@
 				type: Number,
 				default: 10
 			},
-			confirmName: {
-				type: String,
-				default: '确定'
-			},
-			index: {
-				type: Number
-			},
+			confirmName: String,
+			index: Number,
 			indicatorStyle: String,
-			height: String,
+			height: Number,
 			windowHeight: Number,
 			pickerValueDefault: Array
 		},
@@ -122,7 +117,7 @@
 						data.result.push(d[v[i]]);
 					}
 				}
-				_this.$emit('getCustom', {data, index: _this.index});
+				_this.$emit('getCustom', {data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_custom.name});
 			},
 			voidFc() {}
 		},

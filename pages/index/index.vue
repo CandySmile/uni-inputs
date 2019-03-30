@@ -12,17 +12,84 @@
 		data() {
 			return {
 				inputsArray: [{
+					segmentationTitle: '表单组件',
+					type: 'slider',
+					title: 'slider',
+					defaultValue: 50,
+					min: 0,
+					max: 100,
+					show_value: true,
+					disabled: false,
+					step: 1,
+					border_top: '1px solid #f2f2f2'
+				}, {
+					type: 'textarea',
+					title: 'textarea',
+					defaultValue: '今天也要加油鸭~'
+				}, {
+					type: 'switch',
+					title: 'switch',
+					defaultValue: true
+				}, {
+					title: 'radio',
+					type: 'radio',
+					itemArray: [{
+						name: 'aa',
+						value: 'aa',
+						defaultValue: true
+					}, {
+						name: 'bb',
+						value: 'bb'
+					}]
+				}, {
+					title: 'checkbox',
+					type: 'checkbox',
+					itemArray: [{
+						name: 'a',
+						value: 'a',
+						defaultValue: true
+					}, {
+						name: 'b',
+						value: 'b',
+						defaultValue: true,
+						disabled: true
+					}, {
+						name: 'c',
+						value: 'c',
+						defaultValue: true
+					}]
+				}, {
+					title: 'input',
+					ignore: true,
+					defaultValue: '今天也要加油鸭~',
+					tapClear: true,
+					password: true,
+					icon: 'search',
+					iconColor: '#33cc33'
+				}, {
+					segmentationTitle: '上传图片',
+					type: 'pics',
+					title: 'pics',
+					itemArray: [{
+						title: '测试1',
+						ignore: true
+					}, {
+						title: '测试2',
+						ignore: true
+					}],
+					variableName: 'pic',
+					border_top: '1px solid #f2f2f2'
+				}, {
 					segmentationTitle: 'picker类型',
 					type: 'picker-date',
 					mode: 'picker-date',
 					title: 'date',
-					defaultValue: new Date(),
 					onceShowDefaultValue: true,
 					border_top: '1px solid #f2f2f2'
 				}, {
 					type: 'picker-city',
 					title: 'city',
-					defaultValue: [10, 6, 0],
+					defaultValue: [10,6,0],
 					onceShowDefaultValue: true
 				}, { // 无联动示例1
 					segmentationTitle: 'picker-custom示例',
@@ -202,74 +269,6 @@
 					onceShowDefaultValue: true, //是否显示初始数据
 					linkageNum: 3, //3 表示为3级联动
 					linkage: true //true 表示开启联动
-				}, {
-					segmentationTitle: '上传图片',
-					type: 'pics',
-					title: 'pics',
-					itemArray: [{
-						title: '测试1',
-						ignore: true
-					}, {
-						title: '测试2',
-						ignore: true
-					}],
-					variableName: 'pic',
-					border_top: '1px solid #f2f2f2'
-				}, {
-					segmentationTitle: '表单组件',
-					type: 'slider',
-					title: 'slider',
-					defaultValue: 50,
-					min: 0,
-					max: 100,
-					show_value: true,
-					disabled: false,
-					step: 1,
-					border_top: '1px solid #f2f2f2'
-				}, {
-					type: 'textarea',
-					title: 'textarea',
-					defaultValue: '今天也要加油鸭~'
-				}, {
-					type: 'switch',
-					title: 'switch',
-					defaultValue: true
-				}, {
-					title: 'radio',
-					type: 'radio',
-					itemArray: [{
-						name: 'aa',
-						value: 'aa',
-						defaultValue: true
-					}, {
-						name: 'bb',
-						value: 'bb'
-					}]
-				}, {
-					title: 'checkbox',
-					type: 'checkbox',
-					itemArray: [{
-						name: 'a',
-						value: 'a',
-						defaultValue: true
-					}, {
-						name: 'b',
-						value: 'b',
-						defaultValue: true,
-						disabled: true
-					}, {
-						name: 'c',
-						value: 'c',
-						defaultValue: true
-					}]
-				}, {
-					title: 'input',
-					ignore: true,
-					defaultValue: '今天也要加油鸭~',
-					tapClear: true,
-					password: true,
-					icon: 'search',
-					iconColor: '#33cc33'
 				}],
 				ruleArray: [{
 					name: '某规则',

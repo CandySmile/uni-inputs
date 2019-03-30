@@ -11,7 +11,7 @@
 				<!-- title -->
 				<view class="input_title flex_row_e_c" :style="{'fontSize': (titleFontSize||windowHeight*scale_one) + 'px', 'color': titleFontColor}">
 					<view class="width100 word_wrap flex_row_e_c">
-						<view class="fontColorF1505C" v-if="item.type!='pics'&&!item.ignore">*</view>{{item.title?item.title + ':':''}}
+						<view class="fontColorF1505C" v-if="item.type!='pics'&&!item.ignore&&item.title">*</view>{{item.title?item.title + ':':''}}
 					</view>
 				</view>
 				<!-- pics -->
@@ -39,7 +39,7 @@
 				<!-- switch -->
 				<view class="width75 flex_row_e_c" v-else-if="item.type&&item.type=='switch'">
 					<switch :checked="inputsObj[onLoadData+index]" :disabled="item.disabled" :type="item.mode||'switch'" :color="item.color"
-					 @change="inputs_change($event, index)" />
+					 @change="inputs_change($event, index)"/>
 				</view>
 				<!-- slider -->
 				<view class="width75" v-else-if="item.type&&item.type=='slider'">
@@ -177,20 +177,20 @@
 		<view class="mask" @touchmove.prevent.stop="hideFc" @tap.prevent.stop="hideFc" v-show="maskShow"></view>
 		<!-- 日期选择 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerDateShow">
-			<pickers-date :years="getYearsArray(P_data.startYear||new Date().getFullYear() - 5, P_data.endYear||new Date().getFullYear() + 5)"
-			 :defaultDate="P_data.defaultValue||new Date()" @getDate="pickerChange($event)" :mode="P_data.mode"
-			 :windowHeight="windowHeight" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" 
-			 :fontSize="contentFontSize||windowHeight*scale_two" :confirmName="P_data.confirmName" :index="P_data.index" />
+			<pickers-date class="width100" :years="P_data.years" :defaultDate="P_data.defaultValue" @getDate="pickerChange($event)" 
+			:mode="P_data.mode" :windowHeight="windowHeight" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" 
+			:fontSize="contentFontSize||windowHeight*scale_two" :confirmName="P_data.confirmName" 
+			:index="P_data.index"/>
 		</view>
 		<!-- 城市选择 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerCityShow">
-			<pickers-city :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :windowHeight="windowHeight" 
+			<pickers-city class="width100" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :windowHeight="windowHeight" 
 			:fontSize="contentFontSize||windowHeight*scale_two" @getCity="pickerChange($event)" 
 			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index"/>
 		</view>
 		<!-- picker自定义 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerCustomShow">
-			<picker-custom :itemArray="P_data.itemArray" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :windowHeight="windowHeight" 
+			<picker-custom class="width100" :itemArray="P_data.itemArray" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :windowHeight="windowHeight" 
 			:fontSize="contentFontSize||windowHeight*scale_two" @getCustom="pickerChange($event)" 
 			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index"/>
 		</view>
@@ -201,8 +201,9 @@
 	import _app from './app.js';
 	import uniIcon from './uni-icon.vue';
 	import pickersDate from './pickers-date.vue';
-	import pickersCity from '../mpvue-citypicker/picker-city.vue';
+	import pickersCity from './mpvue-citypicker/picker-city.vue';
 	import pickerCustom from './picker-custom.vue';
+	
 	export default {
 		props: {
 			inputsArray: { // 需循环遍历的input
@@ -285,19 +286,6 @@
 				inputsObj: {}
 			};
 		},
-		computed: {
-			getYearsArray() {
-				return function(sy, ey) {
-					let _this = this;
-					let y = [];
-					let c = ey - sy;
-					for (let i = 0; i <= c; i++) {
-						y.push(sy + i);
-					}
-					return y;
-				}
-			}
-		},
 		watch: {
 			'inputsArray'(n, o) {
 				let _this = this;
@@ -352,108 +340,107 @@
 							}
 							break;
 						case 'picker-date':
-							if(item.defaultValue) {
-								if(item.onceShowDefaultValue) {
-									let data = '';
-									switch (item.mode){
-										case 'picker-date':
-											data = `${item.defaultValue.getFullYear()}-${item.defaultValue.getMonth()+1}-${item.defaultValue.getDate()}`;
-											break;
-										case 'picker-time':
-											data = `${item.defaultValue.getHours()}:${item.defaultValue.getMinutes()}:${item.defaultValue.getSeconds()}`;
-											break;
-										case 'picker-dateTime':
-											data = `${item.defaultValue.getFullYear()}-${item.defaultValue.getMonth()+1}-${item.defaultValue.getDate()} ${item.defaultValue.getHours()}:${item.defaultValue.getMinutes()}:${item.defaultValue.getSeconds()}`;
-											break;
-										default:
-											break;
-									}
-									_this[itemVariableName] = data;
-									_this.$set(_this.pickerObj, itemVariableName, data);
+							if(item.onceShowDefaultValue) {
+								let defaultDate;
+								if(item.defaultValue) defaultDate = new Date(item.defaultValue); else defaultDate = new Date();
+								let data = '',Y, M,D,defaultEndY = new Date().getFullYear() + 5;
+								if(defaultDate.getFullYear() > (item.endYear||defaultEndY)) {
+									Y = item.endYear || defaultEndY;
+									M = 12;
+									D = _app.countDays(Y,M-1).days.pop();
+								}else {
+									Y = defaultDate.getFullYear();
+									M = defaultDate.getMonth()+1;
+									D = defaultDate.getDate();
 								}
+								switch (item.mode){
+									case 'picker-date':
+										data = `${Y}-${M}-${D}`;
+										break;
+									case 'picker-time':
+										data = `${defaultDate.getHours()}:${defaultDate.getMinutes()}:${defaultDate.getSeconds()}`;
+										break;
+									default:
+										data = `${Y}-${M}-${D} ${defaultDate.getHours()}:${defaultDate.getMinutes()}:${defaultDate.getSeconds()}`;
+										break;
+								}
+								_this[itemVariableName] = data;
+								_this.$set(_this.pickerObj, itemVariableName, data);
 							}
 							break;
 						case 'picker-city':
-							if(item.defaultValue) {
-								if(item.defaultValue.length==3) {
-									if(item.onceShowDefaultValue) {
-										let provinceDataList = require('../mpvue-citypicker/city-data/province.js').default;
-										let cityDataList =  require('../mpvue-citypicker/city-data/city.js').default[item.defaultValue[0]];
-										let areaDataList =  require('../mpvue-citypicker/city-data/area.js').default[item.defaultValue[0]][item.defaultValue[1]];
-										let pcikerLabel =
-											provinceDataList[item.defaultValue[0]].label +
-											'-' +
-											cityDataList[item.defaultValue[1]].label +
-											'-' +
-											areaDataList[item.defaultValue[2]].label;
-										let data = {
-											label: pcikerLabel,
-											value: item.defaultValue,
-											cityCode: areaDataList[item.defaultValue[2]].value
-										};
-										_this[itemVariableName] = data;
-										_this.$set(_this.pickerObj, itemVariableName, data);
-									}
-								}else{
-									//_app.showToast('picker-city默认初始值错误');
-									console.log('picker-city默认初始值错误');
-								}
+							if(item.onceShowDefaultValue) {
+								let defaultValue = item.defaultValue||[0,0,0];
+								let provinceDataList = require('./mpvue-citypicker/city-data/province.js').default;
+								let cityDataList =  require('./mpvue-citypicker/city-data/city.js').default[defaultValue[0]];
+								let areaDataList =  require('./mpvue-citypicker/city-data/area.js').default[defaultValue[0]][defaultValue[1]];
+								let pcikerLabel =
+									provinceDataList[defaultValue[0]].label +
+									'-' +
+									cityDataList[defaultValue[1]].label +
+									'-' +
+									areaDataList[defaultValue[2]].label;
+								let data = {
+									label: pcikerLabel,
+									value: defaultValue,
+									cityCode: areaDataList[defaultValue[2]].value
+								};
+								_this[itemVariableName] = data;
+								_this.$set(_this.pickerObj, itemVariableName, data);
 							}
 							break;
 						case 'picker-custom':
-							if(item.defaultValue) {
-								if(item.onceShowDefaultValue) {
-									let datas = item.itemArray;
-									let v = [];
-									if(item.defaultValue)
-										v = item.defaultValue;
-									else{
-										if(item.linkage)
-											for(let i = 0; i < item.linkageNum; i++) {
-												v.push(0);
-											}
-										else
-											item.itemArray.forEach(item=>{
-												v.push(0);
-											});
-									}
-									let data = {result:{}, value:v};
-									let steps = item.steps;
-									if(item.linkage&&!steps){
-										_app.showToast('未设置steps');
-										return;
-									}
-									if(item.linkage) {
-										if(item.linkageNum == 2) {
-											data.result.steps1 = datas[v[0]]
-											if(!data.result.steps1)
-												_app.showToast('第一列中不存在第'+v[0]+'项');
-											data.result.steps2 = datas[v[0]][steps.steps_2_item][v[1]];
-											if(!data.result.steps2)
-												_app.showToast('第二列中不存在第'+v[1]+'项');
-										}else if(item.linkageNum == 3) {
-											data.result.steps1 = datas[v[0]];
-											if(!data.result.steps1)
-												_app.showToast('第一列中不存在第'+v[0]+'项');
-											data.result.steps2 = data.result.steps1[steps.steps_2_item][v[1]];
-											if(!data.result.steps2)
-												_app.showToast('第二列中不存在第'+v[1]+'项');
-											data.result.steps3 = data.result.steps2[steps.steps_3_item][v[2]];
-											if(!data.result.steps3)
-												_app.showToast('第三列中不存在第'+v[2]+'项');
-										}else{
-											_app.showToast('不在指定范围中');
+							if(item.onceShowDefaultValue) {
+								let datas = item.itemArray;
+								let v = [];
+								if(item.defaultValue)
+									v = item.defaultValue;
+								else{
+									if(item.linkage)
+										for(let i = 0; i < item.linkageNum; i++) {
+											v.push(0);
 										}
-									}else{
-										data.result = [];
-										for(let i = 0; i < datas.length; i++) {
-											let d = datas[i];
-											data.result.push(d[v[i]]);
-										}
-									}
-									_this[itemVariableName] = data;
-									_this.$set(_this.pickerObj, itemVariableName, data);
+									else
+										item.itemArray.forEach(item=>{
+											v.push(0);
+										});
 								}
+								let data = {result:{}, value:v};
+								let steps = item.steps;
+								if(item.linkage&&!steps){
+									_app.showToast('未设置steps');
+									return;
+								}
+								if(item.linkage) {
+									if(item.linkageNum == 2) {
+										data.result.steps1 = datas[v[0]]
+										if(!data.result.steps1)
+											_app.showToast('第一列中不存在第'+v[0]+'项');
+										data.result.steps2 = datas[v[0]][steps.steps_2_item][v[1]];
+										if(!data.result.steps2)
+											_app.showToast('第二列中不存在第'+v[1]+'项');
+									}else if(item.linkageNum == 3) {
+										data.result.steps1 = datas[v[0]];
+										if(!data.result.steps1)
+											_app.showToast('第一列中不存在第'+v[0]+'项');
+										data.result.steps2 = data.result.steps1[steps.steps_2_item][v[1]];
+										if(!data.result.steps2)
+											_app.showToast('第二列中不存在第'+v[1]+'项');
+										data.result.steps3 = data.result.steps2[steps.steps_3_item][v[2]];
+										if(!data.result.steps3)
+											_app.showToast('第三列中不存在第'+v[2]+'项');
+									}else{
+										_app.showToast('不在指定范围中');
+									}
+								}else{
+									data.result = [];
+									for(let i = 0; i < datas.length; i++) {
+										let d = datas[i];
+										data.result.push(d[v[i]]);
+									}
+								}
+								_this[itemVariableName] = data;
+								_this.$set(_this.pickerObj, itemVariableName, data);
 							}
 							break;
 						case 'switch':
@@ -480,17 +467,25 @@
 				//console.log(JSON.stringify(obj));
 				let _this = this;
 				obj.index = index;
-				_this.P_data = obj;
 				_this.maskShow = true;
 				if (obj && obj.type)
 					switch (obj.type) {
 						case 'picker-date':
+							let dateObj;
+							let days = [];
+							if(this[_app.pickerChoosedType.pickerChoosedType_date.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_date.value + index];
+							obj.years = _app.countYears(obj.startYear||new Date().getFullYear() - 5, obj.endYear||new Date().getFullYear() + 5);
+							_this.P_data = obj;
 							_this.pickerDateShow = true;
 							break;
 						case 'picker-city':
+							if(this[_app.pickerChoosedType.pickerChoosedType_city.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_city.value + index];
+							_this.P_data = obj;
 							_this.pickerCityShow = true;
 							break;
 						case 'picker-custom':
+							if(this[_app.pickerChoosedType.pickerChoosedType_custom.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_custom.value + index];
+							_this.P_data = obj;
 							_this.pickerCustomShow = true;
 							break;
 						default:
@@ -535,6 +530,19 @@
 				//console.log('pickerValue：' + JSON.stringify(res));
 				this.pickerObj[this.onLoadData + res.index] = res.data;
 				this[this.onLoadData + res.index] = res.data;
+				switch (res.type){		// 该项picker的value记忆
+					case _app.pickerChoosedType.pickerChoosedType_date.name:
+						this[_app.pickerChoosedType.pickerChoosedType_date.value+res.index] = res.data;
+						break;
+					case _app.pickerChoosedType.pickerChoosedType_city.name:
+						this[_app.pickerChoosedType.pickerChoosedType_city.value+res.index] = res.data.value;
+						break;
+					case _app.pickerChoosedType.pickerChoosedType_custom.name:
+						this[_app.pickerChoosedType.pickerChoosedType_custom.value+res.index] = res.data.value;
+						break;
+					default:
+						break;
+				}
 				this.hideFc();
 			},
 			inputTap(type, index) {
@@ -599,12 +607,12 @@
 							for (let j = 0; j < d[i].itemArray.length; j++) {
 								let pic = _this.picsObj[onLoadData + _this.onLoadData + j];
 								if (pic) {
-									if (!inputsDataObj[onLoadData])
+									if (!inputsDataObj[onLoadData]&&!inputsDataObj[variableName])
 										inputsDataObj[variableName] = [];
 									inputsDataObj[variableName].push(pic);
 								} else {
 									if (d[i].itemArray[j].ignore) {
-										if (!inputsDataObj[onLoadData])
+										if (!inputsDataObj[onLoadData]&&!inputsDataObj[variableName])
 											inputsDataObj[variableName] = [];
 										inputsDataObj[variableName].push('');
 									} else {
@@ -612,6 +620,7 @@
 										return;
 									}
 								}
+								console.log(JSON.stringify(inputsDataObj[variableName]))
 							}
 							break;
 						case 'switch':
@@ -668,7 +677,10 @@
 							if (inputsDataObj[variableName][j]) {
 								pic_promise.push(new Promise(function(reslove, reject) {
 									// push Promise 上传图片到服务器并返回图片在服务器的地址并拼接的方法
-									_app.UpLoadFile(_app.interface.upLoadImg, {}, 'name', inputsDataObj[variableName][j], function(res) {
+									_app.UpLoadFile(_app.interface.upLoadImg, {
+										userId: '',
+										shopId: '',
+										}, 'test', inputsDataObj[variableName][j], function(res) {
 										reslove({
 											index1: i,
 											index2: j,
@@ -693,14 +705,14 @@
 						for (let i = 0; i < res.length; i++) { // 注: 此处根据自己的需求拼接数据   (在下返回数据后的拼接是以 ‘|’ 分隔)
 							let onLoadData = _this.onLoadData + res[i].index1;
 							let variableName = d[res[i].index1].variableName || onLoadData; // 自定义变量名或默认变量名
-							/* if (typeof(inputsDataObj[onLoadData]) != 'string')
+							if (typeof(inputsDataObj[variableName]) != 'string')
 								inputsDataObj[variableName] = res[i].data || '|';
 							else
-								inputsDataObj[variableName] += res[i].data ? '|' + res[i].data : '|'; */
+								inputsDataObj[variableName] += res[i].data ? '|' + res[i].data : '|';
 						}
 					_this.$emit('activeFc', inputsDataObj); // 把用户输入数据封装成对象输出给父级
 					_this.inputs_reSet(); //提交后重置验证码
-				})
+				});
 			},
 			inputs_reSet() { //提交后重置验证码
 				this.code = '';
@@ -711,7 +723,7 @@
 				let _this = this
 				uni.chooseImage({
 					success: function(res) {
-						console.log(res.tempFilePaths[0]);
+						// console.log(res.tempFilePaths[0]);
 						_this.$set(_this.picsObj, _this.onLoadData + index + _this.onLoadData + picsIndex, res.tempFilePaths[0]);
 					}
 				})

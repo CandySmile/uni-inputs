@@ -17,6 +17,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 版本号 | 更新说明 |
 |----|------|
+| 3.5 | 修复1.7.1新版编译器picker类型bug，并优化picker类型选择记忆，优化picker类型细节，修改picker-date类型defaultValue属性类型为字符串<br />修复上传图片类型|
 | 3.4 | input类型 新增 左边自定义图标、一键清除数据功能、密码显隐功能, 可直接拖进项目运行|
 | 3.3 | 新增picker可联动自定义类型——picker-custom，(无线无联动+自定义二、三级联动) 详见 十、picker-custom<br />2、修改更新方向|
 | 3.2 | 优化布局，新增segmentationTitle、border_bottom、border_top等项内公共属性，修复input无法输入问题|
@@ -71,17 +72,84 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
     data() {
       return {
 		inputsArray: [{
+			segmentationTitle: '表单组件',
+			type: 'slider',
+			title: 'slider',
+			defaultValue: 50,
+			min: 0,
+			max: 100,
+			show_value: true,
+			disabled: false,
+			step: 1,
+			border_top: '1px solid #f2f2f2'
+		}, {
+			type: 'textarea',
+			title: 'textarea',
+			defaultValue: '今天也要加油鸭~'
+		}, {
+			type: 'switch',
+			title: 'switch',
+			defaultValue: true
+		}, {
+			title: 'radio',
+			type: 'radio',
+			itemArray: [{
+				name: 'aa',
+				value: 'aa',
+				defaultValue: true
+			}, {
+				name: 'bb',
+				value: 'bb'
+			}]
+		}, {
+			title: 'checkbox',
+			type: 'checkbox',
+			itemArray: [{
+				name: 'a',
+				value: 'a',
+				defaultValue: true
+			}, {
+				name: 'b',
+				value: 'b',
+				defaultValue: true,
+				disabled: true
+			}, {
+				name: 'c',
+				value: 'c',
+				defaultValue: true
+			}]
+		}, {
+			title: 'input',
+			ignore: true,
+			defaultValue: '今天也要加油鸭~',
+			tapClear: true,
+			password: true,
+			icon: 'search',
+			iconColor: '#33cc33'
+		}, {
+			segmentationTitle: '上传图片',
+			type: 'pics',
+			title: 'pics',
+			itemArray: [{
+				title: '测试1',
+				ignore: true
+			}, {
+				title: '测试2',
+				ignore: true
+			}],
+			variableName: 'pic',
+			border_top: '1px solid #f2f2f2'
+		}, {
 			segmentationTitle: 'picker类型',
 			type: 'picker-date',
 			mode: 'picker-date',
 			title: 'date',
-			defaultValue: new Date(),
 			onceShowDefaultValue: true,
 			border_top: '1px solid #f2f2f2'
 		}, {
 			type: 'picker-city',
 			title: 'city',
-			defaultValue: [10, 6, 0],
+			defaultValue: [10,6,0],
 			onceShowDefaultValue: true
 		}, { // 无联动示例1
 			segmentationTitle: 'picker-custom示例',
@@ -261,74 +329,6 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
 			onceShowDefaultValue: true, //是否显示初始数据
 			linkageNum: 3, //3 表示为3级联动
 			linkage: true //true 表示开启联动
-		}, {
-			segmentationTitle: '上传图片',
-			type: 'pics',
-			title: 'pics',
-			itemArray: [{
-				title: '测试1',
-				ignore: true
-			}, {
-				title: '测试2',
-				ignore: true
-			}],
-			variableName: 'pic',
-			border_top: '1px solid #f2f2f2'
-		}, {
-			segmentationTitle: '表单组件',
-			type: 'slider',
-			title: 'slider',
-			defaultValue: 50,
-			min: 0,
-			max: 100,
-			show_value: true,
-			disabled: false,
-			step: 1,
-			border_top: '1px solid #f2f2f2'
-		}, {
-			type: 'textarea',
-			title: 'textarea',
-			defaultValue: '今天也要加油鸭~'
-		}, {
-			type: 'switch',
-			title: 'switch',
-			defaultValue: true
-		}, {
-			title: 'radio',
-			type: 'radio',
-			itemArray: [{
-				name: 'aa',
-				value: 'aa',
-				defaultValue: true
-			}, {
-				name: 'bb',
-				value: 'bb'
-			}]
-		}, {
-			title: 'checkbox',
-			type: 'checkbox',
-			itemArray: [{
-				name: 'a',
-				value: 'a',
-				defaultValue: true
-			}, {
-				name: 'b',
-				value: 'b',
-				defaultValue: true,
-				disabled: true
-			}, {
-				name: 'c',
-				value: 'c',
-				defaultValue: true
-			}]
-		}, {
-			title: 'input',
-			ignore: true,
-			defaultValue: '今天也要加油鸭~',
-			tapClear: true,
-			password: true,  //password为true时，自动开启密码显隐功能
-			icon: 'search',  //input左边自定义图标，官方uniIcon的type类型名字
-			iconColor: '#33cc33'  //左边自定义图标与密码显示时的颜色
 		}],
 		ruleArray: [{
 			name: '某规则',
@@ -364,7 +364,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
 | inputsArray| 是| Array\<Object\>| | 需循环的inputs数组（可从后端接口获取）|
 | @activeFc| 是| Function| | 主功能方法，携带一个用户所输入的数据对象|
 | activeName| | String| '发送'| 主功能按钮的文字说明|
-| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善438-443行的发送验证码方法, 并需设置一项input的phone属性为true|
+| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善583-588行的发送验证码方法, 并需设置一项input的phone属性为true|
 | ifRule| | Boolean| false| 是否需要用户同意某规则或协议|
 | ruleArray| ifRule为true时是| Array\<Object\>| | 需要用户同意某规则或协议的数组|
 | @chaildOpenEvent| ifRule为true时是| Function| | 打开某规则或协议的方法|
@@ -476,7 +476,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
 | nullErr| | String| this.title + '不能为空'| 为空时提示|
 | ignore| | Boolean| false| 可以为空， 不判断是否为空,默认为必填，必填则在title前面有 * 标识|
 | defaultValue| | String| | 该项pics的初始化默认图片路径(本地图片路径)|
-注：若启用此项，则需完善526-533行的上传图片至服务器方法，并且完善546-558的拼接返回的图片路径方法
+注：若启用此项，则需完善671-677行的上传图片至服务器方法，并且完善696-699的拼接返回的图片路径方法
 
 ---
 ### 四、radio(单选)
@@ -552,11 +552,11 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
 | mode| | String| 'picker-date'| picker-date的类型|
 | startYear| | Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
 | endYear| | Number| new Date().getFullYear() + 5 (后五年)|  结束年份, 可直接输入四位数字|
-| defaultValue| |Date日期对象| new Date()|默认日期, 可传new Date(年,月,日,时,分,秒),为空则默认为现在，注意:所传月份需-1|
+| defaultValue| |String| 现在|默认日期, 例: '2019-03-30 10:00:00'、'2019-03-30',不支持直接初始化time|
 | chooseName| | String| 选择日期| 选择日期按钮命名|
 | editorName| | String| 更改| 更改日期按钮命名|
 | confirmName| | String| 确定| 弹出时,确定选择日期按钮命名|
-| onceShowDefaultValue| | Boolean| false| 在设置defaultValue时，初始化时是否显示初始值|
+| onceShowDefaultValue| | Boolean| false| 初始化时是否显示初始值|
 #### mode属性说明
 | 值|  值类型|说明|
 |------|----|----|----|-------|
@@ -577,7 +577,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
 | chooseName| | String| 选择城市| 选择城市按钮命名|
 | editorName| | String| 更改| 更改城市按钮命名|
 | confirmName| | String| 确定| 弹出时,确定选择城市按钮命名|
-| onceShowDefaultValue| | Boolean| false| 在设置defaultValue时，初始化时是否显示初始值|
+| onceShowDefaultValue| | Boolean| false| 初始化时是否显示初始值|
 
 注：picker-city取值时返回对象，可根据需求修改
 
@@ -596,7 +596,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
 | chooseName| | String| 选择| 选择按钮命名|
 | editorName| | String| 更改| 更改按钮命名|
 | confirmName| | String| 确定| 弹出时,确定选择按钮命名|
-| onceShowDefaultValue| | Boolean| false| 在设置defaultValue时，初始化时是否显示初始值|
+| onceShowDefaultValue| | Boolean| false| 初始化时是否显示初始值|
 
 #### picker-custom的steps属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
