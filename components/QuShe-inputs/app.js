@@ -26,7 +26,7 @@ let _app = {
 		pickerChoosedType_custom
 	},
 	interface: {
-		upLoadImg: 'https://www.caiyun1818.com/a/ck/interface/uploadPic', // 服务器地址
+		upLoadImg: '', // 服务器地址
 	},
 	showToast(msg) {
 		uni.showToast({

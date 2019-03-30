@@ -680,7 +680,7 @@
 									_app.UpLoadFile(_app.interface.upLoadImg, {
 										userId: '',
 										shopId: '',
-										}, 'test', inputsDataObj[variableName][j], function(res) {
+										}, 'name', inputsDataObj[variableName][j], function(res) {
 										reslove({
 											index1: i,
 											index2: j,
