@@ -677,10 +677,7 @@
 							if (inputsDataObj[variableName][j]) {
 								pic_promise.push(new Promise(function(reslove, reject) {
 									// push Promise 上传图片到服务器并返回图片在服务器的地址并拼接的方法
-									_app.UpLoadFile(_app.interface.upLoadImg, {
-										userId: '',
-										shopId: '',
-										}, 'name', inputsDataObj[variableName][j], function(res) {
+									_app.UpLoadFile(_app.interface.upLoadImg, {}, 'name', inputsDataObj[variableName][j], function(res) {
 										reslove({
 											index1: i,
 											index2: j,
