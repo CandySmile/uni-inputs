@@ -2,7 +2,7 @@
 	<view>
 		<inputs :inputsArray="inputsArray" activeName="获取输入" :ruleArray="ruleArray"
 		 v-on:chaildOpenEvent="openWin" v-on:activeFc="activeFc" :onLoadData="onLoadData" cssMode="wrap" animationType="rotate3d-fade"
-		 :animationDuration=".4" />
+		 :animationDuration=".4" submitReSet/>
 	</view>
 </template>
 
@@ -65,7 +65,12 @@
 					tapClear: true,
 					password: true,
 					icon: 'search',
-					iconColor: '#33cc33'
+					iconColor: '#33cc33',
+					filterFc: function(value) {
+						//自定义过滤函数
+						value = 'filter过滤后的值';
+						return value;
+					}
 				}, {
 					segmentationTitle: '上传图片',
 					type: 'pics',
@@ -82,9 +87,10 @@
 				}, {
 					segmentationTitle: 'picker类型',
 					type: 'picker-date',
-					mode: 'picker-date',
+					mode: 'picker-dateTime',
 					title: 'date',
-					onceShowDefaultValue: true,
+					defaultValue: '2019-2-28',
+					// onceShowDefaultValue: true,
 					border_top: '1px solid #f2f2f2'
 				}, {
 					type: 'picker-city',

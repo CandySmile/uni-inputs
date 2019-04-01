@@ -39,7 +39,7 @@
 				<!-- switch -->
 				<view class="width75 flex_row_e_c" v-else-if="item.type&&item.type=='switch'">
 					<switch :checked="inputsObj[onLoadData+index]" :disabled="item.disabled" :type="item.mode||'switch'" :color="item.color"
-					 @change="inputs_change($event, index)"/>
+					 @change="inputs_change($event, index)" />
 				</view>
 				<!-- slider -->
 				<view class="width75" v-else-if="item.type&&item.type=='slider'">
@@ -64,8 +64,8 @@
 					<checkbox-group @change="checkbox_change($event, index)" class="width100 flex_row_e_c" :class="item.cssMode||cssMode||'wrap'">
 						<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}"
 						 v-for="(checkboxItem, checkboxIndex) in item.itemArray" :key="checkboxIndex">
-							<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index][checkboxIndex]==checkboxItem.value"
-							 :disabled="checkboxItem.disabled" :color="checkboxItem.color||item.color" />
+							<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index][checkboxIndex]" :disabled="checkboxItem.disabled"
+							 :color="checkboxItem.color||item.color" />
 							<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{checkboxItem.name}}</view>
 						</label>
 					</checkbox-group>
@@ -132,7 +132,7 @@
 								<uni-icon :type="item.icon" :pxSize="contentFontSize||windowHeight*scale_two+8" :color="item.iconColor||'#999999'"></uni-icon>
 							</view>
 						</view>
-						<input :type="item.inputType||'text'" :value="inputsObj[onLoadData+index]" @input="inputs_change($event, index)" :placeholder="item.placeholder||'请输入' + item.title"
+						<input :type="item.inputType||'text'" :value="inputsObj[onLoadData+index]" @input="inputs_change($event, index, item.filterFc)" :placeholder="item.placeholder||'请输入' + item.title"
 						 :password="inputsObj[onLoadData+index+'password']" :placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class"
 						 :maxlength="item.maxlength||140" :cursor-spacing="item.cursor_spacing" :focus="item.focus"
 						 :confirm-type="item.confirm_type" :confirm-hold="item.confirm_hold" :selection-start="item.selection_start" :selection-end="item.selection_end"
@@ -174,10 +174,10 @@
 		<!-- 主按钮 -->
 		<button type="primary" @tap="activeFc" :class="[animationType||'']" :style="{'margin': windowHeight*.02 + 'px ' + windowHeight*.03 + 'px', 'animation-duration': (ifRule||ifCode?inputsArray.length+2:inputsArray.length+1)*(animationDuration||.2) + 's'}">{{activeName}}</button>
 		<!-- mask -->
-		<view class="mask" @touchmove.prevent.stop="hideFc" @tap.prevent.stop="hideFc" v-show="maskShow"></view>
+		<view class="mask" @touchmove.prevent.stop="picker_hideFc" @tap.prevent.stop="picker_hideFc" v-show="maskShow"></view>
 		<!-- 日期选择 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerDateShow">
-			<pickers-date class="width100" :years="P_data.years" :defaultDate="P_data.defaultValue" @getDate="pickerChange($event)" 
+			<pickers-date class="width100" :startYear="P_data.startYear" :endYear="P_data.endYear" :defaultDate="P_data.defaultValue" @getDate="pickerChange($event)" 
 			:mode="P_data.mode" :windowHeight="windowHeight" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" 
 			:fontSize="contentFontSize||windowHeight*scale_two" :confirmName="P_data.confirmName" 
 			:index="P_data.index"/>
@@ -206,35 +206,35 @@
 	
 	export default {
 		props: {
-			inputsArray: { // 需循环遍历的input
+			inputsArray: { //用户自定义的输入类型
 				type: Array,
 				default () {
 					return [];
 				}
 			},
-			titleFontSize: { // title 的font-size
+			titleFontSize: { //title的font-size
 				type: Number,
 				default: 0
 			},
-			titleFontColor: { // title 的color
+			titleFontColor: { //title的color
 				type: String,
 				default: '#666666'
 			},
-			contentFontSize: { // inputs的font-size
+			contentFontSize: { //inputs的font-size
 				type: Number,
 				default: 0
 			},
-			ruleArray: {
+			ruleArray: { //需用户同意的规则或协议
 				type: Array,
 				default () {
 					return [];
 				}
 			},
-			activeName: { // 发送按钮的名字
+			activeName: { //发送按钮的名字
 				type: String,
 				default: '发送'
 			},
-			ifCode: { // 是否需要验证码
+			ifCode: { //是否需要验证码
 				type: Boolean,
 				default: false
 			},
@@ -246,59 +246,53 @@
 				type: String,
 				default: 'data_'
 			},
-			cssMode: {
+			cssMode: { //拥有子数组序列类型的布局方式
 				type: String,
 				default: 'wrap'
 			},
-			changeReSet: {
+			submitReSet: { //提交后重置
 				type: Boolean,
 				default: false
 			},
-			animationType: {
+			animationType: { //动画类型
 				type: String,
 				default: ''
 			},
-			animationDuration: {
+			animationDuration: { //动画时长系数
 				type: Number,
 				default: .2
 			}
 		},
 		data() {
 			return {
-				code: '',
-				userCode: '',
-				Igree: false,
-				codeCount: 90,
-				startCode: false,
-				picsObj: {},
-				scale_one: .021,
-				scale_two: .018,
-				default_titleFs: 12,
-				default_contentFs: 10,
-				windowHeight: 0,
-				windowWidth: 0,
-				maskShow: false,
-				pickerDateShow: false,
-				pickerCityShow: false,
-				pickerCustomShow: false,
-				P_data: {},
-				pickerObj: {},
-				inputsObj: {}
+				code: '', //本地验证码
+				userCode: '', //用户输入的验证码
+				Igree: false, //用户是否同意规则或协议
+				codeCount: 90, //获取验证码后倒计时时间
+				startCode: false, //获取验证码状态
+				picsObj: {}, //pics类型存储值
+				scale_one: .021, //title(左边)字体大小系数
+				scale_two: .018, //content(右边)字体大小系数
+				default_titleFs: 12, //默认title(左边)字体大小
+				default_contentFs: 10, //默认content(右边)字体大小
+				windowHeight: 0, //屏幕高度
+				windowWidth: 0, //屏幕宽度
+				maskShow: false, //遮罩层是否显示
+				pickerDateShow: false, //picker-date组件是否显示
+				pickerCityShow: false, //picker-city组件是否显示
+				pickerCustomShow: false, //picker-custom组件是否显示
+				P_data: {}, //picker类型显示对象暂存
+				pickerObj: {}, //picker类型视图对象暂存
+				inputsObj: {} //inputsArray除特有暂存对象外的各类型视图暂存对象
 			};
 		},
 		watch: {
-			'inputsArray'(n, o) {
-				let _this = this;
-				//console.log('监听到了inputsArray变化');
-				if (_this.changeReSet)
-					for (let i = 0; i < o.length; i++) {
-						_this[_this.onLoadData + i] = '';
-					}
-				if (n)
-					this.init();
+			'inputsArray'(n, o) { //父级传入的inputsArray改变时自动初始化默认数据
+				if (n) this.init();
 			}
 		},
 		created() {
+			// 获取系统信息并记录屏幕宽高来确定布局样式
 			const system = uni.getSystemInfoSync();
 			this.windowHeight = system.windowHeight;
 			this.windowWidth = system.windowWidth;
@@ -314,28 +308,42 @@
 					let itemVariableName = _this.onLoadData + i;
 					switch (item.type) {
 						case 'radio':
+							let data;
 							for (let j = 0; j < item.itemArray.length; j++) {
 								if (item.itemArray[j].defaultValue) {
-									_this[itemVariableName] = item.itemArray[j].value;
-									_this.$set(_this.inputsObj, itemVariableName, item.itemArray[j].value);
+									data = item.itemArray[j].value;
 									break;
 								}
 							}
+							if(data) {
+								_this[itemVariableName] = data;
+								_this.$set(_this.inputsObj, itemVariableName, data);
+							}else{
+								_this[itemVariableName] = '';
+								_this.$set(_this.inputsObj, itemVariableName, '');
+							}
 							break;
 						case 'checkbox':
-							let checkboxValue = [];
+							let value = [];
+							let status = [];
 							for (let j = 0; j < item.itemArray.length; j++) {
 								if (item.itemArray[j].defaultValue) {
-									checkboxValue.push(item.itemArray[j].value);
+									let d = item.itemArray[j].value;
+									status.push(d)
+									value.push(d);
+								}else{
+									status.push('');
 								}
 							}
-							_this[itemVariableName] = checkboxValue || [];
-							_this.$set(_this.inputsObj, itemVariableName, checkboxValue || []);
+							_this[itemVariableName] = {value, status: this.checkbox_status(status)};
+							_this.$set(_this.inputsObj, itemVariableName, value);
 							break;
 						case 'pics':
 							for (let j = 0; j < item.itemArray.length; j++) {
 								if (item.itemArray[j].defaultValue) {
 									_this.$set(_this.picsObj, itemVariableName + _this.onLoadData + j, item.itemArray[j].defaultValue);
+								}else{
+									_this.$set(_this.picsObj, itemVariableName + _this.onLoadData + j, '');
 								}
 							}
 							break;
@@ -366,6 +374,11 @@
 								}
 								_this[itemVariableName] = data;
 								_this.$set(_this.pickerObj, itemVariableName, data);
+								this[_app.pickerChoosedType.pickerChoosedType_date.value + i] = ''; //初始化时清空记忆数据
+							}else{
+								_this[itemVariableName] = '';
+								_this.$set(_this.pickerObj, itemVariableName, '');
+								this[_app.pickerChoosedType.pickerChoosedType_date.value + i] = ''; //初始化时清空记忆数据
 							}
 							break;
 						case 'picker-city':
@@ -387,6 +400,11 @@
 								};
 								_this[itemVariableName] = data;
 								_this.$set(_this.pickerObj, itemVariableName, data);
+								this[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
+							}else{
+								_this[itemVariableName] = null;
+								_this.$set(_this.pickerObj, itemVariableName, null);
+								this[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
 							}
 							break;
 						case 'picker-custom':
@@ -441,6 +459,11 @@
 								}
 								_this[itemVariableName] = data;
 								_this.$set(_this.pickerObj, itemVariableName, data);
+								this[_app.pickerChoosedType.pickerChoosedType_custom.value + i] = null;
+							}else{
+								_this[itemVariableName] = '';
+								_this.$set(_this.pickerObj, itemVariableName, '');
+								this[_app.pickerChoosedType.pickerChoosedType_custom.value + i] = null;
 							}
 							break;
 						case 'switch':
@@ -466,7 +489,7 @@
 					}
 				}
 			},
-			showPicker(obj, index) {
+			showPicker(obj, index) { //显示相对应的picker
 				//console.log(JSON.stringify(obj));
 				let _this = this;
 				obj.index = index;
@@ -474,19 +497,19 @@
 				if (obj && obj.type)
 					switch (obj.type) {
 						case 'picker-date':
-							let dateObj;
-							let days = [];
+							//记忆数据优先
 							if(this[_app.pickerChoosedType.pickerChoosedType_date.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_date.value + index];
-							obj.years = _app.countYears(obj.startYear||new Date().getFullYear() - 5, obj.endYear||new Date().getFullYear() + 5);
 							_this.P_data = obj;
 							_this.pickerDateShow = true;
 							break;
 						case 'picker-city':
+							//记忆数据优先
 							if(this[_app.pickerChoosedType.pickerChoosedType_city.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_city.value + index];
 							_this.P_data = obj;
 							_this.pickerCityShow = true;
 							break;
 						case 'picker-custom':
+							//记忆数据优先
 							if(this[_app.pickerChoosedType.pickerChoosedType_custom.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_custom.value + index];
 							_this.P_data = obj;
 							_this.pickerCustomShow = true;
@@ -504,7 +527,7 @@
 			openRuleFc(value) { // 打开规则页面的父级方法
 				this.$emit('chaildOpenEvent', value);
 			},
-			checkbox_change(e, index) {
+			checkbox_change(e, index) { //checkbox赋值方法
 				let _this = this;
 				let data = e.detail.value;
 				let checkboxArray = _this.inputsArray[index].itemArray;
@@ -520,16 +543,41 @@
 						if(num>=0)
 							newArray[num] = item;
 					});
-					_this.inputsObj[_this.onLoadData + index] = newArray;
+					_this.inputsObj[_this.onLoadData + index] = newArray; //视图暂存
 				}
-				_this[_this.onLoadData + index] = e.detail.value;
+				_this[_this.onLoadData + index] = {value:e.detail.value, status: this.checkbox_status(newArray)};
 			},
-			inputs_change(e, index) { // 用户输入时，根据index赋值
+			checkbox_status(data) {
+				for(let i = 0; i < data.length; i++) {
+					if(data[i]) data[i] = true; else data[i] = false;
+				}
+				return data;
+			},
+			inputs_change(e, index, filterFc) { // 用户输入时，根据index赋值
 				//console.log(e.detail.value);
-				this.$set(this.inputsObj, this.onLoadData + index, e.detail.value);
-				this[this.onLoadData + index] = e.detail.value;
+				let _this = this;
+				let val = e.detail.value;
+				if(filterFc&&typeof(filterFc)=='function') {
+					val = filterFc(val);
+					if(val !== e.detail.value) {
+						let voidPromise = new Promise((reslove,reject)=>{
+							_this.$delete(_this.inputsObj, _this.onLoadData + index);
+							reslove();
+						})
+						voidPromise.then(()=>{
+							_this.$set(_this.inputsObj, _this.onLoadData + index, val);
+							_this[_this.onLoadData + index] = val;
+						})
+					}else{
+						_this.$set(_this.inputsObj, _this.onLoadData + index, val);
+						_this[_this.onLoadData + index] = val;
+					}
+				}else{
+					_this.$set(_this.inputsObj, _this.onLoadData + index, val);
+					_this[_this.onLoadData + index] = val;
+				}
 			},
-			pickerChange(res) {
+			pickerChange(res) { //picker类型选择后赋值 
 				//console.log('pickerValue：' + JSON.stringify(res));
 				this.pickerObj[this.onLoadData + res.index] = res.data;
 				this[this.onLoadData + res.index] = res.data;
@@ -546,9 +594,9 @@
 					default:
 						break;
 				}
-				this.hideFc();
+				this.picker_hideFc();
 			},
-			inputTap(type, index) {
+			inputTap(type, index) { //input点击事件
 				switch (type){
 					case 'passwordSwitch':	//密码显隐
 						this.$set(this.inputsObj, this.onLoadData+index+'password', !this.inputsObj[this.onLoadData+index+'password']);
@@ -623,7 +671,6 @@
 										return;
 									}
 								}
-								console.log(JSON.stringify(inputsDataObj[variableName]))
 							}
 							break;
 						case 'switch':
@@ -711,13 +758,16 @@
 								inputsDataObj[variableName] += res[i].data ? '|' + res[i].data : '|';
 						}
 					_this.$emit('activeFc', inputsDataObj); // 把用户输入数据封装成对象输出给父级
-					_this.inputs_reSet(); //提交后重置验证码
+					_this.inputs_reSet(); //提交后重置
 				});
 			},
-			inputs_reSet() { //提交后重置验证码
+			inputs_reSet() {
+				//提交后重置验证码
 				this.code = '';
 				this.userCode = '';
 				this.Igree = false;
+				//若submit为true，重置表单为初始化
+				if(this.submitReSet) this.init();
 			},
 			chooseImg(index, picsIndex) { //选择图片
 				let _this = this
@@ -734,7 +784,7 @@
 			showImg(imgPath) { //大图预览选中的图片
 				_app.previewImage(imgPath);
 			},
-			hideFc() {
+			picker_hideFc() { //picker类型全部隐藏
 				this.pickerDateShow = false;
 				this.pickerCityShow = false;
 				this.pickerCustomShow = false;

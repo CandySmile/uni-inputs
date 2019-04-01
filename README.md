@@ -17,6 +17,8 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 版本号 | 更新说明 |
 |----|------|
+| 3.8 | 1、input类型新增过滤函数属性-filterFc<br />2、修复h5日一列与时间显示不正确问题<br />|
+| 3.7 | 1、增加checkbox类型返回选中状态<br />2、去除changeReset属性，父级传入的inputsArray改变时自动初始化数据<br />3、新增submitReSet属性：提交数据后是否重置inputs为初始化<br />4、优化细节<br />5、完善一些注释|
 | 3.6 | 修复input类型的一键清除功能在空值时也显示的问题与多项input时inputTap事件无效问题|
 | 3.5 | 修复1.8.0新版编译器picker类型bug，并优化picker类型选择记忆，优化picker类型细节，修改picker-date类型defaultValue属性类型为字符串<br />修复上传图片类型|
 | 3.4 | input类型 新增 左边自定义图标、一键清除数据功能、密码显隐功能, 可直接拖进项目运行|
@@ -61,7 +63,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
 			:ifRule="true" :ruleArray="ruleArray" 
 			v-on:chaildOpenEvent="openWin" 
 			v-on:activeFc="activeFc"  :onLoadData="onLoadData" 
-			cssMode="wrap" animationType="rotate3d-fade" :animationDuration=".4"/>
+			cssMode="wrap" animationType="rotate3d-fade" :animationDuration=".4" submitReSet/>
   </view>
 </template>
 ```
@@ -126,7 +128,12 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
 			tapClear: true,
 			password: true,
 			icon: 'search',
-			iconColor: '#33cc33'
+			iconColor: '#33cc33',
+			filterFc: function(value) {
+				//自定义过滤函数
+				value = 'filter过滤后的值';
+				return value;
+			}
 		}, {
 			segmentationTitle: '上传图片',
 			type: 'pics',
@@ -374,15 +381,18 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
 | titleFontColor| | String| '#666666'| title(左边)的文字颜色|
 | contentFontSize| | Number| 屏幕高度*.018 px| 内容(右边)的文字大小|
 | cssMode| | String| 'wrap'| 可控制拥有子项数组的类型的项内布局方式的项内布局方式|
-| changeReSet| | Boolean| false| 在inputsArray改变时可重置所有数据为空，但不重置视图，若需重置视图看下方说明|
+| changeReSet(废弃)| | Boolean| false| 在inputsArray改变时可重置所有数据为空，但不重置视图，若需重置视图看下方说明|
+| submitReSet| | Boolean| false| 提交数据后是否重置数据为初始化|
 | animationType| | String| | 入场动画类型|
 | animationDuration| | Number| | 入场动画时长系数(index+1 ， 乘以此系数为动画时长)|
 ### animationType属性说明
 
 可作为父级属性统一传入，也可项内属性单独传入，目前支持的类型有：fadIn、refadIn、slide-left、slide-fade-left、slide-right、slide-fade-right、slide-fade-bottom、rotate3d-fade等。动画也可自定义，只要定义动画后定义好class属性就可以了。
 
-### changeReSet属性说明(有重置需求的可使用)
+### changeReSet属性说明(废弃，3.7版本后自动初始化数据)
 在父级传入的inputsArray改变时，可以选择重置数据，但是视图的重置需要先inputsArray=[ ]后setTimeout 300或者多少后重新赋值，过程中可以设置主按钮文字为‘加载中’等，可增强用户体验
+
+
 ### ruleArray属性说明
 | 属性 | 说明|
 |---|---|
@@ -437,7 +447,20 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
 | tapClear| | Boolean| false| 是否开启一键清除功能|
 | icon| | String| | input左边自定义图标(目前使用官方uniIcon，可自行修改)|
 | iconColor| | String| #999999| 左边自定义图标与密码显示时图标颜色（密码显示默认颜色为#33CC33）|
+| filterFc| | Fuction| | 自定义过滤值函数|
 注：最好看源码对照官网属性
+
+#### filterFc示例  3.8更新
+
+```javascript
+{
+ title: '有过滤函数的input'，
+ filterFc: function(value) { // 必须接收一个参数
+  value = '过滤后的值';
+  return value; //必须return
+ }
+}
+```
 
 ---
 
@@ -515,7 +538,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在�
 | disabled| | Boolean| false| 是否禁用|
 | color| | Color| | checkbox的颜色|
 
-注： checkbox类型与radio类型差不多，只是取值时checkbox为数组，根据需求使用,itemArray的color优先于外部的color
+注：checkbox返回数据为:{value,status}  3.7更新
 
 ---
 ### 六、switch

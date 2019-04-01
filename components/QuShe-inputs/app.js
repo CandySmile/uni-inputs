@@ -71,19 +71,10 @@ let _app = {
 		})
 	},
 	countDays(Y, M, val, mode) {
-		let _this = this;
-		const today = new Date();
-		const days = [];
-		today.setFullYear(Y);
-		today.setMonth(M + 1);
-		today.setDate(0);
-		const daysLen = today.getDate();
-		for (let i = 1; i <= daysLen; i++) {
-			days.push(i);
-		}
+		let days = new Date(Y,M+1,0).getDate();
 		if (mode != time)
 			if (val) {
-				val[2] = val[2] < days.length - 1 ? val[2] : days.length - 1;
+				val[2] = val[2] < days - 1? val[2] : days - 1;
 			}
 		return {
 			days,
