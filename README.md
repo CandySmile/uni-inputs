@@ -48,8 +48,8 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 |  | 完善213-226行的判断写法不正确问题 |
 
 ---
-# 下次更新方向
-radio-custom、checkbox-custom、switch-custom、slider-custom、sku(先写在这里), 敬请期待
+# 更新方向
+radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先写在这里), 敬请期待
 
 ---
 
