@@ -1,36 +1,35 @@
 <template>
 	<view class="width100 overflow_x_hidden">
-		<view class="width100 box-sizing-border-box" :class="[item.animationType||animationType||'']" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px', 'animation-duration': (index+1)*(item.animationDuration||animationDuration||.2) + 's'}"
+		<view class="width100 box-sizing-border-box" :class="[item.animationType||animationType||'']" :style="{'padding': wH*.02 + 'px ' + wW*.03 + 'px', 'animation-duration': (index+1)*(item.animationDuration||animationDuration||.2) + 's'}"
 		 v-for="(item, index) in inputsArray" :key="item.title||index">
 			<!-- segmentationTitle -->
-			<view class="width100 flex_row view_Title_Left" :style="{'font-size': windowHeight*.024+'px', 'padding': windowHeight*.015+'px '+ windowWidth*.03+'px'}"
+			<view class="width100 flex_row view_Title_Left" :style="classObj.segmentationTitle"
 			 v-if="item.segmentationTitle">
 				{{item.segmentationTitle}}
 			</view>
-			<view class="flex_row" :style="{'padding-bottom': item.border_bottom?windowHeight*.015+'px':'none','border-bottom': item.border_bottom||'none', 'padding-top':item.border_top?windowHeight*.015+'px':'none','border-top': item.border_top||'none'}">
+			<view class="flex_row" :style="{'padding-bottom': item.border_bottom?wH*.015+'px':'none','border-bottom': item.border_bottom||'none', 'padding-top':item.border_top?wH*.015+'px':'none','border-top': item.border_top||'none'}">
 				<!-- title -->
-				<view class="input_title flex_row_e_c" :style="{'fontSize': (titleFontSize||windowHeight*scale_one) + 'px', 'color': titleFontColor}">
+				<view class="input_title flex_row_e_c" :style="classObj.titleColor + classObj.titleFs" v-if="item.type!=='sku'">
 					<view class="width100 word_wrap flex_row_e_c">
 						<view class="fontColorF1505C" v-if="item.type!='pics'&&!item.ignore&&item.title">*</view>{{item.title?item.title + ':':''}}
 					</view>
 				</view>
 				<!-- pics -->
-				<view class="width75 box-sizing-border-box" v-if="item.type&&item.type=='pics'" :style="{'padding': windowHeight*.01 + 'px 0px'}">
+				<view class="width75 box-sizing-border-box" v-if="item.type&&item.type=='pics'" :style="classObj.padding10">
 					<view class="flex_row_e_c width100" :class="item.cssMode||cssMode||'wrap'">
-						<view class="flex_column_c_c box-sizing-border-box" :style="{'padding': windowHeight*.01 + 'px'}" v-for="(picsItem, picsIndex) in item.itemArray"
+						<view class="flex_column_c_c box-sizing-border-box" :style="classObj.padding1" v-for="(picsItem, picsIndex) in item.itemArray"
 						 :key="picsIndex">
-							<view class="flex_row_c_c border1pxf2f2f2" :style="{'position': 'relative', 'height': windowHeight*.07+'px', 'width': windowWidth*.2+'px'}"
+							<view class="flex_row_c_c border1pxf2f2f2 position_relative" :style="classObj.picsBox"
 							 @tap="!picsObj[onLoadData + index + onLoadData + picsIndex]?chooseImg(index, picsIndex): ''">
-								<image :src="picsObj[onLoadData + index + onLoadData + picsIndex]" mode="aspectFill" :style="{'height': windowHeight*.07+'px', 'width': windowWidth*.2+'px'}"
+								<image :src="picsObj[onLoadData + index + onLoadData + picsIndex]" mode="aspectFill" :style="classObj.picsBox"
 								 v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap="showImg(picsObj[onLoadData + index + onLoadData + picsIndex])"></image>
-								<view class="fontColorADADAD" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px'}" v-else>+</view>
-								<view :style="{'position': 'absolute', 'top': 0-windowHeight*.03+'px', 'right': 0-windowHeight*.025+'px', 'padding': windowHeight*.01+'px'}"
+								<view class="fontColorADADAD" :style="classObj.content" v-else>+</view>
+								<view class="position_absolute" :style="classObj.picsClear_position"
 								 v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap.stop.prevent="clearPic(index, picsIndex)">
-									<uni-icon type="clear" color="#f5105c" :pxSize="windowHeight*.03" />
+									<uni-icon type="clear" color="#f5105c" :pxSize="wH*.03" />
 								</view>
 							</view>
-							<view class="flex_row_c_c fontColorADADAD" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px', 'width': windowWidth*.2+'px', 'margin-top': windowHeight*.01+'px'}"
-							 v-if="picsItem.title">
+							<view class="flex_row_c_c fontColorADADAD" :style="classObj.picsTitle + classObj.content" v-if="picsItem.title">
 								<view class="fontColorF1505C" v-if="!picsItem.ignore">*</view>{{picsItem.title}}
 							</view>
 						</view>
@@ -51,74 +50,74 @@
 				<!-- radio -->
 				<view class="width75" v-else-if="item.type&&item.type=='radio'">
 					<radio-group @change="inputs_change($event, index)" class="width100 flex_row_e_c" :class="item.cssMode||cssMode||'wrap'">
-						<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}"
+						<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="classObj.content + classObj.padding1 + classObj.marginRight2"
 						 v-for="(radioItem, radioIndex) in item.itemArray" :key="radioIndex">
 							<radio :value="radioItem.value" :checked="inputsObj[onLoadData+index]==radioItem.value" :disabled="radioItem.disabled"
 							 :color="radioItem.color||item.color" />
-							<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{radioItem.name}}</view>
+							<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?wW*.15 + 'px': ''}">{{radioItem.name}}</view>
 						</label>
 					</radio-group>
 				</view>
 				<!-- checkbox -->
 				<view class="width75" v-else-if="item.type&&item.type=='checkbox'">
 					<checkbox-group @change="checkbox_change($event, index)" class="width100 flex_row_e_c" :class="item.cssMode||cssMode||'wrap'">
-						<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px', 'padding': windowHeight*.01 + 'px', 'margin-right': windowWidth*.02+'px'}"
+						<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="classObj.content + classObj.padding1 + classObj.marginRight2"
 						 v-for="(checkboxItem, checkboxIndex) in item.itemArray" :key="checkboxIndex">
 							<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index][checkboxIndex]" :disabled="checkboxItem.disabled"
 							 :color="checkboxItem.color||item.color" />
-							<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?windowWidth*.15 + 'px': ''}">{{checkboxItem.name}}</view>
+							<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?wW*.15 + 'px': ''}">{{checkboxItem.name}}</view>
 						</label>
 					</checkbox-group>
 				</view>
 				<!-- textarea -->
 				<view class="width75" v-else-if="item.type&&item.type=='textarea'">
-					<textarea :value="inputsObj[onLoadData+index]||item.defaultValue" :placeholder="item.placeholder||'请输入' + item.title"
-					 :placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class" :style="{'font-size': (contentFontSize||windowHeight*scale_two) + 'px', 'height': !item.auto_height?(item.height||windowHeight*.1)+'px':''}"
+					<textarea :value="inputsObj[onLoadData+index]" :placeholder="item.placeholder||'请输入' + item.title"
+					 :placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class" :style="{'font-size': classObj.contentSize + 'px', 'height': !item.auto_height?(item.height||wH*.1)+'px':''}"
 					 class="border1pxf2f2f2 width100" :disabled="item.disabled" :maxlength="item.maxlength||140" :focus="item.focus"
 					 :auto-height="item.auto_height" :fixed="item.fixed" :cursor-spacing="item.cursor_spacing" :cursor="item.cursor"
 					 :show-confirm-bar="item.show_confirm_bar" :selection-start="item.selection_start" :selection-end="item.selection_end"
 					 :adjust-position="item.adjust_position" @input="inputs_change($event, index)" />
 					</view>
 				<!-- picker-date -->
-				<view class="width75 flex_row_e_c" :style="{'padding': '0 ' + windowWidth*.03+'px'}" v-else-if="item.type&&item.type=='picker-date'">
+				<view class="width75 flex_row_e_c" :style="classObj.padding0_3" v-else-if="item.type&&item.type=='picker-date'">
 					<view class="flex_row_none_c" v-if="pickerObj[onLoadData+index]">
-						<view class="fontColor666666" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px'}">
+						<view class="fontColor666666" :style="classObj.content">
 							{{pickerObj[onLoadData+index]}}
 						</view>
-						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="{'margin-left': windowWidth*.03+'px'}">{{item.editorName||'更改'}}</button>
+						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3">{{item.editorName||'更改'}}</button>
 					</view>
 					<view class="flex_row_e_c" v-else>
 						<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择日期'}}</button>
 					</view>
 				</view>
 				<!-- picker-city -->
-				<view class="width75 flex_row_e_c" :style="{'padding': '0 ' + windowWidth*.03+'px'}" v-else-if="item.type&&item.type=='picker-city'">
+				<view class="width75 flex_row_e_c" :style="classObj.padding0_3" v-else-if="item.type&&item.type=='picker-city'">
 					<view class="flex_row_none_c" v-if="pickerObj[onLoadData+index]">
-						<view class="fontColor666666" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px'}">
+						<view class="fontColor666666" :style="classObj.content">
 							{{pickerObj[onLoadData+index].label}}
 						</view>
-						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="{'margin-left': windowWidth*.03+'px'}">{{item.editorName||'更改'}}</button>
+						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3">{{item.editorName||'更改'}}</button>
 					</view>
 					<view class="flex_row_e_c" v-else>
 						<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择城市'}}</button>
 					</view>
 				</view>
 				<!-- picker-custom -->
-				<view class="width75 flex_row_e_c" :style="{'padding': '0 ' + windowWidth*.03+'px'}" v-else-if="item.type&&item.type=='picker-custom'">
+				<view class="width75 flex_row_e_c" :style="classObj.padding0_3" v-else-if="item.type&&item.type=='picker-custom'">
 					<view class="flex_row_none_c" v-if="pickerObj[onLoadData+index]">
 						<block v-if="item.linkage">
-							<view class="fontColor666666" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px'}">
+							<view class="fontColor666666" :style="classObj.content">
 								{{item.linkageNum==2?pickerObj[onLoadData+index].result.steps1[item.steps.steps_1_value]+'-'+(item.steps.steps_2_value?pickerObj[onLoadData+index].result.steps2[item.steps.steps_2_value]:pickerObj[onLoadData+index].result.steps2):item.linkageNum==3?pickerObj[onLoadData+index].result.steps1[item.steps.steps_1_value]+'-'+pickerObj[onLoadData+index].result.steps2[item.steps.steps_2_value]+'-'+(item.steps.steps_3_value?pickerObj[onLoadData+index].result.steps3[item.steps.steps_3_value]:pickerObj[onLoadData+index].result.steps3):'不在范围中'}}
 							</view>
 						</block>
 						<block v-else>
-							<view class="flex_row_c_c fontColor666666" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px'}">
+							<view class="flex_row_c_c fontColor666666" :style="classObj.content">
 								<view v-for="(i, d) in pickerObj[onLoadData+index].result" :key="d">
 									{{d==0?(item.steps?item.steps.steps_1_value?i[item.steps.steps_1_value]:i:i):'-' + (item.steps?item.steps.steps_1_value?i[item.steps.steps_1_value]:i:i)}}
 								</view>
 							</view>
 						</block>
-						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="{'margin-left': windowWidth*.03+'px'}">{{item.editorName||'更改'}}</button>
+						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3">{{item.editorName||'更改'}}</button>
 					</view>
 					<view class="flex_row_e_c" v-else>
 						<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择'}}</button>
@@ -129,41 +128,41 @@
 					<view :class="item.tapClear&&item.password?'width70':item.tapClear||item.password?'width85':'width100'" class="flex_row_none_c borderBottom1pxf2f2f2">
 						<view class="width15" v-if="item.icon">
 							<view class="flex_row_c_c width100">
-								<uni-icon :type="item.icon" :pxSize="contentFontSize||windowHeight*scale_two+8" :color="item.iconColor||'#999999'"></uni-icon>
+								<uni-icon :type="item.icon" :pxSize="classObj.iconSize" :color="item.iconColor||'#999999'"></uni-icon>
 							</view>
 						</view>
 						<input :type="item.inputType||'text'" :value="inputsObj[onLoadData+index]" @input="inputs_change($event, index, item.filterFc)" :placeholder="item.placeholder||'请输入' + item.title"
 						 :password="inputsObj[onLoadData+index+'password']" :placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class"
 						 :maxlength="item.maxlength||140" :cursor-spacing="item.cursor_spacing" :focus="item.focus"
 						 :confirm-type="item.confirm_type" :confirm-hold="item.confirm_hold" :selection-start="item.selection_start" :selection-end="item.selection_end"
-						 :cursor="item.cursor" :adjust-position="item.adjust_position" :class="item.icon?'width85':'width100'" :disabled="item.disabled" :style="{'fontSize': (titleFontSize||windowHeight*scale_one) + 'px'}" />
+						 :cursor="item.cursor" :adjust-position="item.adjust_position" :class="item.icon?'width85':'width100'" :disabled="item.disabled" :style="classObj.titleFs" />
 					</view>
 					<view class="width15" v-if="item.password">
 						<view class="flex_row_c_c width100" @tap.prevent.stop="inputTap('passwordSwitch', index)">
-							<uni-icon type="eye" :pxSize="contentFontSize||windowHeight*scale_two+8" :color="inputsObj[onLoadData+index+'password']?'#999999':item.iconColor||'#33cc33'"></uni-icon>
+							<uni-icon type="eye" :pxSize="classObj.iconSize" :color="inputsObj[onLoadData+index+'password']?'#999999':item.iconColor||'#33cc33'"></uni-icon>
 						</view>
 					</view>
 					<view class="width15" v-if="item.tapClear">
 						<view class="flex_row_c_c width100" v-if="inputsObj[onLoadData+index]!=''" @tap.prevent.stop="inputTap('clear', index)">
-							<uni-icon type="clear" :pxSize="contentFontSize||windowHeight*scale_two+8" color="#999999"></uni-icon>
+							<uni-icon type="clear" :pxSize="classObj.iconSize" color="#999999"></uni-icon>
 						</view>
 					</view>
 				</view>
 			</view>
 		</view>
 		<!-- 验证码 -->
-		<view class="flex_row width100 box-sizing-border-box"  :class="[animationType||'']" :style="{'padding': windowHeight*.02 + 'px ' + windowWidth*.03 + 'px', 'animation-duration': (inputsArray.length+1)*(animationDuration||.2) + 's'}"
+		<view class="flex_row width100 box-sizing-border-box"  :class="[animationType||'']" :style="classObj.padding2_3 + classObj.animationDuration1"
 		 v-if="ifCode">
-			<view class="flex_row_e_c input_title" :style="{'fontSize': (titleFontSize||windowHeight*scale_one) + 'px', 'color': titleFontColor}">
+			<view class="flex_row_e_c input_title" :style="classObj.titleFs + classObj.titleColor">
 				<view class="fontColorF1505C">*</view>验证码:
 			</view>
 			<view class="width75">
-				<input type="text" value="" v-model="userCode" placeholder="请输入验证码" class="width100 borderBottom1pxf2f2f2" :style="{'fontSize': (titleFontSize||windowHeight*scale_one) + 'px'}" />
+				<input type="text" value="" v-model="userCode" placeholder="请输入验证码" class="width100 borderBottom1pxf2f2f2" :style="classObj.titleFs" />
 			</view>
 		</view>
 		<!-- rule -->
-		<view class="flex_row_between_c box-sizing-border-box"  :class="[animationType||'']" :style="{'padding': windowHeight*.01 + 'px ' + windowWidth*.03 + 'px', 'animation-duration': (inputsArray.length+1)*(animationDuration||.2) + 's'}">
-			<view class="flex_row_c_c fontColor666666" :style="{'fontSize': (contentFontSize||windowHeight*scale_two) + 'px'}"
+		<view class="flex_row_between_c box-sizing-border-box"  :class="[animationType||'']" :style="classObj.padding1_3 + classObj.animationDuration1">
+			<view class="flex_row_c_c fontColor666666" :style="classObj.content"
 			 v-if="ifRule">
 				<label class="flex_row_c_c">
 					<switch :checked="Igree" @change="IgreeFc" type="checkbox" />我已阅读并同意</label>
@@ -172,26 +171,26 @@
 			<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="!startCode?getCode():''">{{startCode?codeCount + 's后重新获取':'获取验证码'}}</button>
 		</view>
 		<!-- 主按钮 -->
-		<button type="primary" @tap="activeFc" :class="[animationType||'']" :style="{'margin': windowHeight*.02 + 'px ' + windowHeight*.03 + 'px', 'animation-duration': (ifRule||ifCode?inputsArray.length+2:inputsArray.length+1)*(animationDuration||.2) + 's'}">{{activeName}}</button>
+		<button type="primary" @tap="activeFc" :class="[animationType||'']" :style="classObj.margin2_3 + classObj.animationDuration2">{{activeName}}</button>
 		<!-- mask -->
 		<view class="mask" @touchmove.prevent.stop="picker_hideFc" @tap.prevent.stop="picker_hideFc" v-show="maskShow"></view>
 		<!-- 日期选择 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerDateShow">
 			<pickers-date class="width100" :startYear="P_data.startYear" :endYear="P_data.endYear" :defaultDate="P_data.defaultValue" @getDate="pickerChange($event)" 
-			:mode="P_data.mode" :windowHeight="windowHeight" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" 
-			:fontSize="contentFontSize||windowHeight*scale_two" :confirmName="P_data.confirmName" 
+			:mode="P_data.mode" :wH="wH" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" 
+			:fontSize="classObj.contentSize" :confirmName="P_data.confirmName" 
 			:index="P_data.index"/>
 		</view>
 		<!-- 城市选择 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerCityShow">
-			<pickers-city class="width100" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :windowHeight="windowHeight" 
-			:fontSize="contentFontSize||windowHeight*scale_two" @getCity="pickerChange($event)" 
+			<pickers-city class="width100" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
+			:fontSize="classObj.contentSize" @getCity="pickerChange($event)" 
 			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index"/>
 		</view>
 		<!-- picker自定义 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerCustomShow">
-			<picker-custom class="width100" :itemArray="P_data.itemArray" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :windowHeight="windowHeight" 
-			:fontSize="contentFontSize||windowHeight*scale_two" @getCustom="pickerChange($event)" 
+			<picker-custom class="width100" :itemArray="P_data.itemArray" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
+			:fontSize="classObj.contentSize" @getCustom="pickerChange($event)" 
 			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index"/>
 		</view>
 	</view>
@@ -203,7 +202,6 @@
 	import pickersDate from './pickers-date.vue';
 	import pickersCity from './mpvue-citypicker/picker-city.vue';
 	import pickerCustom from './picker-custom.vue';
-	
 	export default {
 		props: {
 			inputsArray: { //用户自定义的输入类型
@@ -264,6 +262,12 @@
 			}
 		},
 		data() {
+			// 获取系统信息并记录屏幕宽高来确定布局样式
+			const systemData = uni.getSystemInfoSync();
+			const wH = systemData.windowHeight;
+			const wW = systemData.windowWidth;
+			const scale_one = .021; //title(左边)字体大小系数
+			const scale_two = .018; //content(右边)字体大小系数
 			return {
 				code: '', //本地验证码
 				userCode: '', //用户输入的验证码
@@ -271,19 +275,38 @@
 				codeCount: 90, //获取验证码后倒计时时间
 				startCode: false, //获取验证码状态
 				picsObj: {}, //pics类型存储值
-				scale_one: .021, //title(左边)字体大小系数
-				scale_two: .018, //content(右边)字体大小系数
-				default_titleFs: 12, //默认title(左边)字体大小
-				default_contentFs: 10, //默认content(右边)字体大小
-				windowHeight: 0, //屏幕高度
-				windowWidth: 0, //屏幕宽度
+				scale_one, //title(左边)字体大小系数
+				scale_two, //content(右边)字体大小系数
+				wH, //屏幕高度
+				wW, //屏幕宽度
 				maskShow: false, //遮罩层是否显示
 				pickerDateShow: false, //picker-date组件是否显示
 				pickerCityShow: false, //picker-city组件是否显示
 				pickerCustomShow: false, //picker-custom组件是否显示
 				P_data: {}, //picker类型显示对象暂存
 				pickerObj: {}, //picker类型视图对象暂存
-				inputsObj: {} //inputsArray除特有暂存对象外的各类型视图暂存对象
+				inputsObj: {} ,//inputsArray除特有暂存对象外的各类型视图暂存对象
+				classObj: {
+					segmentationTitle: 'font-size:' + wH*.024 + 'px;padding:' + wH*.015+'px '+ wW*.03+'px;',
+					titleFs: 'font-size:' + (this.titleFontSize||wH*scale_one) + 'px;',
+					titleColor: 'color:' + this.titleFontColor + ';',
+					content: 'font-size:' + (this.contentFontSize||wH*scale_two) + 'px;',
+					contentSize: this.contentFontSize||wH*scale_two,
+					iconSize: (this.contentFontSize||wH*scale_two) + 8,
+					padding10: 'padding:' + wH*.01 + 'px 0;',
+					padding1: 'padding:' + wH*.01 + 'px;',
+					padding0_3: 'padding:' +  '0 ' + wW*.03+'px;',
+					padding2_3: 'padding:' + wH*.02 + 'px ' + wW*.03 + 'px;',
+					padding1_3: 'padding:' + wH*.01 + 'px ' + wW*.03 + 'px;',
+					margin2_3: 'margin:' + wH*.02 + 'px ' + wH*.03 + 'px;',
+					picsBox: 'height:' + wH*.07+'px;width:' + wW*.2+'px;',
+					picsClear_position: 'top:' + (0-wH*.03)+'px;right:' + (0-wH*.025)+'px;padding:' + wH*.01+'px;',
+					picsTitle:'width:' + wW*.2+'px;margin-top:' + wH*.01+'px;',
+					marginRight2: 'margin-right:' + wW*.02+'px;',
+					marginLeft3: 'margin-left:' + wW*.03+'px;',
+					animationDuration1: 'animation-duration:' + (this.inputsArray.length+1)*(this.animationDuration||.2) + 's',
+					animationDuration2: 'animation-duration:' + (this.ifRule||this.ifCode?this.inputsArray.length+2:this.inputsArray.length+1)*(this.animationDuration||.2) + 's'
+				}
 			};
 		},
 		watch: {
@@ -292,10 +315,6 @@
 			}
 		},
 		created() {
-			// 获取系统信息并记录屏幕宽高来确定布局样式
-			const system = uni.getSystemInfoSync();
-			this.windowHeight = system.windowHeight;
-			this.windowWidth = system.windowWidth;
 			this.init();
 		},
 		methods: {
@@ -557,14 +576,14 @@
 				//console.log(e.detail.value);
 				let _this = this;
 				let val = e.detail.value;
-				if(filterFc&&typeof(filterFc)=='function') {
+				if(filterFc&&typeof(filterFc)=='function') {	//有filterFc则过滤
 					val = filterFc(val);
 					if(val !== e.detail.value) {
-						let voidPromise = new Promise((reslove,reject)=>{
+						let deletePromise = new Promise((reslove,reject)=>{
 							_this.$delete(_this.inputsObj, _this.onLoadData + index);
 							reslove();
 						})
-						voidPromise.then(()=>{
+						deletePromise.then(()=>{
 							_this.$set(_this.inputsObj, _this.onLoadData + index, val);
 							_this[_this.onLoadData + index] = val;
 						})
@@ -808,6 +827,12 @@
 	.input_title {
 		width: 20%;
 		margin-right: 5%;
+	}
+	.position_relative{
+		position: relative;
+	}
+	.position_absolute{
+		position: absolute;
 	}
 
 	.width75 {

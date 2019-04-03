@@ -19,6 +19,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 版本号 | 更新说明 |
 |----|------|
+| 3.9 | 性能优化（动态style样式从data中获取）,修复textarea类型设置初始值删不掉bug|
 | 3.8 | 1、input类型新增过滤函数属性-filterFc<br />2、修复h5日一列与时间显示不正确问题<br />|
 | 3.7 | 1、增加checkbox类型返回选中状态<br />2、去除changeReset属性，父级传入的inputsArray改变时自动初始化数据<br />3、新增submitReSet属性：提交数据后是否重置inputs为初始化<br />4、优化细节<br />5、完善一些注释|
 | 3.6 | 修复input类型的一键清除功能在空值时也显示的问题与多项input时inputTap事件无效问题|

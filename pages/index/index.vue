@@ -87,7 +87,6 @@
 				}, {
 					segmentationTitle: 'picker类型',
 					type: 'picker-date',
-					mode: 'picker-dateTime',
 					title: 'date',
 					defaultValue: '2019-2-28',
 					// onceShowDefaultValue: true,

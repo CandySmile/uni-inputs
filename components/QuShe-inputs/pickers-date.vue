@@ -1,8 +1,8 @@
 <template>
 	<view class="width100 refadIn" @touchmove.prevent.stop="voidFc">
 		<picker-view class="fontColor666666 width100 bg_white border_radius_10px over_hidden box_shadow padding05px box-sizing-border-box"
-		 :indicator-style="indicatorStyle||'height: '+windowHeight*.05+'px;width: 100%;'" :value="dateVlue" @change="bindPickerViewChange($event)"
-		 :style="{'height': height||windowHeight*.2 + 'px', 'font-size': fontSize+'px'}">
+		 :indicator-style="indicatorStyle||('height: '+wH*.05+'px;width: 100%;')" :value="dateVlue" @change="bindPickerViewChange($event)"
+		 :style="classObj.picker">
 			<block v-if="mode!==picker_date_obj.time">
 				<picker-view-column>
 					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in years" :key="picker_index">{{picker_item}}年</view>
@@ -51,7 +51,7 @@
 				</picker-view-column>
 			</block>
 		</picker-view>
-		<button type="primary" :style="{'margin-top': windowHeight*.05 + 'px'}" @tap="confirmFc">{{confirmName||'确定'}}</button>
+		<button type="primary" :style="classObj.marginTop5" @tap="confirmFc">{{confirmName||'确定'}}</button>
 	</view>
 </template>
 
@@ -63,7 +63,7 @@
 			endYear: Number,
 			indicatorStyle: String,
 			height: Number,
-			windowHeight: Number,
+			wH: Number,
 			defaultDate: String,
 			mode: String,
 			fontSize: {
@@ -115,7 +115,11 @@
 				years,
 				days,
 				dateVlue,
-				picker_date_obj: _app.picker_date_obj
+				picker_date_obj: _app.picker_date_obj,
+				classObj: {
+					picker: 'height:' + (this.height||this.wH*.2) + 'px;font-size:' + this.fontSize+'px;',
+					marginTop5: 'margin-top:' + this.wH*.05 + 'px;'
+				}
 			}
 		},
 		methods: {

@@ -1,7 +1,7 @@
 <template>
 	<view class="width100 refadIn" @touchmove.prevent.stop="voidFc">
 		<picker-view class="fontColor666666 width100 bg_white border_radius_10px over_hidden box_shadow padding05px box-sizing-border-box" 
-		:indicator-style="indicatorStyle||'height: '+windowHeight*.05+'px;'" :style="{'height': height||windowHeight*.2 + 'px', 'font-size': fontSize+'px'}" 
+		:indicator-style="indicatorStyle||'height: '+wH*.05+'px;'" :style="classObj.picker" 
 		:value="pickerValue.length>0?pickerValue:pickerValueDefault" @change="pickerChange">
 				<picker-view-column>
 					<view class="flex_row_c_c" v-for="(item,index) in provinceDataList" :key="index">{{item.label}}</view>
@@ -13,7 +13,7 @@
 					<view class="flex_row_c_c" v-for="(item,index) in areaDataList" :key="index">{{item.label}}</view>
 				</picker-view-column>
 		</picker-view>
-		<button type="primary" :style="{'margin-top': windowHeight*.05 + 'px'}" @tap="_$emit">{{confirmName||'确定'}}</button>
+		<button type="primary" :style="classObj.marginTop5" @tap="_$emit">{{confirmName||'确定'}}</button>
 	</view>
 </template>
 
@@ -33,13 +33,17 @@
 				provinceDataList,
 				cityDataList,
 				areaDataList,
-				pickerValue
+				pickerValue,
+				classObj: {
+					picker: 'height:' + (this.height||this.wH*.2) + 'px;font-size:' + this.fontSize+'px;',
+					marginTop5: 'margin-top:' + this.wH*.05 + 'px;'
+				}
 			};
 		},
 		props: {
 			indicatorStyle: String,
 			height: Number,
-			windowHeight: Number,
+			wH: Number,
 			/* 默认值 */
 			pickerValueDefault: Array,
 			/* 主题色 */

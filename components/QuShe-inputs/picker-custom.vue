@@ -1,8 +1,8 @@
 <template>
 	<view class="width100 refadIn" @touchmove.prevent.stop="voidFc">
 		<picker-view class="fontColor666666 width100 bg_white border_radius_10px over_hidden box_shadow padding05px box-sizing-border-box"
-		 :indicator-style="indicatorStyle||'height: '+windowHeight*.05+'px;'" :value="value" @change="bindPickerViewChange($event)"
-		 :style="{'height': height||windowHeight*.2 + 'px', 'font-size': fontSize+'px'}">
+		 :indicator-style="indicatorStyle||'height: '+wH*.05+'px;'" :value="value" @change="bindPickerViewChange($event)"
+		 :style="classObj.picker">
 		 <block v-if="linkage">
 			<block v-if="linkageNum==2">
 				<picker-view-column>
@@ -30,7 +30,7 @@
 			</picker-view-column>
 		</block>
 		</picker-view>
-		<button type="primary" :style="{'margin-top': windowHeight*.05 + 'px'}" @tap="confirmFc">{{confirmName||'确定'}}</button>
+		<button type="primary" :style="classObj.marginTop5" @tap="confirmFc">{{confirmName||'确定'}}</button>
 	</view>
 </template>
 
@@ -61,12 +61,16 @@
 			index: Number,
 			indicatorStyle: String,
 			height: Number,
-			windowHeight: Number,
+			wH: Number,
 			pickerValueDefault: Array
 		},
 		data() {
 			return {
-				value: []
+				value: [],
+				classObj: {
+					picker: 'height:' + (this.height||this.wH*.2) + 'px;font-size:' + this.fontSize+'px;',
+					marginTop5: 'margin-top:' + this.wH*.05 + 'px;'
+				}
 			}
 		},
 		created() {
