@@ -14,6 +14,10 @@ const pickerChoosedType_custom = {
 	name: 'custom',
 	value: 'p_custom_choosed_'
 };
+const pickerChoosedType_provincialStreet = {
+	name: 'provincialStreet',
+	value: 'p_custom_provincialStreet_'
+};
 let _app = {
 	picker_date_obj: {
 		dateTime,
@@ -23,7 +27,8 @@ let _app = {
 	pickerChoosedType: {
 		pickerChoosedType_date,
 		pickerChoosedType_city,
-		pickerChoosedType_custom
+		pickerChoosedType_custom,
+		pickerChoosedType_provincialStreet
 	},
 	interface: {
 		upLoadImg: '', // 服务器地址

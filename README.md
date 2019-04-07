@@ -10,16 +10,18 @@
 本组件目前支持 input、textarea、radio、checkbox、switch、slider、上传图片、日期选择、城市选择、picker可联动自定义等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
 
 ---
-# 警告(已找到原因)
+# 警告(已解决)
 picker-date类型在较为复杂的页面，“日”一列的picker-view-column可能会有例如从3月31日切换为2月时的28日跳到27日的bug，并且滑动至28时，值不会变成28而是27，只能点击选择28才能变更，这是在我自己的项目中发现的问题，是嵌套在官方组件segmented-control的tab切换显示或隐藏环境中出现此bug
 
-已找到原因： 在page.json页面设置navigationStyle为custom就会出现此问题!!!!（已提bug至官方人员）
+已找到原因：是在下样式设置的太死了(还打扰官方人员那么久，，，实在抱歉)，详见picker类型附近的picker注意事项
 
 # 更新说明
 
 | 版本号 | 更新说明 |
 |----|------|
-| 3.9 | 性能优化（动态style样式从data中获取）,修复textarea类型设置初始值删不掉bug|
+| 4.1 | 新增省市区乡镇街道四级联动类型，详见十一、省市区乡镇街道选择<br />(乡镇街道数据文件完整的需1.5MB左右，目前使用的是600KB，只有街道name无code，若需完整街道数据文件，可以找我拿，甚至自定义生成省市区街道数据格式的方法也可以找我拿，若需求多，可上传为另一个插件， 另外， 若无此类型需求并且嫌此组件体积过大可将乡镇街道数据文件删除，并注释相关import代码)|
+| 4.0 | 修复picker类型（特别是picker-date）在页面设置custom时picker选择问题|
+| 3.9 | 模板中动态样式转到data中,修复textarea类型设置初始值删不掉bug|
 | 3.8 | 1、input类型新增过滤函数属性-filterFc<br />2、修复h5日一列与时间显示不正确问题<br />|
 | 3.7 | 1、增加checkbox类型返回选中状态<br />2、去除changeReset属性，父级传入的inputsArray改变时自动初始化数据<br />3、新增submitReSet属性：提交数据后是否重置inputs为初始化<br />4、优化细节<br />5、完善一些注释|
 | 3.6 | 修复input类型的一键清除功能在空值时也显示的问题与多项input时inputTap事件无效问题|
@@ -570,11 +572,14 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | show_value| | Boolean| false| 是否显示当前 value|
 
 ---
+### picker类型注意
+若要设置picker的样式，比如我要设置picker高为5，picker内的行内样式高为1，这样可以显示5行，但是，不要把样式设置的太死，行内高设为.9或.8 即可，设置的太死会导致picker在选择最后一项时出现bug
+
 ### 八、picker-date 日期控件
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'picker-date'|
-| indicatorStyle| | String| 'height: '+ 屏幕高度*.05 +'px;'| picker的行内样式|
+| indicatorStyle| | String| 'height: '+ 屏幕高度*.048 +'px;'| picker的行内样式|
 | height| | String| 屏幕高度*.2 px| picker的高度|
 | mode| | String| 'picker-date'| picker-date的类型|
 | startYear| | Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
@@ -598,7 +603,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'picker-city'|
-| indicatorStyle| | String| 'height: '+ 屏幕高度*.05 +'px;'| picker的行内样式|
+| indicatorStyle| | String| 'height: '+ 屏幕高度*.048 +'px;'| picker的行内样式|
 | height| | String| 屏幕高度*.2 px| picker的高度|
 | defaultValue| |Array| [0, 0, 0]|默认城市(需注意对应的项是否存在)|
 | chooseName| | String| 选择城市| 选择城市按钮命名|
@@ -618,7 +623,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 |steps|linkage为true时是| Object| | 自定义阶级变量名，详见下方示例与说明|
 |linkageNum| | Number| | 联动级数|
 | defaultValue| |Array| linkageNum\=\=2?[0,0]:linkageNum\=\=3?[0, 0, 0]:'none'|默认值(需注意对应的项是否存在)|
-| indicatorStyle| | String| 'height: '+ 屏幕高度*.05 +'px;'| picker的行内样式|
+| indicatorStyle| | String| 'height: '+ 屏幕高度*.048 +'px;'| picker的行内样式|
 | height| | String| 屏幕高度*.2 px| picker的高度|
 | chooseName| | String| 选择| 选择按钮命名|
 | editorName| | String| 更改| 更改按钮命名|
@@ -861,6 +866,25 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 
 
 注：picker-cutsom取值时无联动类型返回数组，联动类型返回对象
+
+---
+
+### 十一、picker-provincialStreet 省市区乡镇街道选择
+
+乡镇街道数据文件完整的需1.5MB左右，目前使用的是600KB，只有街道name无code，若需完整街道数据文件，可以找我拿，甚至自定义生成省市区街道数据格式的方法也可以找我拿，若需求多，可上传为另一个插件
+
+| 属性名| 是否必填| 值类型| 默认值| 说明|
+|------|----|----|----|-------|
+| type| 是| String| | 传固定值 type: 'picker-provincialStreet'|
+| indicatorStyle| | String| 'height: '+ 屏幕高度*.048 +'px;'| picker的行内样式|
+| height| | String| 屏幕高度*.2 px| picker的高度|
+| defaultValue| |Array| [0, 0, 0, 0]|默认城市(需注意对应的项是否存在)|
+| chooseName| | String| 选择街道| 选择按钮命名|
+| editorName| | String| 更改| 更改按钮命名|
+| confirmName| | String| 确定| 弹出时,确定选择按钮命名|
+| onceShowDefaultValue| | Boolean| false| 初始化时是否显示初始值|
+
+注：picker-provincialStreet取值时返回对象，可根据需求修改， 若无此类型需求并且嫌此组件体积过大可将乡镇街道数据文件(QuShe-inputs/mpvue-citypicker/city-data/streets.js)删除，并注释相关import代码(QuShe-inputs/mpvue-citypicker/picker-provincialStreet.vue)！
 
 ---
 

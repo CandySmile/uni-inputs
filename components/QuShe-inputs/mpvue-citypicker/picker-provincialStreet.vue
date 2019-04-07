@@ -1,8 +1,8 @@
 <template>
 	<view class="width100 refadIn" @touchmove.prevent.stop="voidFc">
 		<picker-view class="fontColor666666 width100 bg_white border_radius_10px over_hidden box_shadow padding05px box-sizing-border-box" 
-		:indicator-style="indicatorStyle||'height: '+windowHeight*.05+'px;'" :style="{'height': height||windowHeight*.2 + 'px', 'font-size': fontSize+'px'}" 
-		:value="pickerValue" @change="pickerChange">
+		:indicator-style="indicatorStyle||'height: '+wH*.048+'px;'" :style="classObj.picker" 
+		:value="pickerValue.length>0?pickerValue:pickerValueDefault" @change="pickerChange">
 				<picker-view-column>
 					<view class="flex_row_c_c" v-for="(item,index) in provinceDataList" :key="index">{{item.label}}</view>
 				</picker-view-column>
@@ -12,8 +12,11 @@
 				<picker-view-column>
 					<view class="flex_row_c_c" v-for="(item,index) in areaDataList" :key="index">{{item.label}}</view>
 				</picker-view-column>
+				<picker-view-column>
+					<view class="flex_row_c_c" v-for="(item,index) in streetDataList" :key="index">{{item}}</view>
+				</picker-view-column>
 		</picker-view>
-		<button type="primary" :style="{'margin-top': windowHeight*.05 + 'px'}" @tap="_$emit">{{confirmName}}</button>
+		<button type="primary" :style="classObj.marginTop5" @tap="_$emit">{{confirmName||'确定'}}</button>
 	</view>
 </template>
 
@@ -21,76 +24,68 @@
 	import provinceData from './city-data/province.js';
 	import cityData from './city-data/city.js';
 	import areaData from './city-data/area.js';
+	import streetData from './city-data/streets.js';
+	import _app from '../app.js';
 	export default {
 		data() {
+			let pickerValue = this.pickerValueDefault||[0,0,0,0];
+			let provinceDataList = provinceData;
+			let cityDataList = cityData[pickerValue[0]];
+			let areaDataList =
+				areaData[pickerValue[0]][pickerValue[1]];
+			let streetDataList =
+				streetData[pickerValue[0]][pickerValue[1]][pickerValue[2]];
 			return {
-				pickerValue: [0, 0, 0],
-				provinceDataList: [],
-				cityDataList: [],
-				areaDataList: []
+				provinceDataList,
+				cityDataList,
+				areaDataList,
+				streetDataList,
+				pickerValue,
+				classObj: {
+					picker: 'height:' + (this.height||this.wH*.2) + 'px;font-size:' + this.fontSize+'px;',
+					marginTop5: 'margin-top:' + this.wH*.05 + 'px;'
+				}
 			};
-		},
-		created() {
-			this.provinceDataList = provinceData;
-			this.cityDataList = cityData[this.pickerValueDefault[0]];
-			this.areaDataList =
-				areaData[this.pickerValueDefault[0]][this.pickerValueDefault[1]];
-			this.pickerValue = this.pickerValueDefault;
-			this.handPickValueDefault(); // 对 pickerValueDefault 做兼容处理
 		},
 		props: {
 			indicatorStyle: String,
 			height: Number,
-			windowHeight: Number,
+			wH: Number,
 			/* 默认值 */
-			pickerValueDefault: {
-				type: Array,
-				default () {
-					return [0, 0, 0];
-				}
-			},
+			pickerValueDefault: Array,
 			/* 主题色 */
 			themeColor: String,
 			fontSize: {
 				type: Number,
 				default: 10
 			},
-			confirmName: {
-				type: String,
-				default: '确定'
-			},
-			index: {
-				type: Number
-			}
+			confirmName: String,
+			index: Number
 		},
 		methods: {
-			handPickValueDefault() {
-				let _this = this;
-				if (this.pickerValueDefault !== [0, 0, 0]) {
-					if (this.pickerValueDefault[0] > provinceData.length - 1) {
-						this.pickerValueDefault[0] = provinceData.length - 1;
-					}
-					if (this.pickerValueDefault[1] > cityData[this.pickerValueDefault[0]].length - 1) {
-						this.pickerValueDefault[1] = cityData[this.pickerValueDefault[0]].length - 1;
-					}
-					if (this.pickerValueDefault[2] > areaData[this.pickerValueDefault[0]][this.pickerValueDefault[1]].length - 1) {
-						this.pickerValueDefault[2] = areaData[this.pickerValueDefault[0]][this.pickerValueDefault[1]].length - 1;
-					}
-				}
-			},
 			pickerChange(e) {
 				let changePickerValue = e.detail.value;
 				if (this.pickerValue[0] !== changePickerValue[0]) {
 					// 第一级发生滚动
 					this.cityDataList = cityData[changePickerValue[0]];
 					this.areaDataList = areaData[changePickerValue[0]][0];
+					this.streetDataList =
+						streetData[changePickerValue[0]][0][0];
 					changePickerValue[1] = 0;
 					changePickerValue[2] = 0;
+					changePickerValue[3] = 0;
 				} else if (this.pickerValue[1] !== changePickerValue[1]) {
 					// 第二级滚动
 					this.areaDataList =
 						areaData[changePickerValue[0]][changePickerValue[1]];
+					this.streetDataList =
+						streetData[changePickerValue[0]][changePickerValue[1]][0];
 					changePickerValue[2] = 0;
+					changePickerValue[3] = 0;
+				}else if (this.pickerValue[2] !== changePickerValue[2]) {
+					this.streetDataList =
+						streetData[changePickerValue[0]][changePickerValue[1]][changePickerValue[2]];
+					changePickerValue[3] = 0;
 				}
 				this.pickerValue = changePickerValue;
 			},
@@ -101,7 +96,7 @@
 					value: this.pickerValue,
 					cityCode: this._getCityCode()
 				};
-				this.$emit('getCity', {data, index: _this.index});
+				this.$emit('getProvincialStreet', {data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_provincialStreet.name});
 			},
 			_getLabel() {
 				let pcikerLabel =
@@ -109,7 +104,9 @@
 					'-' +
 					this.cityDataList[this.pickerValue[1]].label +
 					'-' +
-					this.areaDataList[this.pickerValue[2]].label;
+					this.areaDataList[this.pickerValue[2]].label + 
+					'-' + 
+					this.streetDataList[this.pickerValue[3]];
 				return pcikerLabel;
 			},
 			_getCityCode() {

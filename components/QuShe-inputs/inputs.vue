@@ -15,7 +15,7 @@
 					</view>
 				</view>
 				<!-- pics -->
-				<view class="width75 box-sizing-border-box" v-if="item.type&&item.type=='pics'" :style="classObj.padding10">
+				<view class="width75 box-sizing-border-box" v-if="item.type&&item.type=='pics'" :style="classObj.padding1_0">
 					<view class="flex_row_e_c width100" :class="item.cssMode||cssMode||'wrap'">
 						<view class="flex_column_c_c box-sizing-border-box" :style="classObj.padding1" v-for="(picsItem, picsIndex) in item.itemArray"
 						 :key="picsIndex">
@@ -123,6 +123,18 @@
 						<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择'}}</button>
 					</view>
 				</view>
+				<!-- picker-provincialStreet -->
+				<view class="width75 flex_row_e_c" :style="classObj.padding0_3" v-else-if="item.type&&item.type=='picker-provincialStreet'">
+					<view class="flex_row_none_c" v-if="pickerObj[onLoadData+index]">
+						<view class="fontColor666666" :style="classObj.content">
+							{{pickerObj[onLoadData+index].label}}
+						</view>
+						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3">{{item.editorName||'更改'}}</button>
+					</view>
+					<view class="flex_row_e_c" v-else>
+						<button type="primary" @tap="showPicker(item, index)" size="mini">{{item.chooseName||'选择'}}</button>
+					</view>
+				</view>
 				<!-- input -->
 				<view class="flex_row_none_c width75" v-else>
 					<view :class="item.tapClear&&item.password?'width70':item.tapClear||item.password?'width85':'width100'" class="flex_row_none_c borderBottom1pxf2f2f2">
@@ -176,7 +188,7 @@
 		<view class="mask" @touchmove.prevent.stop="picker_hideFc" @tap.prevent.stop="picker_hideFc" v-show="maskShow"></view>
 		<!-- 日期选择 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerDateShow">
-			<pickers-date class="width100" :startYear="P_data.startYear" :endYear="P_data.endYear" :defaultDate="P_data.defaultValue" @getDate="pickerChange($event)" 
+			<pickers-date class="width100" :startYear="P_data.startYear" :endYear="P_data.endYear" :defaultDate="P_data.defaultValue" @getDate="picker_change($event)" 
 			:mode="P_data.mode" :wH="wH" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" 
 			:fontSize="classObj.contentSize" :confirmName="P_data.confirmName" 
 			:index="P_data.index"/>
@@ -184,13 +196,19 @@
 		<!-- 城市选择 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerCityShow">
 			<pickers-city class="width100" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
-			:fontSize="classObj.contentSize" @getCity="pickerChange($event)" 
+			:fontSize="classObj.contentSize" @getCity="picker_change($event)" 
 			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index"/>
 		</view>
 		<!-- picker自定义 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerCustomShow">
 			<picker-custom class="width100" :itemArray="P_data.itemArray" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
-			:fontSize="classObj.contentSize" @getCustom="pickerChange($event)" 
+			:fontSize="classObj.contentSize" @getCustom="picker_change($event)" 
+			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index"/>
+		</view>
+		<!-- 省市区街道四级联动 -->
+		<view class="flex_row_c_c picker_view" v-if="pickerProvincialStreetShow">
+			<picker-provincialStreet class="width100" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
+			:fontSize="classObj.contentSize" @getProvincialStreet="picker_change($event)" 
 			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index"/>
 		</view>
 	</view>
@@ -202,6 +220,8 @@
 	import pickersDate from './pickers-date.vue';
 	import pickersCity from './mpvue-citypicker/picker-city.vue';
 	import pickerCustom from './picker-custom.vue';
+	import pickerProvincialStreet from './mpvue-citypicker/picker-provincialStreet.vue';
+	
 	export default {
 		props: {
 			inputsArray: { //用户自定义的输入类型
@@ -259,6 +279,9 @@
 			animationDuration: { //动画时长系数
 				type: Number,
 				default: .2
+			},
+			ifCustom: {	//使用inputs的页面是否
+				
 			}
 		},
 		data() {
@@ -283,6 +306,7 @@
 				pickerDateShow: false, //picker-date组件是否显示
 				pickerCityShow: false, //picker-city组件是否显示
 				pickerCustomShow: false, //picker-custom组件是否显示
+				pickerProvincialStreetShow: false, //picker-provincialStreetShow组件是否显示
 				P_data: {}, //picker类型显示对象暂存
 				pickerObj: {}, //picker类型视图对象暂存
 				inputsObj: {} ,//inputsArray除特有暂存对象外的各类型视图暂存对象
@@ -293,7 +317,7 @@
 					content: 'font-size:' + (this.contentFontSize||wH*scale_two) + 'px;',
 					contentSize: this.contentFontSize||wH*scale_two,
 					iconSize: (this.contentFontSize||wH*scale_two) + 8,
-					padding10: 'padding:' + wH*.01 + 'px 0;',
+					padding1_0: 'padding:' + wH*.01 + 'px 0;',
 					padding1: 'padding:' + wH*.01 + 'px;',
 					padding0_3: 'padding:' +  '0 ' + wW*.03+'px;',
 					padding2_3: 'padding:' + wH*.02 + 'px ' + wW*.03 + 'px;',
@@ -493,6 +517,35 @@
 							_this[itemVariableName] = item.defaultValue || item.min || 0;
 							_this.$set(_this.inputsObj, itemVariableName, item.defaultValue || item.min || 0);
 							break;
+						case 'picker-provincialStreet':
+							if(item.onceShowDefaultValue) {
+								let defaultValue = item.defaultValue||[0,0,0,0];
+								let provinceDataList = require('./mpvue-citypicker/city-data/province.js').default;
+								let cityDataList =  require('./mpvue-citypicker/city-data/city.js').default[defaultValue[0]];
+								let areaDataList =  require('./mpvue-citypicker/city-data/area.js').default[defaultValue[0]][defaultValue[1]];
+								let streetDataList =  require('./mpvue-citypicker/city-data/streets.js').default[defaultValue[0]][defaultValue[1]][defaultValue[2]];
+								let pcikerLabel =
+									provinceDataList[defaultValue[0]].label +
+									'-' +
+									cityDataList[defaultValue[1]].label +
+									'-' +
+									areaDataList[defaultValue[2]].label +
+									'-' +
+									streetDataList[defaultValue[3]];
+								let data = {
+									label: pcikerLabel,
+									value: defaultValue,
+									cityCode: areaDataList[defaultValue[2]].value
+								};
+								_this[itemVariableName] = data;
+								_this.$set(_this.pickerObj, itemVariableName, data);
+								this[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
+							}else{
+								_this[itemVariableName] = null;
+								_this.$set(_this.pickerObj, itemVariableName, null);
+								this[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
+							}
+							break;
 						default:
 							if(item.defaultValue) {
 								_this[itemVariableName] = item.defaultValue;
@@ -532,6 +585,12 @@
 							if(this[_app.pickerChoosedType.pickerChoosedType_custom.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_custom.value + index];
 							_this.P_data = obj;
 							_this.pickerCustomShow = true;
+							break;
+						case 'picker-provincialStreet':
+							//记忆数据优先
+							if(this[_app.pickerChoosedType.pickerChoosedType_provincialStreet.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_provincialStreet.value + index];
+							_this.P_data = obj;
+							_this.pickerProvincialStreetShow = true;
 							break;
 						default:
 							_app.showToast('缺少必要参数-type');
@@ -596,8 +655,8 @@
 					_this[_this.onLoadData + index] = val;
 				}
 			},
-			pickerChange(res) { //picker类型选择后赋值 
-				//console.log('pickerValue：' + JSON.stringify(res));
+			picker_change(res) { //picker类型选择后赋值 
+				console.log('pickerValue：' + JSON.stringify(res));
 				this.pickerObj[this.onLoadData + res.index] = res.data;
 				this[this.onLoadData + res.index] = res.data;
 				switch (res.type){		// 该项picker的value记忆
@@ -609,6 +668,9 @@
 						break;
 					case _app.pickerChoosedType.pickerChoosedType_custom.name:
 						this[_app.pickerChoosedType.pickerChoosedType_custom.value+res.index] = res.data.value;
+						break;
+					case _app.pickerChoosedType.pickerChoosedType_provincialStreet.name:
+						this[_app.pickerChoosedType.pickerChoosedType_provincialStreet.value+res.index] = res.data.value;
 						break;
 					default:
 						break;
@@ -807,6 +869,7 @@
 				this.pickerDateShow = false;
 				this.pickerCityShow = false;
 				this.pickerCustomShow = false;
+				this.pickerProvincialStreetShow = false;
 				this.maskShow = false;
 				this.P_data = {};
 			}
@@ -815,7 +878,8 @@
 			uniIcon,
 			pickersDate,
 			pickersCity,
-			pickerCustom
+			pickerCustom,
+			pickerProvincialStreet
 		}
 	}
 </script>

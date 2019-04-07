@@ -1,7 +1,7 @@
 <template>
 	<view class="width100 refadIn" @touchmove.prevent.stop="voidFc">
 		<picker-view class="fontColor666666 width100 bg_white border_radius_10px over_hidden box_shadow padding05px box-sizing-border-box"
-		 :indicator-style="indicatorStyle||('height: '+wH*.05+'px;width: 100%;')" :value="dateVlue" @change="bindPickerViewChange($event)"
+		 :indicator-style="indicatorStyle||('height: '+wH*.048+'px;width: 100%;')" :value="dateVlue" @change="bindPickerViewChange($event)"
 		 :style="classObj.picker">
 			<block v-if="mode!==picker_date_obj.time">
 				<picker-view-column>

@@ -86,11 +86,12 @@
 					border_top: '1px solid #f2f2f2'
 				}, {
 					segmentationTitle: 'picker类型',
+					type: 'picker-provincialStreet',
+					title: 'provincialStreet',
+					onceShowDefaultValue: true
+				}, {
 					type: 'picker-date',
-					title: 'date',
-					defaultValue: '2019-2-28',
-					// onceShowDefaultValue: true,
-					border_top: '1px solid #f2f2f2'
+					title: 'date'
 				}, {
 					type: 'picker-city',
 					title: 'city',
