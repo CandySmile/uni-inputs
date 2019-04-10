@@ -30,7 +30,7 @@
 			</picker-view-column>
 		</block>
 		</picker-view>
-		<button type="primary" :style="classObj.marginTop5" @tap="confirmFc">{{confirmName||'确定'}}</button>
+		<button type="primary" :style="classObj.marginTop5 + confirmStyle" @tap="confirmFc">{{confirmName||'确定'}}</button>
 	</view>
 </template>
 
@@ -62,7 +62,8 @@
 			indicatorStyle: String,
 			height: Number,
 			wH: Number,
-			pickerValueDefault: Array
+			pickerValueDefault: Array,
+			confirmStyle: String
 		},
 		data() {
 			return {

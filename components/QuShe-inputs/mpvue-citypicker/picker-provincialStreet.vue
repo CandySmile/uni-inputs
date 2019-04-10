@@ -16,7 +16,7 @@
 					<view class="flex_row_c_c" v-for="(item,index) in streetDataList" :key="index">{{item}}</view>
 				</picker-view-column>
 		</picker-view>
-		<button type="primary" :style="classObj.marginTop5" @tap="_$emit">{{confirmName||'确定'}}</button>
+		<button type="primary" :style="classObj.marginTop5 + confirmStyle" @tap="_$emit">{{confirmName||'确定'}}</button>
 	</view>
 </template>
 
@@ -60,7 +60,8 @@
 				default: 10
 			},
 			confirmName: String,
-			index: Number
+			index: Number,
+			confirmStyle: String
 		},
 		methods: {
 			pickerChange(e) {

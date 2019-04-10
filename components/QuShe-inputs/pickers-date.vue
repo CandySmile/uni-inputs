@@ -51,7 +51,7 @@
 				</picker-view-column>
 			</block>
 		</picker-view>
-		<button type="primary" :style="classObj.marginTop5" @tap="confirmFc">{{confirmName||'确定'}}</button>
+		<button type="primary" :style="classObj.marginTop5 + confirmStyle" @tap="confirmFc">{{confirmName||'确定'}}</button>
 	</view>
 </template>
 
@@ -72,7 +72,8 @@
 			},
 			parentDays: Array,
 			confirmName: String,
-			index: Number
+			index: Number,
+			confirmStyle: String
 		},
 		data() {
 			let _this = this;
