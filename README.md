@@ -19,7 +19,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 版本号 | 更新说明 |
 |----|------|
-| 4.2 | 1、新增button样式控制(详见inputs属性说明-buttonStyle)<br />2、pics类型清除按钮新增颜色控制(详见pics类型)<br />3、废弃 titleFontColor 与 titleFontSize 与 contentFontSize 属性，同意归纳到titleSet、contentSet属性中，并增加左对齐或右对齐属性<br />4、废弃ruleArray属性，归纳到ruleSet属性中，并增加设置规则或协议文字颜色，选中框颜色<br />5、若不传activeName（主按钮名称）属性，则不显示主按钮，可以用ref调用inputs的activeFc方法获取输入|
+| 4.2 | 1、新增button样式控制(详见inputs属性说明-buttonStyle)<br />2、pics类型清除按钮新增颜色控制(详见pics类型)<br />3、废弃 titleFontColor 与 titleFontSize 与 contentFontSize 属性，统一归纳到titleSet、contentSet属性中，并增加左对齐或右对齐属性<br />4、废弃ruleArray属性，归纳到ruleSet属性中，并增加设置规则或协议文字颜色，选中框颜色<br />5、若不传activeName（主按钮名称）属性，则不显示主按钮，可以用ref调用inputs的activeFc方法获取输入|
 | 4.1 | 新增省市区乡镇街道四级联动类型，详见十一、省市区乡镇街道选择<br />(乡镇街道数据文件完整的需1.5MB左右，目前使用的是600KB，只有街道name无code，若需完整街道数据文件，可以找我拿，甚至自定义生成省市区街道数据格式的方法也可以找我拿，若需求多，可上传为另一个插件， 另外， 若无此类型需求并且嫌此组件体积过大可将乡镇街道数据文件删除，并注释相关import代码)|
 | 4.0 | 修复picker类型（特别是picker-date）在页面设置custom时picker选择问题|
 | 3.9 | 模板中动态样式转到data中,修复textarea类型设置初始值删不掉bug|
@@ -417,7 +417,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | inputsArray| 是| Array\<Object\>| | 需循环的inputs数组（可从后端接口获取）|
 | @activeFc| 是| Function| | 主功能方法，携带一个用户所输入的数据对象|
 | activeName| | String| | 主功能按钮的文字说明，不传该值，则主按钮不显示，可以用ref调用inputs的activeFc方法获取输入|
-| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善694-728行的发送验证码方法, 并需设置一项input的phone属性为true|
+| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善728-733行的发送验证码方法, 并需设置一项input的phone属性为true|
 | ifRule| | Boolean| false| 是否需要用户同意某规则或协议|
 | ruleArray(废弃,请使用ruleSet)| ifRule为true时是| Array\<Object\>| | 需要用户同意某规则或协议的数组|
 | @chaildOpenEvent| ifRule为true时是| Function| | 打开某规则或协议的方法|
@@ -581,7 +581,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | nullErr| | String| this.title + '不能为空'| 为空时提示|
 | ignore| | Boolean| false| 可以为空， 不判断是否为空,默认为必填，必填则在title前面有 * 标识|
 | defaultValue| | String| | 该项pics的初始化默认图片路径(本地图片路径)|
-注：若启用此项，则需完善811-817行的上传图片至服务器方法，并且完善836-839的拼接返回的图片路径方法
+注：若启用此项，则需完善817-823行的上传图片至服务器方法，并且完善842-845的拼接返回的图片路径方法
 
 ---
 ### 四、radio(单选)
