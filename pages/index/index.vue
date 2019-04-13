@@ -19,6 +19,9 @@
 					getcodeButton: 'background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;' //获取验证码按钮样式
 				},
 				inputsArray: [{
+						type: 'sku',
+						ignore: true
+					}, {
 						segmentationTitle: '表单组件', //分割大标题
 						type: 'slider', //类型
 						title: 'slider', //标题
@@ -76,6 +79,13 @@
 						}],
 						variableName: 'checkbox',
 						color: '#c0ebd7'
+					},{
+						title: '手机号校验',
+						verifyFc: function(value) {
+							if(/^1(3|4|5|6|7|8|9)(0-9){9}$/.test(value)) return true;
+							return false;
+						},
+						verifyErr: '手机号校验错误'
 					},
 					{
 						title: 'input',

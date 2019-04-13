@@ -19,6 +19,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 版本号 | 更新说明 |
 |----|------|
+| 4.3 | input新增校验功能|
 | 4.2 | 1、新增button样式控制(详见inputs属性说明-buttonStyle)<br />2、pics类型清除按钮新增颜色控制(详见pics类型)<br />3、废弃 titleFontColor 与 titleFontSize 与 contentFontSize 属性，统一归纳到titleSet、contentSet属性中，并增加左对齐或右对齐属性<br />4、废弃ruleArray属性，归纳到ruleSet属性中，并增加设置规则或协议文字颜色，选中框颜色<br />5、若不传activeName（主按钮名称）属性，则不显示主按钮，可以用ref调用inputs的activeFc方法获取输入|
 | 4.1 | 新增省市区乡镇街道四级联动类型，详见十一、省市区乡镇街道选择<br />(乡镇街道数据文件完整的需1.5MB左右，目前使用的是600KB，只有街道name无code，若需完整街道数据文件，可以找我拿，甚至自定义生成省市区街道数据格式的方法也可以找我拿，若需求多，可上传为另一个插件， 另外， 若无此类型需求并且嫌此组件体积过大可将乡镇街道数据文件删除，并注释相关import代码)|
 | 4.0 | 修复picker类型（特别是picker-date）在页面设置custom时picker选择问题|
@@ -141,8 +142,14 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 				}],
 				variableName: 'checkbox',
 				color: '#c0ebd7'
-			},
-			{
+			},{
+				title: '手机号校验',
+				verifyFc: function(value) { //校验函数  必须return true或false
+					if(/^1(3|4|5|6|7|8|9)(0-9){9}$/.test(value)) return true;
+					return false;
+				},
+				verifyErr: '手机号校验错误' //校验错误提示
+			},{
 				title: 'input',
 				ignore: true, //是否可忽略该值(判断时此项值可以为空)
 				defaultValue: '今天也要加油鸭~',
@@ -527,6 +534,8 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | icon| | String| | input左边自定义图标(目前使用官方uniIcon，可自行修改)|
 | iconColor| | String| #999999| 左边自定义图标与密码显示时图标颜色（密码显示默认颜色为#33CC33）|
 | filterFc| | Fuction| | 自定义过滤值函数|
+| verifyFc| | Fuction| | 自定义校验值函数|
+| verifyErr| | String| | 校验错误提示|
 注：最好看源码对照官网属性
 
 #### filterFc示例  3.8更新
@@ -538,6 +547,19 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
   value = '过滤后的值';
   return value; //必须return
  }
+}
+```
+
+#### verifyFc示例  4.3更新
+
+```javascript
+{
+ title: '手机号校验',
+ verifyFc: function(value) { //校验函数  必须return true或false
+  if(/^1(3|4|5|6|7|8|9)(0-9){9}$/.test(value)) return true;
+  return false;
+ },
+ verifyErr: '手机号校验错误' //校验错误提示
 }
 ```
 

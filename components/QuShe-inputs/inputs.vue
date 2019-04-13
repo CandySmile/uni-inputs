@@ -135,6 +135,10 @@
 						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="buttonStyle.selectButton">{{item.chooseName||'选择街道'}}</button>
 					</view>
 				</view>
+				<!-- sku -->
+				<view class="width100 flex_column" :style="classObj.padding0_3" v-else-if="item.type&&item.type=='sku'">
+					<sku :wH="wH" :wW="wW"/>
+				</view>
 				<!-- input -->
 				<view class="flex_row_none_c width75" v-else>
 					<view :class="item.tapClear&&item.password?'width70':item.tapClear||item.password?'width85':'width100'" class="flex_row_none_c borderBottom1pxf2f2f2">
@@ -221,6 +225,7 @@
 	import pickersCity from './mpvue-citypicker/picker-city.vue';
 	import pickerCustom from './picker-custom.vue';
 	import pickerProvincialStreet from './mpvue-citypicker/picker-provincialStreet.vue'
+	import sku from './sku.vue';
 	
 	export default {
 		props: {
@@ -770,10 +775,17 @@
 								if (d[i].ignore) {
 									inputsDataObj[variableName] = '';
 								} else {
-									_app.showToast(d[i].nullErr || d[i].title + '不能为空');
+									_app.showToast(d[i].nullErr || (d[i].title + '不能为空'));
 									return;
 								}
 							} else {
+								let verifyFc = d[i].verifyFc;
+								if(verifyFc) {
+									if(!verifyFc(_this[onLoadData])) {
+										_app.showToast(d[i].verifyErr||(d[i].title + '校验错误'))
+										return;
+									}
+								}
 								inputsDataObj[variableName] = _this[onLoadData];
 							}
 							break;
@@ -885,7 +897,8 @@
 			pickersDate,
 			pickersCity,
 			pickerCustom,
-			pickerProvincialStreet
+			pickerProvincialStreet,
+			sku
 		}
 	}
 </script>
