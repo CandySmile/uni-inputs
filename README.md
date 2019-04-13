@@ -19,6 +19,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 版本号 | 更新说明 |
 |----|------|
+| 4.4 | 新增picker-custom优化版picker-custom2，解决custom数据类型无法使用问题，详见十（2）、picker-custom2|
 | 4.3 | input新增校验功能|
 | 4.2 | 1、新增button样式控制(详见inputs属性说明-buttonStyle)<br />2、pics类型清除按钮新增颜色控制(详见pics类型)<br />3、废弃 titleFontColor 与 titleFontSize 与 contentFontSize 属性，统一归纳到titleSet、contentSet属性中，并增加左对齐或右对齐属性<br />4、废弃ruleArray属性，归纳到ruleSet属性中，并增加设置规则或协议文字颜色，选中框颜色<br />5、若不传activeName（主按钮名称）属性，则不显示主按钮，可以用ref调用inputs的activeFc方法获取输入|
 | 4.1 | 新增省市区乡镇街道四级联动类型，详见十一、省市区乡镇街道选择<br />(乡镇街道数据文件完整的需1.5MB左右，目前使用的是600KB，只有街道name无code，若需完整街道数据文件，可以找我拿，甚至自定义生成省市区街道数据格式的方法也可以找我拿，若需求多，可上传为另一个插件， 另外， 若无此类型需求并且嫌此组件体积过大可将乡镇街道数据文件删除，并注释相关import代码)|
@@ -424,7 +425,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | inputsArray| 是| Array\<Object\>| | 需循环的inputs数组（可从后端接口获取）|
 | @activeFc| 是| Function| | 主功能方法，携带一个用户所输入的数据对象|
 | activeName| | String| | 主功能按钮的文字说明，不传该值，则主按钮不显示，可以用ref调用inputs的activeFc方法获取输入|
-| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善728-733行的发送验证码方法, 并需设置一项input的phone属性为true|
+| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善704-738行的发送验证码方法, 并需设置一项input的phone属性为true|
 | ifRule| | Boolean| false| 是否需要用户同意某规则或协议|
 | ruleArray(废弃,请使用ruleSet)| ifRule为true时是| Array\<Object\>| | 需要用户同意某规则或协议的数组|
 | @chaildOpenEvent| ifRule为true时是| Function| | 打开某规则或协议的方法|
@@ -603,7 +604,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | nullErr| | String| this.title + '不能为空'| 为空时提示|
 | ignore| | Boolean| false| 可以为空， 不判断是否为空,默认为必填，必填则在title前面有 * 标识|
 | defaultValue| | String| | 该项pics的初始化默认图片路径(本地图片路径)|
-注：若启用此项，则需完善817-823行的上传图片至服务器方法，并且完善842-845的拼接返回的图片路径方法
+注：若启用此项，则需完善829-835行的上传图片至服务器方法，并且完善854-857的拼接返回的图片路径方法
 
 ---
 ### 四、radio(单选)
@@ -712,7 +713,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 注：picker-city取值时返回对象，可根据需求修改
 
 ---
-### 十、picker-custom 自定义
+### 十(一)、picker-custom 自定义 （建议使用十（二）、picker-custom2）
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'picker-custom '|
@@ -966,6 +967,166 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 注：picker-cutsom取值时无联动类型返回数组，联动类型返回对象
 
 ---
+### 十（二）、picker-custom2 自定义（同类型优化版,解决custom数据类型问题）
+| 属性名| 是否必填| 值类型| 默认值| 说明|
+|------|----|----|----|-------|
+| type| 是| String| | 传固定值 type: 'picker-custom2'|
+| itemArray|是 |Array| |自定义的picker数组，详见示例说明|
+|linkage| | Boolean| false| 是否联动|
+|steps|linkage为true时是| Object| | 自定义阶级变量名，详见下方示例与说明|
+|linkageNum| | Number| | 联动级数|
+| defaultValue| |Array| linkageNum\=\=2?[0,0]:linkageNum\=\=3?[0, 0, 0]:'none'|默认值(需注意对应的项是否存在)|
+| indicatorStyle| | String| 'height: '+ 屏幕高度*.048 +'px;'| picker的行内样式|
+| height| | String| 屏幕高度*.2 px| picker的高度|
+| chooseName| | String| 选择| 选择按钮命名|
+| editorName| | String| 更改| 更改按钮命名|
+| confirmName| | String| 确定| 弹出时,确定选择按钮命名|
+| onceShowDefaultValue| | Boolean| false| 初始化时是否显示初始值|
+
+#### picker-custom2的steps属性说明
+| 属性名| 是否必填| 值类型| 默认值| 说明|
+|------|----|----|----|-------|
+| step_1_value| | String| | 一级显示属性名|
+| step_2_value| |String| |二级显示属性名|
+|step_3_value| | String| | 三级显示属性名|
+注：详见下方示例
+
+##### 无联动示例1：
+
+```javascript
+{
+	type: 'picker-custom2',
+	title: 'custom2-无联动示例1',
+	itemArray: [
+		[0, 1, 2],
+		[3, 4, 5]
+	],
+	defaultValue: [0, 0], //初始数据
+	onceShowDefaultValue: true, //是否显示初始数据
+}
+
+//返回数据格式: {"result":[0,3],"value":[0,0]}
+```
+
+
+##### 无联动示例2：
+
+```javascript
+{
+	type: 'picker-custom2',
+	title: 'custom2-无联动示例2',
+	itemArray: [
+		[{
+			name: 'a', //name变量名需与下方steps.steps_1_value相同
+			value: 'a' //可添加多项自定义想要的数据
+		}, {
+			name: 'b',
+			value: 'b'
+		}, {
+			name: 'c',
+			value: 'c'
+		}],
+		[{
+			name: 'd',
+			value: 'd'
+		}, {
+			name: 'e',
+			value: 'e'
+		}, {
+			name: 'f',
+			value: 'f'
+		}]
+	],
+	steps: {
+		step_1_value: 'name', //第一级显示的属性名
+	},
+	defaultValue: [0, 0], //初始数据
+	onceShowDefaultValue: true, //是否显示初始数据
+}
+
+//返回数据格式: {"result":[{"name":"a","value":"a"},{"name":"d","value":"d"}],"value":[0,0]}
+```
+##### 二级联动示例1：
+
+```javascript
+{
+	type: 'picker-custom2',
+	title: 'custom2-二级联动示例',
+	itemArray: {
+		step_1: [{
+			"name": "蔬菜"
+		}, {
+			"name": "荤菜"
+		}],
+		step_2: [
+			['青菜', '白菜'], //对应step_1的江西
+			['猪肉', '牛肉'] //对应step_1的山东
+		]
+	},
+	steps: {
+		step_1_value: 'name', //第一级显示的属性名
+		step_2_value: '', //第二级显示的属性名
+		step_3_value: '' //第三级显示的属性名
+	},
+	defaultValue: [1, 0], //初始数据
+	onceShowDefaultValue: true, //是否显示初始数据
+	linkageNum: 2, //3 表示为3级联动
+	linkage: true //true 表示开启联动
+}
+
+//返回数据格式: {"data":{"result":{"steps1":{"name":"荤菜"},"steps2":"牛肉"},"value":[1,1]},"index":19,"type":"custom2"}
+```
+
+##### 三级联动示例1：
+
+```javascript
+{
+	type: 'picker-custom2',
+	title: 'custom2-三级联动示例',
+	itemArray: {
+		step_1: [{
+			"name": "江西"
+		}, {
+			"name": "山东"
+		}],
+		step_2: [
+			['南昌', '九江'], //对应step_1的江西
+			['济南', '青岛'] //对应step_1的山东
+		],
+		step_3: [
+			[
+				[ //对应step_2的南昌
+					'东湖'
+				],
+				[ //对应step_2的九江
+					'德安'
+				]
+			],
+			[
+				[ //对应step_2的济南
+					'历下',
+				],
+				[ //对应step_2的青岛
+					'市南',
+				]
+			]
+		]
+	},
+	steps: {
+		step_1_value: 'name', //第一级显示的属性名
+		step_2_value: '', //第二级显示的属性名
+		step_3_value: '' //第三级显示的属性名
+	},
+	defaultValue: [1, 0, 0], //初始数据
+	onceShowDefaultValue: true, //是否显示初始数据
+	linkageNum: 3, //3 表示为3级联动
+	linkage: true //true 表示开启联动
+}
+
+//返回数据格式: {"data":{"result":{"steps1":{"name":"山东"},"steps2":"青岛","steps3":"市南"},"value":[1,1,0]},"index":20,"type":"custom2"}
+```
+
+注：picker-cutsom取值时无联动类型返回数组，联动类型返回对象
 
 ### 十一、picker-provincialStreet 省市区乡镇街道选择
 

@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<inputs :inputsArray="inputsArray" activeName="获取输入" :ruleSet="ruleSet" ifRule ifCode v-on:chaildOpenEvent="openWin"
-		 v-on:activeFc="activeFc" :onLoadData="onLoadData" cssMode="wrap" animationType="rotate3d-fade" :animationDuration=".4"
+		 v-on:activeFc="activeFc" :onLoadData="onLoadData" cssMode="wrap" animationType="rotate3d-fade" :animationDuration=".1"
 		 submitReSet :buttonStyle="buttonStyle" />
 	</view>
 </template>
@@ -19,9 +19,6 @@
 					getcodeButton: 'background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;' //获取验证码按钮样式
 				},
 				inputsArray: [{
-						type: 'sku',
-						ignore: true
-					}, {
 						segmentationTitle: '表单组件', //分割大标题
 						type: 'slider', //类型
 						title: 'slider', //标题
@@ -58,7 +55,7 @@
 							name: 'bb',
 							value: 'bb'
 						}],
-						color:'#c0ebd7'
+						color: '#c0ebd7'
 					},
 					{
 						title: 'checkbox',
@@ -79,15 +76,15 @@
 						}],
 						variableName: 'checkbox',
 						color: '#c0ebd7'
-					},{
+					}, {
 						title: '手机号校验',
 						verifyFc: function(value) {
-							if(/^1(3|4|5|6|7|8|9)(0-9){9}$/.test(value)) return true;
+							if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value))
+								return true;
 							return false;
 						},
 						verifyErr: '手机号校验错误'
-					},
-					{
+					}, {
 						title: 'input',
 						ignore: true, //是否可忽略该值(判断时此项值可以为空)
 						defaultValue: '今天也要加油鸭~',
@@ -101,8 +98,7 @@
 							return value;
 						},
 						variableName: 'input' //自定义变量名
-					},
-					{
+					}, {
 						segmentationTitle: '上传图片',
 						type: 'pics',
 						title: 'pics',
@@ -318,7 +314,119 @@
 						onceShowDefaultValue: true, //是否显示初始数据
 						linkageNum: 3, //3 表示为3级联动
 						linkage: true //true 表示开启联动
-					},{
+					}, {
+						type: 'picker-custom2',
+						title: 'custom2-无联动示例1',
+						itemArray: [
+							[0, 1, 2],
+							[3, 4, 5]
+						],
+						steps: {
+							step_1_value: '', //第一级显示的属性名
+							step_2_value: '', //第二级显示的属性名
+							step_3_value: '' //第三级显示的属性名
+						},
+						defaultValue: [0, 0], //初始数据
+						onceShowDefaultValue: true, //是否显示初始数据
+					}, {
+						type: 'picker-custom2',
+						title: 'custom2-无联动示例2',
+						itemArray: [
+							[{
+								name: 'a', //name变量名需与下方steps.steps_1_value相同
+								value: 'a' //可添加多项自定义想要的数据
+							}, {
+								name: 'b',
+								value: 'b'
+							}, {
+								name: 'c',
+								value: 'c'
+							}],
+							[{
+								name: 'd',
+								value: 'd'
+							}, {
+								name: 'e',
+								value: 'e'
+							}, {
+								name: 'f',
+								value: 'f'
+							}]
+						],
+						steps: {
+							step_1_value: 'name', //第一级显示的属性名
+							step_2_value: '', //第二级显示的属性名
+							step_3_value: '' //第三级显示的属性名
+						},
+						defaultValue: [0, 0], //初始数据
+						onceShowDefaultValue: true, //是否显示初始数据
+					},
+					{
+						type: 'picker-custom2',
+						title: 'custom2-二级联动示例',
+						itemArray: {
+							step_1: [{
+								"name": "蔬菜"
+							}, {
+								"name": "荤菜"
+							}],
+							step_2: [
+								['青菜', '白菜'], //对应step_1的江西
+								['猪肉', '牛肉'] //对应step_1的山东
+							]
+						},
+						steps: {
+							step_1_value: 'name', //第一级显示的属性名
+							step_2_value: '', //第二级显示的属性名
+							step_3_value: '' //第三级显示的属性名
+						},
+						defaultValue: [1, 0], //初始数据
+						onceShowDefaultValue: true, //是否显示初始数据
+						linkageNum: 2, //3 表示为3级联动
+						linkage: true //true 表示开启联动
+					},
+					{
+						type: 'picker-custom2',
+						title: 'custom2-三级联动示例',
+						itemArray: {
+							step_1: [{
+								"name": "江西"
+							}, {
+								"name": "山东"
+							}],
+							step_2: [
+								['南昌', '九江'], //对应step_1的江西
+								['济南', '青岛'] //对应step_1的山东
+							],
+							step_3: [
+								[
+									[ //对应step_2的南昌
+										'东湖'
+									],
+									[ //对应step_2的九江
+										'德安'
+									]
+								],
+								[
+									[ //对应step_2的济南
+										'历下',
+									],
+									[ //对应step_2的青岛
+										'市南',
+									]
+								]
+							]
+						},
+						steps: {
+							step_1_value: 'name', //第一级显示的属性名
+							step_2_value: '', //第二级显示的属性名
+							step_3_value: '' //第三级显示的属性名
+						},
+						defaultValue: [1, 0, 0], //初始数据
+						onceShowDefaultValue: true, //是否显示初始数据
+						linkageNum: 3, //3 表示为3级联动
+						linkage: true //true 表示开启联动
+					}, {
 						title: '手机号',
 						phone: true,
 						defaultValue: '13305679845'

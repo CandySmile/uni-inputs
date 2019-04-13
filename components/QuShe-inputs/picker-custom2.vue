@@ -6,27 +6,27 @@
 		 <block v-if="linkage">
 			<block v-if="linkageNum==2">
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray" :key="index">{{item[steps.steps_1_value]}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemArray.step_1" :key="index">{{steps.step_1_value?item[steps.step_1_value]:item}}</view>
 				</picker-view-column>
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray[value[0]][steps.steps_2_item]" :key="index">{{item[steps.steps_2_value]||item}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemArray.step_2[value[0]]" :key="index">{{steps.step_2_value?item[steps.step_2_value]:item}}</view>
 				</picker-view-column>
 			</block>
 			<block v-else-if="linkageNum==3">
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray" :key="index">{{item[steps.steps_1_value]}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemArray.step_1" :key="index">{{steps.step_1_value?item[steps.step_1_value]:item}}</view>
 				</picker-view-column>
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray[value[0]][steps.steps_2_item]" :key="index">{{item[steps.steps_2_value]}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemArray.step_2[value[0]]" :key="index">{{steps.step_2_value?item[steps.step_2_value]:item}}</view>
 				</picker-view-column>
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray[value[0]][steps.steps_2_item][value[1]][steps.steps_3_item]" :key="index">{{item[steps.steps_3_value]||item}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemArray.step_3[value[0]][value[1]]" :key="index">{{steps.step_3_value?item[steps.step_3_value]:item}}</view>
 				</picker-view-column>
 			</block>
 		</block>
 		 <block v-else>
 			<picker-view-column v-for="(items, indexs) in itemArray" :key="indexs">
-				<view class="flex_row_c_c" v-for="(item, index) in items" :key="index">{{steps?steps.steps_1_value?item[steps.steps_1_value]:item:item}}</view>
+				<view class="flex_row_c_c" v-for="(item, index) in items" :key="index">{{steps.step_1_value?item[steps.step_1_value]:item}}</view>
 			</picker-view-column>
 		</block>
 		</picker-view>
@@ -52,7 +52,16 @@
 				type: Number,
 				default: 2
 			},
-			steps:Object,
+			steps: {
+				type: Object,
+				default() {
+					return {
+						step_1_value: '', //第一级显示的属性名
+						step_2_value: '', //第二级显示的属性名
+						step_3_value: '' //第三级显示的属性名
+					}
+				}
+			},
 			fontSize: {
 				type: Number,
 				default: 10
@@ -99,16 +108,16 @@
 				let steps = _this.steps;
 				if(_this.linkage) {
 					if(_this.linkageNum == 2) {		//二级联动
-						data.result.steps1 = datas[v[0]]
-						data.result.steps2 = datas[v[0]][steps.steps_2_item][v[1]];
+						data.result.steps1 = datas.step_1[v[0]];
+						data.result.steps2 = datas.step_2[v[0]][v[1]];
 					}else if(_this.linkageNum == 3) {		//三级联动
-						data.result.steps1 = datas[v[0]];
+						data.result.steps1 = datas.step_1[v[0]];
 						if(!data.result.steps1)
 							_app.showToast('第一列中不存在第'+v[0]+'项');
-						data.result.steps2 = data.result.steps1[steps.steps_2_item][v[1]];
+						data.result.steps2 = datas.step_2[v[0]][v[1]];
 						if(!data.result.steps2)
 							_app.showToast('第二列中不存在第'+v[1]+'项');
-						data.result.steps3 = data.result.steps2[steps.steps_3_item][v[2]];
+						data.result.steps3 = datas.step_3[v[0]][v[1]][v[2]];
 						if(!data.result.steps3)
 							_app.showToast('第三列中不存在第'+v[2]+'项');
 					}else{
@@ -121,7 +130,7 @@
 						data.result.push(d[v[i]]);
 					}
 				}
-				_this.$emit('getCustom', {data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_custom.name});
+				_this.$emit('getCustom', {data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_custom2.name});
 			},
 			voidFc() {}
 		},

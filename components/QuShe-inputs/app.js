@@ -14,6 +14,10 @@ const pickerChoosedType_custom = {
 	name: 'custom',
 	value: 'p_custom_choosed_'
 };
+const pickerChoosedType_custom2 = {
+	name: 'custom2',
+	value: 'p_custom2_choosed_'
+};
 const pickerChoosedType_provincialStreet = {
 	name: 'provincialStreet',
 	value: 'p_custom_provincialStreet_'
@@ -28,6 +32,7 @@ let _app = {
 		pickerChoosedType_date,
 		pickerChoosedType_city,
 		pickerChoosedType_custom,
+		pickerChoosedType_custom2,
 		pickerChoosedType_provincialStreet
 	},
 	interface: {

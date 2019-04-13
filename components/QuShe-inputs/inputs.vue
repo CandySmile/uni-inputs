@@ -123,6 +123,30 @@
 						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="buttonStyle.selectButton">{{item.chooseName||'选择'}}</button>
 					</view>
 				</view>
+				<!-- picker-custom2 -->
+				<view class="width75" :class="contentSet.layout=='left'?'flex_row_none_c':'flex_row_e_c'" :style="classObj.padding0_3" v-else-if="item.type&&item.type=='picker-custom2'">
+					<view class="flex_row_none_c" v-if="pickerObj[onLoadData+index]">
+						<block v-if="item.linkage">
+							<view class="fontColor666666" :style="classObj.content" v-if="item.linkageNum==2">
+								{{(item.steps&&item.steps.step_1_value?pickerObj[onLoadData+index].result.steps1[item.steps.step_1_value]:pickerObj[onLoadData+index].result.steps1) + '-' + (item.steps&&item.steps.step_2_value?pickerObj[onLoadData+index].result.steps2[item.steps.step_2_value]:pickerObj[onLoadData+index].result.steps2)}}
+							</view>
+							<view class="fontColor666666" :style="classObj.content" v-else-if="item.linkageNum==3">
+								{{(item.steps&&item.steps.step_1_value?pickerObj[onLoadData+index].result.steps1[item.steps.step_1_value]:pickerObj[onLoadData+index].result.steps1) + '-' + (item.steps&&item.steps.step_2_value?pickerObj[onLoadData+index].result.steps2[item.steps.step_2_value]:pickerObj[onLoadData+index].result.steps2) + '-' + (item.steps&&item.steps.step_3_value?pickerObj[onLoadData+index].result.steps3[item.steps.step_3_value]:pickerObj[onLoadData+index].result.steps3)}}
+							</view>
+						</block>
+						<block v-else>
+							<view class="flex_row_c_c fontColor666666" :style="classObj.content">
+								<view v-for="(i, d) in pickerObj[onLoadData+index].result" :key="d">
+									{{d==0?(item.steps?item.steps.step_1_value?i[item.steps.step_1_value]:i:i):'-' + (item.steps?item.steps.step_1_value?i[item.steps.step_1_value]:i:i)}}
+								</view>
+							</view>
+						</block>
+						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3 + buttonStyle.changeButton">{{item.editorName||'更改'}}</button>
+					</view>
+					<view class="flex_row_e_c" v-else>
+						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="buttonStyle.selectButton">{{item.chooseName||'选择'}}</button>
+					</view>
+				</view>
 				<!-- picker-provincialStreet -->
 				<view class="width75" :class="contentSet.layout=='left'?'flex_row_none_c':'flex_row_e_c'" :style="classObj.padding0_3" v-else-if="item.type&&item.type=='picker-provincialStreet'">
 					<view class="flex_row_none_c" v-if="pickerObj[onLoadData+index]">
@@ -134,10 +158,6 @@
 					<view class="flex_row_e_c" v-else>
 						<button type="primary" @tap="showPicker(item, index)" size="mini" :style="buttonStyle.selectButton">{{item.chooseName||'选择街道'}}</button>
 					</view>
-				</view>
-				<!-- sku -->
-				<view class="width100 flex_column" :style="classObj.padding0_3" v-else-if="item.type&&item.type=='sku'">
-					<sku :wH="wH" :wW="wW"/>
 				</view>
 				<!-- input -->
 				<view class="flex_row_none_c width75" v-else>
@@ -209,6 +229,12 @@
 			:fontSize="classObj.contentSize" @getCustom="picker_change($event)" 
 			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="buttonStyle.confirmButton"/>
 		</view>
+		<!-- picker自定义2 -->
+		<view class="flex_row_c_c picker_view" v-if="pickerCustom2Show">
+			<picker-custom2 class="width100" :itemArray="P_data.itemArray" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
+			:fontSize="classObj.contentSize" @getCustom="picker_change($event)" 
+			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="buttonStyle.confirmButton"/>
+		</view>
 		<!-- 省市区街道四级联动 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerProvincialStreetShow">
 			<picker-provincialStreet class="width100" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
@@ -224,8 +250,8 @@
 	import pickersDate from './pickers-date.vue';
 	import pickersCity from './mpvue-citypicker/picker-city.vue';
 	import pickerCustom from './picker-custom.vue';
-	import pickerProvincialStreet from './mpvue-citypicker/picker-provincialStreet.vue'
-	import sku from './sku.vue';
+	import pickerCustom2 from './picker-custom2.vue';
+	import pickerProvincialStreet from './mpvue-citypicker/picker-provincialStreet.vue';
 	
 	export default {
 		props: {
@@ -315,6 +341,7 @@
 				pickerDateShow: false, //picker-date组件是否显示
 				pickerCityShow: false, //picker-city组件是否显示
 				pickerCustomShow: false, //picker-custom组件是否显示
+				pickerCustom2Show: false, //picker-custom2组件是否显示
 				pickerProvincialStreetShow: false, //picker-provincialStreetShow组件是否显示
 				P_data: {}, //picker类型显示对象暂存
 				pickerObj: {}, //picker类型视图对象暂存
@@ -519,6 +546,65 @@
 								this[_app.pickerChoosedType.pickerChoosedType_custom.value + i] = null;
 							}
 							break;
+						case 'picker-custom2':
+							if(item.onceShowDefaultValue) {
+								let datas = item.itemArray;
+								let v = [];
+								if(item.defaultValue)
+									v = item.defaultValue;
+								else{
+									if(item.linkage)
+										for(let i = 0; i < item.linkageNum; i++) {
+											v.push(0);
+										}
+									else
+										item.itemArray.forEach(item=>{
+											v.push(0);
+										});
+								}
+								let data = {result:{}, value:v};
+								let steps = item.steps;
+								if(item.linkage&&!steps){
+									_app.showToast('未设置steps');
+									return;
+								}
+								if(item.linkage) {
+									if(item.linkageNum == 2) {
+										data.result.steps1 = datas.step_1[v[0]];
+										if(!data.result.steps1)
+											_app.showToast('第一列中不存在第'+v[0]+'项');
+										data.result.steps2 = datas.step_2[v[0]][v[1]];
+										if(!data.result.steps2)
+											_app.showToast('第二列中不存在第'+v[1]+'项');
+									}else if(item.linkageNum == 3) {
+										data.result.steps1 = datas.step_1[v[0]];
+										if(!data.result.steps1)
+											_app.showToast('第一列中不存在第'+v[0]+'项');
+										data.result.steps2 = datas.step_2[v[0]][v[1]];
+										if(!data.result.steps2)
+											_app.showToast('第二列中不存在第'+v[1]+'项');
+										data.result.steps3 = datas.step_3[v[0]][v[1]][v[2]];
+										if(!data.result.steps3)
+											_app.showToast('第三列中不存在第'+v[2]+'项');
+									}else{
+										_app.showToast('不在指定范围中');
+									}
+								}else{
+									data.result = [];
+									for(let i = 0; i < datas.length; i++) {
+										let d = datas[i];
+										data.result.push(d[v[i]]);
+									}
+								}
+								_this[itemVariableName] = data;
+								_this.$set(_this.pickerObj, itemVariableName, data);
+								this[_app.pickerChoosedType.pickerChoosedType_custom2.value + i] = null;
+							}else{
+								_this[itemVariableName] = '';
+								_this.$set(_this.pickerObj, itemVariableName, '');
+								this[_app.pickerChoosedType.pickerChoosedType_custom2.value + i] = null;
+							}
+							break;
 						case 'switch':
 							_this[itemVariableName] = item.defaultValue || false;
 							_this.$set(_this.inputsObj, itemVariableName, item.defaultValue || false);
@@ -595,6 +681,12 @@
 							if(this[_app.pickerChoosedType.pickerChoosedType_custom.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_custom.value + index];
 							_this.P_data = obj;
 							_this.pickerCustomShow = true;
+							break;
+						case 'picker-custom2':
+							//记忆数据优先
+							if(this[_app.pickerChoosedType.pickerChoosedType_custom2.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_custom2.value + index];
+							_this.P_data = obj;
+							_this.pickerCustom2Show = true;
 							break;
 						case 'picker-provincialStreet':
 							//记忆数据优先
@@ -678,6 +770,9 @@
 						break;
 					case _app.pickerChoosedType.pickerChoosedType_custom.name:
 						this[_app.pickerChoosedType.pickerChoosedType_custom.value+res.index] = res.data.value;
+						break;
+					case _app.pickerChoosedType.pickerChoosedType_custom2.name:
+						this[_app.pickerChoosedType.pickerChoosedType_custom2.value+res.index] = res.data.value;
 						break;
 					case _app.pickerChoosedType.pickerChoosedType_provincialStreet.name:
 						this[_app.pickerChoosedType.pickerChoosedType_provincialStreet.value+res.index] = res.data.value;
@@ -887,6 +982,7 @@
 				this.pickerDateShow = false;
 				this.pickerCityShow = false;
 				this.pickerCustomShow = false;
+				this.pickerCustom2Show = false;
 				this.pickerProvincialStreetShow = false;
 				this.maskShow = false;
 				this.P_data = {};
@@ -897,8 +993,8 @@
 			pickersDate,
 			pickersCity,
 			pickerCustom,
-			pickerProvincialStreet,
-			sku
+			pickerCustom2,
+			pickerProvincialStreet
 		}
 	}
 </script>
