@@ -38,12 +38,7 @@
 	import _app from './app.js';
 	export default {
 		props: {
-			itemArray: {
-				type: Array,
-				default() {
-					return [];
-				}
-			},
+			itemArray: Object,
 			linkage: {
 				type: Boolean,
 				default: false
