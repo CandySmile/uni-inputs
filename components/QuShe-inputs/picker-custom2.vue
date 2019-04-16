@@ -6,21 +6,21 @@
 		 <block v-if="linkage">
 			<block v-if="linkageNum==2">
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray.step_1" :key="index">{{steps.step_1_value?item[steps.step_1_value]:item}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemObject.step_1" :key="index">{{steps.step_1_value?item[steps.step_1_value]:item}}</view>
 				</picker-view-column>
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray.step_2[value[0]]" :key="index">{{steps.step_2_value?item[steps.step_2_value]:item}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemObject.step_2[value[0]]" :key="index">{{steps.step_2_value?item[steps.step_2_value]:item}}</view>
 				</picker-view-column>
 			</block>
 			<block v-else-if="linkageNum==3">
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray.step_1" :key="index">{{steps.step_1_value?item[steps.step_1_value]:item}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemObject.step_1" :key="index">{{steps.step_1_value?item[steps.step_1_value]:item}}</view>
 				</picker-view-column>
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray.step_2[value[0]]" :key="index">{{steps.step_2_value?item[steps.step_2_value]:item}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemObject.step_2[value[0]]" :key="index">{{steps.step_2_value?item[steps.step_2_value]:item}}</view>
 				</picker-view-column>
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray.step_3[value[0]][value[1]]" :key="index">{{steps.step_3_value?item[steps.step_3_value]:item}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemObject.step_3[value[0]][value[1]]" :key="index">{{steps.step_3_value?item[steps.step_3_value]:item}}</view>
 				</picker-view-column>
 			</block>
 		</block>
@@ -38,7 +38,18 @@
 	import _app from './app.js';
 	export default {
 		props: {
-			itemArray: Object,
+			itemArray: {
+				type: Array,
+				default() {
+					return [];
+				}
+			},
+			itemObject: {
+				type: Object,
+				default() {
+					return {};
+				}
+			},
 			linkage: {
 				type: Boolean,
 				default: false
@@ -97,7 +108,7 @@
 			},
 			confirmFc() {
 				let _this = this;
-				let datas = _this.itemArray;
+				let datas = _this.linkage?_this.itemObject:_this.itemArray;
 				let v = _this.value;
 				let data = {result:{}, value:v};
 				let steps = _this.steps;

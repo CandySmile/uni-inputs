@@ -1,7 +1,7 @@
 <template>
 	<view class="width100 overflow_x_hidden">
 		<view class="width100 box-sizing-border-box" :class="[item.animationType||animationType||'']" :style="{'padding': wH*.02 + 'px ' + wW*.03 + 'px', 'animation-duration': (index+1)*(item.animationDuration||animationDuration||.2) + 's'}"
-		 v-for="(item, index) in inputsArray" :key="item.title||index">
+		 v-for="(item, index) in inputsArray" :key="item.title">
 			<!-- segmentationTitle -->
 			<view class="width100 flex_row view_Title_Left" :style="classObj.segmentationTitle" v-if="item.segmentationTitle">
 				{{item.segmentationTitle}}
@@ -249,7 +249,7 @@
 		</view>
 		<!-- picker自定义2 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerCustom2Show">
-			<picker-custom2 class="width100" :itemArray="P_data.itemArray" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
+			<picker-custom2 class="width100" :itemArray="P_data.itemArray" :itemObject="P_data.itemObject" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
 			:fontSize="classObj.contentSize" @getCustom="picker_change($event)" 
 			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="classObj.confirmButton"/>
 		</view>
@@ -593,7 +593,7 @@
 							break;
 						case 'picker-custom2':
 							if(item.onceShowDefaultValue) {
-								let datas = item.itemArray;
+								let datas = item.linkage?item.itemObject:item.itemArray;
 								let v = [];
 								if(item.defaultValue)
 									v = item.defaultValue;
@@ -732,6 +732,7 @@
 						case 'picker-custom2':
 							//记忆数据优先
 							if(this[_app.pickerChoosedType.pickerChoosedType_custom2.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_custom2.value + index];
+							console.log(JSON.stringify(obj));
 							_this.P_data = obj;
 							_this.pickerCustom2Show = true;
 							break;

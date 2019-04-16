@@ -373,7 +373,7 @@
 					{
 						"type": "picker-custom2",
 						"title": "custom2-二级联动示例",
-						"itemArray": {
+						"itemObject": {
 							"step_1": [{
 								"name": "蔬菜",
 								"value": "001"
@@ -399,7 +399,7 @@
 					{
 						"type": "picker-custom2",
 						"title": "custom2-三级联动示例",
-						"itemArray": {
+						"itemObject": {
 							"step_1": [{
 								"name": "江西"
 							}, {

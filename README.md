@@ -19,6 +19,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 版本号 | 更新说明 |
 |----|------|
+| 4.7 | 1、修复picker-custom2所传的数据类型问题（如果使用无联动类型请传itemArray参数，如果使用联动类型请传itemObject参数，因为类型不同，不分开来会报错）<br />2、inputsArray循环时改为使用item.title作为key，所以title每项都必须传！！，不然报错|
 | 4.6 | 修复没传buttonStyle就报错问题|
 | 4.5 | 1、新增text类型用于展示信息<br />2、增强布局可控性（新增titleHide属性，可以隐藏title，并且在设置titleHide为true时，可控制右边部分的width-->contentSet.width，contentSet与titleSet的layout属性新增center值居中显示，因此，在设置titleHide为true并且设置contentSet.layout为center以及设置contentSet.width<100的值时，可以实现预览图中模拟登陆的布局效果）<br />3、获取验证码按钮移到了验证码input的右边<br />4、删除title的冒号，若要回复则在inputs.vue中将title相应的代码取消注释，并删除另外的<br />5、规则及协议改为居中布局<br />6、修复picker-custom2中itemArray的类型|
 | 4.4 | 新增picker-custom优化版picker-custom2，解决custom数据类型无法使用问题，详见十（2）、picker-custom2， 修复示例中input类型的verifyFc示例 ， 有小伙伴反应picker-custom类型数据使用不了，其实是所传的数据不是json标准格式的数据导致JSON.parse不了，其实从后端拿数据应该不会有这样的问题的|
@@ -81,445 +82,445 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
     data() {
       return {
 		"buttonStyle": { //按钮样式
-			"activeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //主按钮样式
-			"changeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //picker类型更改按钮样式
-			"selectButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //picker类型选择按钮样式
-			"confirmButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //picker类型弹出框中确定按钮样式
-			"getcodeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;" //获取验证码按钮样式
-		},
-		"inputsArray": [{
-				"segmentationTitle": "展示信息", //分割大标题
-				"border_top": "1px solid #f2f2f2", //上划线
-				"type": "text",
-				"title": "text示例",
-				"content": "展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text",
-				"ellipsis": true
-			},{
-				"segmentationTitle": "表单组件", //分割大标题
-				"type": "slider", //类型
-				"title": "slider", //标题
-				"defaultValue": 50, //默认值
-				"min": 0,
-				"max": 100,
-				"show_value": true,
-				"disabled": false,
-				"activeColor": "#c0ebd7",
-				"step": 1,
-				"border_top": "1px solid #f2f2f2", //上划线
-				"variableName": "slider" //自定义变量名
-			},
-			{
-				"type": "textarea",
-				"title": "textarea",
-				"defaultValue": "今天也要加油鸭~" //默认值
-			},
-			{
-				"type": "switch",
-				"title": "switch",
-				"color": "#c0ebd7",
-				"defaultValue": true,
-				"variableName": "switch" //自定义变量名
-			},
-			{
-				"title": "radio",
-				"type": "radio",
-				"itemArray": [{ //子循环数组
-					"name": "aa",
-					"value": "aa",
-					"defaultValue": true
-				}, {
-					"name": "bb",
-					"value": "bb"
-				}],
-				"color": "#c0ebd7"
-			},
-			{
-				"title": "checkbox",
-				"type": "checkbox",
-				"itemArray": [{ //子循环数组
-					"name": "a",
-					"value": "a",
-					"defaultValue": true
-				}, {
-					"name": "b",
-					"value": "b",
-					"defaultValue": true,
-					"disabled": true
-				}, {
-					"name": "c",
-					"value": "c",
-					"defaultValue": true
-				}],
-				"variableName": "checkbox",
-				"color": "#c0ebd7"
-			}, {
-				"title": "手机号校验",
-				"verifyFc": function(value) {
-					if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value))
-						return true;
-					return false;
+					"activeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //主按钮样式
+					"changeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //picker类型更改按钮样式
+					"selectButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //picker类型选择按钮样式
+					"confirmButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //picker类型弹出框中确定按钮样式
+					"getcodeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;" //获取验证码按钮样式
 				},
-				"verifyErr": "手机号校验错误"
-			}, {
-				"title": "input",
-				"ignore": true, //是否可忽略该值(判断时此项值可以为空)
-				"defaultValue": "今天也要加油鸭~",
-				"tapClear": true, //input一键清除功能
-				"password": true, //input密码类型
-				"icon": "search", //input左边图标
-				"iconColor": "#c0ebd7", //input图标颜色
-				"filterFc": function(value) { //input值过滤函数
-					//自定义过滤函数
-					value = "filter过滤后的值";
-					return value;
-				},
-				"variableName": "input" //自定义变量名
-			}, {
-				"segmentationTitle": "上传图片",
-				"type": "pics",
-				"title": "pics",
-				"itemArray": [{
-					"title": "测试1",
-					"ignore": true
-				}, {
-					"title": "测试2",
-					"ignore": true
-				}],
-				"variableName": "pic",
-				"border_top": "1px solid #f2f2f2",
-				"clearColor": "#c0ebd7"
-			},
-			{
-				"segmentationTitle": "picker类型",
-				"border_top": "1px solid #f2f2f2",
-				"type": "picker-provincialStreet",
-				"title": "provincialStreet",
-				"onceShowDefaultValue": true, //初始化时显示初始值
-				"variableName": "provincialStreet"
-			},
-			{
-				"type": "picker-date",
-				"title": "date"
-			},
-			{
-				"type": "picker-city",
-				"title": "city",
-				"defaultValue": [10, 6, 0],
-				"onceShowDefaultValue": true,
-				"variableName": "city"
-			},
-			{ // 无联动示例1
-				"segmentationTitle": "picker-custom示例",
-				"border_top": "1px solid #f2f2f2",
-				"type": "picker-custom",
-				"title": "custom-无联动示例1",
-				"itemArray": [
-					[0, 1, 2],
-					[3, 4, 5]
-				],
-				"defaultValue": [0, 0], //初始数据
-				"onceShowDefaultValue": true, //是否显示初始数据
-			},
-			{ // 无联动示例2
-				"type": "picker-custom",
-				"title": "custom-无联动示例2",
-				"itemArray": [
-					[{
-						"name": "a", //name变量名需与下方steps.steps_1_value相同
-						"value": "a" //可添加多项自定义想要的数据
+				"inputsArray": [{
+						"segmentationTitle": "展示信息", //分割大标题
+						"border_top": "1px solid #f2f2f2", //上划线
+						"type": "text",
+						"title": "text示例",
+						"content": "展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息",
+						"ellipsis": true
+					},{
+						"segmentationTitle": "表单组件", //分割大标题
+						"type": "slider", //类型
+						"title": "slider", //标题
+						"defaultValue": 50, //默认值
+						"min": 0,
+						"max": 100,
+						"show_value": true,
+						"disabled": false,
+						"activeColor": "#c0ebd7",
+						"step": 1,
+						"border_top": "1px solid #f2f2f2", //上划线
+						"variableName": "slider" //自定义变量名
+					},
+					{
+						"type": "textarea",
+						"title": "textarea",
+						"defaultValue": "今天也要加油鸭~" //默认值
+					},
+					{
+						"type": "switch",
+						"title": "switch",
+						"color": "#c0ebd7",
+						"defaultValue": true,
+						"variableName": "switch" //自定义变量名
+					},
+					{
+						"title": "radio",
+						"type": "radio",
+						"itemArray": [{ //子循环数组
+							"name": "aa",
+							"value": "aa",
+							"defaultValue": true
+						}, {
+							"name": "bb",
+							"value": "bb"
+						}],
+						"color": "#c0ebd7"
+					},
+					{
+						"title": "checkbox",
+						"type": "checkbox",
+						"itemArray": [{ //子循环数组
+							"name": "a",
+							"value": "a",
+							"defaultValue": true
+						}, {
+							"name": "b",
+							"value": "b",
+							"defaultValue": true,
+							"disabled": true
+						}, {
+							"name": "c",
+							"value": "c",
+							"defaultValue": true
+						}],
+						"variableName": "checkbox",
+						"color": "#c0ebd7"
 					}, {
-						"name": "b",
-						"value": "b"
+						"title": "手机号校验",
+						"verifyFc": function(value) {
+							if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value))
+								return true;
+							return false;
+						},
+						"verifyErr": "手机号校验错误"
 					}, {
-						"name": "c",
-						"value": "c"
-					}],
-					[{
-						"name": "d",
-						"value": "d"
+						"title": "input",
+						"ignore": true, //是否可忽略该值(判断时此项值可以为空)
+						"defaultValue": "今天也要加油鸭~",
+						"tapClear": true, //input一键清除功能
+						"password": true, //input密码类型
+						"icon": "search", //input左边图标
+						"iconColor": "#c0ebd7", //input图标颜色
+						"filterFc": function(value) { //input值过滤函数
+							//自定义过滤函数
+							value = "filter过滤后的值";
+							return value;
+						},
+						"variableName": "input" //自定义变量名
 					}, {
-						"name": "e",
-						"value": "e"
-					}, {
-						"name": "f",
-						"value": "f"
-					}]
-				],
-				"defaultValue": [0, 0], //初始数据
-				"onceShowDefaultValue": true, //是否显示初始数据
-				"steps": {
-					"steps_1_value": "name"
-				}
-			},
-			{ // 二级联动示例1
-				"type": "picker-custom",
-				"title": "custom-二级联动示例1",
-				"defaultValue": [1, 0], //初始数据
-				"onceShowDefaultValue": true, //是否显示初始数据
-				"itemArray": [{
-					"value_1": "蔬菜", //value_1变量名需与下方steps.steps_1_value相同
-					/*
-					可添加多项自定义想要的数据
-					*/
-					"item_2": ["青菜"] //item_2变量名需与下方steps.steps_2_item相同
-				}, {
-					"value_1": "荤菜",
-					"item_2": ["猪肉"]
-				}],
-				"steps": {
-					"steps_1_value": "value_1",
-					"steps_2_item": "item_2"
-				},
-				"linkageNum": 2, //2 表示为2级联动
-				"linkage": true //true 表示开启联动
-			},
-			{ // 二级联动示例2
-				"type": "picker-custom",
-				"title": "custom-二级联动示例2",
-				"defaultValue": [0, 0], //初始数据
-				"onceShowDefaultValue": true, //是否显示初始数据
-				"itemArray": [{
-					"value_1": "蔬菜", //value_1变量名需与下方steps.steps_1_value相同
-					/*
-					可添加多项自定义想要的数据
-					*/
-					"item_2": [{ //item_2变量名需与下方steps_2_item相同
-						"name": "青菜", //name变量名需与下方steps.steps_2_value相同
-						"value": "青菜" //可添加多项自定义想要的数据
-					}]
-				}, {
-					"value_1": "荤菜",
-					"item_2": [{
-						"name": "猪肉",
-						"value": "猪肉"
-					}]
-				}],
-				"steps": {
-					"steps_1_value": "value_1",
-					"steps_2_value": "name",
-					"steps_2_item": "item_2"
-				},
-				"linkageNum": 2, //2 表示为2级联动
-				"linkage": true //true 表示开启联动
-			},
-			{ // 三级联动示例1
-				"type": "picker-custom",
-				"title": "custom-三级联动示例1",
-				"itemArray": [{
-					"value_1": "浙江", //value_1变量名需与下方steps.steps_1_value相同
-					/*
-					可添加多项自定义想要的数据
-					*/
-					"item_2": [{ //item_2变量名需与下方steps.steps_2_item相同
-						"value_2": "金华", //value_2变量名需与下方steps.steps_2_value相同
-						/*
-						可添加多项自定义想要的数据
-						*/
-						"item_3": ["婺城区"] //item_3变量名需与下方steps.steps_3_item相同
-					}, {
-						"value_2": "绍兴",
-						"item_3": ["越城区"]
-					}]
-				}, {
-					"value_1": "江苏",
-					"item_2": [{
-						"value_2": "南京",
-						"item_3": ["玄武区"],
-					}, {
-						"value_2": "无锡",
-						"item_3": ["锡山区"]
-					}]
-				}],
-				"steps": {
-					"steps_1_value": "value_1",
-					"steps_2_value": "value_2",
-					"steps_2_item": "item_2",
-					"steps_3_item": "item_3"
-				},
-				"defaultValue": [1, 0, 0], //初始数据
-				"onceShowDefaultValue": true, //是否显示初始数据
-				"linkageNum": 3, //3 表示为3级联动
-				"linkage": true //true 表示开启联动
-			},
-			{ // 三级联动示例2
-				"type": "picker-custom",
-				"title": "custom-三级联动示例2",
-				"itemArray": [{
-					"value_1": "江西", //value_1变量名需与下方steps.steps_1_value相同
-					/*
-					可添加多项自定义想要的数据
-					*/
-					"item_2": [{ //item_2变量名需与下方steps.steps_2_item相同
-						"value_2": "南昌", //value_2变量名需与下方steps.steps_2_value相同
-						/*
-						可添加多项自定义想要的数据
-						*/
-						"item_3": [{ //item_3变量名需与下方steps.steps_3_item相同
-							"name": "东湖", //name变量名需与下方steps.steps_3_value相同
+						"segmentationTitle": "上传图片",
+						"type": "pics",
+						"title": "pics",
+						"itemArray": [{
+							"title": "测试1",
+							"ignore": true
+						}, {
+							"title": "测试2",
+							"ignore": true
+						}],
+						"variableName": "pic",
+						"border_top": "1px solid #f2f2f2",
+						"clearColor": "#c0ebd7"
+					},
+					{
+						"segmentationTitle": "picker类型",
+						"border_top": "1px solid #f2f2f2",
+						"type": "picker-provincialStreet",
+						"title": "provincialStreet",
+						"onceShowDefaultValue": true, //初始化时显示初始值
+						"variableName": "provincialStreet"
+					},
+					{
+						"type": "picker-date",
+						"title": "date"
+					},
+					{
+						"type": "picker-city",
+						"title": "city",
+						"defaultValue": [10, 6, 0],
+						"onceShowDefaultValue": true,
+						"variableName": "city"
+					},
+					{ // 无联动示例1
+						"segmentationTitle": "picker-custom示例",
+						"border_top": "1px solid #f2f2f2",
+						"type": "picker-custom",
+						"title": "custom-无联动示例1",
+						"itemArray": [
+							[0, 1, 2],
+							[3, 4, 5]
+						],
+						"defaultValue": [0, 0], //初始数据
+						"onceShowDefaultValue": true, //是否显示初始数据
+					},
+					{ // 无联动示例2
+						"type": "picker-custom",
+						"title": "custom-无联动示例2",
+						"itemArray": [
+							[{
+								"name": "a", //name变量名需与下方steps.steps_1_value相同
+								"value": "a" //可添加多项自定义想要的数据
+							}, {
+								"name": "b",
+								"value": "b"
+							}, {
+								"name": "c",
+								"value": "c"
+							}],
+							[{
+								"name": "d",
+								"value": "d"
+							}, {
+								"name": "e",
+								"value": "e"
+							}, {
+								"name": "f",
+								"value": "f"
+							}]
+						],
+						"defaultValue": [0, 0], //初始数据
+						"onceShowDefaultValue": true, //是否显示初始数据
+						"steps": {
+							"steps_1_value": "name"
+						}
+					},
+					{ // 二级联动示例1
+						"type": "picker-custom",
+						"title": "custom-二级联动示例1",
+						"defaultValue": [1, 0], //初始数据
+						"onceShowDefaultValue": true, //是否显示初始数据
+						"itemArray": [{
+							"value_1": "蔬菜", //value_1变量名需与下方steps.steps_1_value相同
 							/*
 							可添加多项自定义想要的数据
 							*/
-						}]
-					}, {
-						"value_2": "九江",
-						"item_3": [{
-							"name": "德安"
-						}]
-					}]
-				}, {
-					"value_1": "山东",
-					"item_2": [{
-						"value_2": "济南",
-						"item_3": [{
-							"name": "历下"
+							"item_2": ["青菜"] //item_2变量名需与下方steps.steps_2_item相同
+						}, {
+							"value_1": "荤菜",
+							"item_2": ["猪肉"]
 						}],
+						"steps": {
+							"steps_1_value": "value_1",
+							"steps_2_item": "item_2"
+						},
+						"linkageNum": 2, //2 表示为2级联动
+						"linkage": true //true 表示开启联动
+					},
+					{ // 二级联动示例2
+						"type": "picker-custom",
+						"title": "custom-二级联动示例2",
+						"defaultValue": [0, 0], //初始数据
+						"onceShowDefaultValue": true, //是否显示初始数据
+						"itemArray": [{
+							"value_1": "蔬菜", //value_1变量名需与下方steps.steps_1_value相同
+							/*
+							可添加多项自定义想要的数据
+							*/
+							"item_2": [{ //item_2变量名需与下方steps_2_item相同
+								"name": "青菜", //name变量名需与下方steps.steps_2_value相同
+								"value": "青菜" //可添加多项自定义想要的数据
+							}]
+						}, {
+							"value_1": "荤菜",
+							"item_2": [{
+								"name": "猪肉",
+								"value": "猪肉"
+							}]
+						}],
+						"steps": {
+							"steps_1_value": "value_1",
+							"steps_2_value": "name",
+							"steps_2_item": "item_2"
+						},
+						"linkageNum": 2, //2 表示为2级联动
+						"linkage": true //true 表示开启联动
+					},
+					{ // 三级联动示例1
+						"type": "picker-custom",
+						"title": "custom-三级联动示例1",
+						"itemArray": [{
+							"value_1": "浙江", //value_1变量名需与下方steps.steps_1_value相同
+							/*
+							可添加多项自定义想要的数据
+							*/
+							"item_2": [{ //item_2变量名需与下方steps.steps_2_item相同
+								"value_2": "金华", //value_2变量名需与下方steps.steps_2_value相同
+								/*
+								可添加多项自定义想要的数据
+								*/
+								"item_3": ["婺城区"] //item_3变量名需与下方steps.steps_3_item相同
+							}, {
+								"value_2": "绍兴",
+								"item_3": ["越城区"]
+							}]
+						}, {
+							"value_1": "江苏",
+							"item_2": [{
+								"value_2": "南京",
+								"item_3": ["玄武区"],
+							}, {
+								"value_2": "无锡",
+								"item_3": ["锡山区"]
+							}]
+						}],
+						"steps": {
+							"steps_1_value": "value_1",
+							"steps_2_value": "value_2",
+							"steps_2_item": "item_2",
+							"steps_3_item": "item_3"
+						},
+						"defaultValue": [1, 0, 0], //初始数据
+						"onceShowDefaultValue": true, //是否显示初始数据
+						"linkageNum": 3, //3 表示为3级联动
+						"linkage": true //true 表示开启联动
+					},
+					{ // 三级联动示例2
+						"type": "picker-custom",
+						"title": "custom-三级联动示例2",
+						"itemArray": [{
+							"value_1": "江西", //value_1变量名需与下方steps.steps_1_value相同
+							/*
+							可添加多项自定义想要的数据
+							*/
+							"item_2": [{ //item_2变量名需与下方steps.steps_2_item相同
+								"value_2": "南昌", //value_2变量名需与下方steps.steps_2_value相同
+								/*
+								可添加多项自定义想要的数据
+								*/
+								"item_3": [{ //item_3变量名需与下方steps.steps_3_item相同
+									"name": "东湖", //name变量名需与下方steps.steps_3_value相同
+									/*
+									可添加多项自定义想要的数据
+									*/
+								}]
+							}, {
+								"value_2": "九江",
+								"item_3": [{
+									"name": "德安"
+								}]
+							}]
+						}, {
+							"value_1": "山东",
+							"item_2": [{
+								"value_2": "济南",
+								"item_3": [{
+									"name": "历下"
+								}],
+							}, {
+								"value_2": "青岛",
+								"item_3": [{
+									"name": "市南"
+								}]
+							}]
+						}],
+						"steps": {
+							"steps_1_value": "value_1",
+							"steps_2_value": "value_2",
+							"steps_2_item": "item_2",
+							"steps_3_value": "name",
+							"steps_3_item": "item_3"
+						},
+						"defaultValue": [1, 0, 0], //初始数据
+						"onceShowDefaultValue": true, //是否显示初始数据
+						"linkageNum": 3, //3 表示为3级联动
+						"linkage": true //true 表示开启联动
 					}, {
-						"value_2": "青岛",
-						"item_3": [{
-							"name": "市南"
-						}]
-					}]
-				}],
-				"steps": {
-					"steps_1_value": "value_1",
-					"steps_2_value": "value_2",
-					"steps_2_item": "item_2",
-					"steps_3_value": "name",
-					"steps_3_item": "item_3"
-				},
-				"defaultValue": [1, 0, 0], //初始数据
-				"onceShowDefaultValue": true, //是否显示初始数据
-				"linkageNum": 3, //3 表示为3级联动
-				"linkage": true //true 表示开启联动
-			}, {
-				"type": "picker-custom2",
-				"title": "custom2-无联动示例1",
-				"itemArray": [
-					[0, 1, 2],
-					[3, 4, 5]
-				],
-				"steps": {
-					"step_1_value": "", //第一级显示的属性名
-					"step_2_value": "", //第二级显示的属性名
-					"step_3_value": "" //第三级显示的属性名
-				},
-				"defaultValue": [0, 0], //初始数据
-				"onceShowDefaultValue": true, //是否显示初始数据
-			}, {
-				"type": "picker-custom2",
-				"title": "custom2-无联动示例2",
-				"itemArray": [
-					[{
-						"name": "a", //name变量名需与下方steps.steps_1_value相同
-						"value": "a" //可添加多项自定义想要的数据
-					}, {
-						"name": "b",
-						"value": "b"
-					}, {
-						"name": "c",
-						"value": "c"
-					}],
-					[{
-						"name": "d",
-						"value": "d"
-					}, {
-						"name": "e",
-						"value": "e"
-					}, {
-						"name": "f",
-						"value": "f"
-					}]
-				],
-				"steps": {
-					"step_1_value": "name", //第一级显示的属性名
-					"step_2_value": "", //第二级显示的属性名
-					"step_3_value": "" //第三级显示的属性名
-				},
-				"defaultValue": [0, 0], //初始数据
-				"onceShowDefaultValue": true, //是否显示初始数据
-			},
-			{
-				"type": "picker-custom2",
-				"title": "custom2-二级联动示例",
-				"itemArray": {
-					"step_1": [{
-						"name": "蔬菜",
-						"value": "001"
-					}, {
-						"name": "荤菜",
-						"value": "002"
-					}],
-					"step_2": [
-						["青菜", "白菜"], //对应step_1的蔬菜
-						["猪肉", "牛肉"] //对应step_1的荤菜
-					]
-				},
-				"steps": {
-					"step_1_value": "name", //第一级显示的属性名
-					"step_2_value": "", //第二级显示的属性名
-					"step_3_value": "" //第三级显示的属性名
-				},
-				"defaultValue": [1, 0], //初始数据
-				"onceShowDefaultValue": true, //是否显示初始数据
-				"linkageNum": 2, //3 表示为3级联动
-				"linkage": true //true 表示开启联动
-			},
-			{
-				"type": "picker-custom2",
-				"title": "custom2-三级联动示例",
-				"itemArray": {
-					"step_1": [{
-						"name": "江西"
-					}, {
-						"name": "山东"
-					}],
-					"step_2": [
-						["南昌", "九江"], //对应step_1的江西
-						["济南", "青岛"] //对应step_1的山东
-					],
-					"step_3": [
-						[
-							[ //对应step_2的南昌
-								"东湖"
-							],
-							[ //对应step_2的九江
-								"德安"
-							]
+						"type": "picker-custom2",
+						"title": "custom2-无联动示例1",
+						"itemArray": [
+							[0, 1, 2],
+							[3, 4, 5]
 						],
-						[
-							[ //对应step_2的济南
-								"历下",
-							],
-							[ //对应step_2的青岛
-								"市南",
+						"steps": {
+							"step_1_value": "", //第一级显示的属性名
+							"step_2_value": "", //第二级显示的属性名
+							"step_3_value": "" //第三级显示的属性名
+						},
+						"defaultValue": [0, 0], //初始数据
+						"onceShowDefaultValue": true, //是否显示初始数据
+					}, {
+						"type": "picker-custom2",
+						"title": "custom2-无联动示例2",
+						"itemArray": [
+							[{
+								"name": "a", //name变量名需与下方steps.steps_1_value相同
+								"value": "a" //可添加多项自定义想要的数据
+							}, {
+								"name": "b",
+								"value": "b"
+							}, {
+								"name": "c",
+								"value": "c"
+							}],
+							[{
+								"name": "d",
+								"value": "d"
+							}, {
+								"name": "e",
+								"value": "e"
+							}, {
+								"name": "f",
+								"value": "f"
+							}]
+						],
+						"steps": {
+							"step_1_value": "name", //第一级显示的属性名
+							"step_2_value": "", //第二级显示的属性名
+							"step_3_value": "" //第三级显示的属性名
+						},
+						"defaultValue": [0, 0], //初始数据
+						"onceShowDefaultValue": true, //是否显示初始数据
+					},
+					{
+						"type": "picker-custom2",
+						"title": "custom2-二级联动示例",
+						"itemObject": {
+							"step_1": [{
+								"name": "蔬菜",
+								"value": "001"
+							}, {
+								"name": "荤菜",
+								"value": "002"
+							}],
+							"step_2": [
+								["青菜", "白菜"], //对应step_1的蔬菜
+								["猪肉", "牛肉"] //对应step_1的荤菜
 							]
-						]
-					]
+						},
+						"steps": {
+							"step_1_value": "name", //第一级显示的属性名
+							"step_2_value": "", //第二级显示的属性名
+							"step_3_value": "" //第三级显示的属性名
+						},
+						"defaultValue": [1, 0], //初始数据
+						"onceShowDefaultValue": true, //是否显示初始数据
+						"linkageNum": 2, //3 表示为3级联动
+						"linkage": true //true 表示开启联动
+					},
+					{
+						"type": "picker-custom2",
+						"title": "custom2-三级联动示例",
+						"itemObject": {
+							"step_1": [{
+								"name": "江西"
+							}, {
+								"name": "山东"
+							}],
+							"step_2": [
+								["南昌", "九江"], //对应step_1的江西
+								["济南", "青岛"] //对应step_1的山东
+							],
+							"step_3": [
+								[
+									[ //对应step_2的南昌
+										"东湖"
+									],
+									[ //对应step_2的九江
+										"德安"
+									]
+								],
+								[
+									[ //对应step_2的济南
+										"历下",
+									],
+									[ //对应step_2的青岛
+										"市南",
+									]
+								]
+							]
+						},
+						"steps": {
+							"step_1_value": "name", //第一级显示的属性名
+							"step_2_value": "", //第二级显示的属性名
+							"step_3_value": "" //第三级显示的属性名
+						},
+						"defaultValue": [1, 0, 0], //初始数据
+						"onceShowDefaultValue": true, //是否显示初始数据
+						"linkageNum": 3, //3 表示为3级联动
+						"linkage": true //true 表示开启联动
+					}, {
+						"title": "手机号",
+						"phone": true,
+						"defaultValue": "13305679845"
+					}
+				],
+				"ruleSet": {
+					"color": "#c0ebd7",
+					"checkbox_color": "#c0ebd7",
+					"itemArray": [{
+						"name": "某规则",
+						"value": "aa"
+					}],
 				},
-				"steps": {
-					"step_1_value": "name", //第一级显示的属性名
-					"step_2_value": "", //第二级显示的属性名
-					"step_3_value": "" //第三级显示的属性名
-				},
-				"defaultValue": [1, 0, 0], //初始数据
-				"onceShowDefaultValue": true, //是否显示初始数据
-				"linkageNum": 3, //3 表示为3级联动
-				"linkage": true //true 表示开启联动
-			}, {
-				"title": "手机号",
-				"phone": true,
-				"defaultValue": "13305679845"
-			}
-		],
-		"ruleSet": {
-			"color": "#c0ebd7",
-			"checkbox_color": "#c0ebd7",
-			"itemArray": [{
-				"name": "某规则",
-				"value": "aa"
-			}],
-		},
-		"onLoadData": "data_",
+				"onLoadData": "data_",
       };
     },
     methods: {
@@ -549,7 +550,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | inputsArray| 是| Array\<Object\>| | 需循环的inputs数组（可从后端接口获取）|
 | @activeFc| 是| Function| | 主功能方法，携带一个用户所输入的数据对象|
 | activeName| | String| | 主功能按钮的文字说明，不传该值，则主按钮不显示，可以用ref调用inputs的activeFc方法获取输入|
-| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善704-738行的发送验证码方法, 并需设置一项input的phone属性为true|
+| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善846-880行的发送验证码方法, 并需设置一项input的phone属性为true|
 | ifRule| | Boolean| false| 是否需要用户同意某规则或协议|
 | ruleArray(废弃,请使用ruleSet)| ifRule为true时是| Array\<Object\>| | 需要用户同意某规则或协议的数组|
 | @chaildOpenEvent| ifRule为true时是| Function| | 打开某规则或协议的方法|
@@ -731,7 +732,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | nullErr| | String| this.title + '不能为空'| 为空时提示|
 | ignore| | Boolean| false| 可以为空， 不判断是否为空,默认为必填，必填则在title前面有 * 标识|
 | defaultValue| | String| | 该项pics的初始化默认图片路径(本地图片路径)|
-注：若启用此项，则需完善829-835行的上传图片至服务器方法，并且完善854-857的拼接返回的图片路径方法
+注：若启用此项，则需完善973-979行的上传图片至服务器方法，并且完善998-1001的拼接返回的图片路径方法
 
 ---
 ### 四、radio(单选)
@@ -1098,7 +1099,8 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'picker-custom2'|
-| itemArray|是 |Array| |自定义的picker数组，详见示例说明|
+| itemArray|是(若是无联动类型) |Array| |自定义的picker数组，详见示例说明（无联动请传此参数）|
+| itemObject|是(若是联动类型) |Object| |自定义的picker对象，详见示例说明（联动类型请传此参数）|
 |linkage| | Boolean| false| 是否联动|
 |steps|linkage为true时是| Object| | 自定义阶级变量名，详见下方示例与说明|
 |linkageNum| | Number| | 联动级数|
@@ -1179,7 +1181,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 {
 	type: 'picker-custom2',
 	title: 'custom2-二级联动示例',
-	itemArray: {
+	itemObject: {
 		step_1: [{
 			"name": "蔬菜"
 		}, {
@@ -1210,7 +1212,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 {
 	type: 'picker-custom2',
 	title: 'custom2-三级联动示例',
-	itemArray: {
+	itemObject: {
 		step_1: [{
 			"name": "江西"
 		}, {
