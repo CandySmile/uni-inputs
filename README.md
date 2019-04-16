@@ -19,6 +19,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 版本号 | 更新说明 |
 |----|------|
+| 4.6 | 修复没传buttonStyle就报错问题|
 | 4.5 | 1、新增text类型用于展示信息<br />2、增强布局可控性（新增titleHide属性，可以隐藏title，并且在设置titleHide为true时，可控制右边部分的width-->contentSet.width，contentSet与titleSet的layout属性新增center值居中显示，因此，在设置titleHide为true并且设置contentSet.layout为center以及设置contentSet.width<100的值时，可以实现预览图中模拟登陆的布局效果）<br />3、获取验证码按钮移到了验证码input的右边<br />4、删除title的冒号，若要回复则在inputs.vue中将title相应的代码取消注释，并删除另外的<br />5、规则及协议改为居中布局<br />6、修复picker-custom2中itemArray的类型|
 | 4.4 | 新增picker-custom优化版picker-custom2，解决custom数据类型无法使用问题，详见十（2）、picker-custom2， 修复示例中input类型的verifyFc示例 ， 有小伙伴反应picker-custom类型数据使用不了，其实是所传的数据不是json标准格式的数据导致JSON.parse不了，其实从后端拿数据应该不会有这样的问题的|
 | 4.3 | input新增校验功能|
@@ -1279,8 +1280,8 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'text'|
-| title| | String| 展示的标题,在titleHide为true时会自动在右边显示|
-| content| |String| 展示的内容|
+| title| | String| | 展示的标题,在titleHide为true时会自动在右边显示|
+| content| | String|  | 展示的内容|
 | contentStyle| | cssStyle| | 展示内容的内联样式|
 | ellipsis| | Boolean| false| 一行将要超出时是否隐藏多余的并加上省略号|
 

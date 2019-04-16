@@ -85,10 +85,10 @@
 							<view class="fontColor666666" :style="classObj.content">
 								{{pickerObj[onLoadData+index]}}
 							</view>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3 + buttonStyle.changeButton">{{item.editorName||'更改'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3 + classObj.changeButton">{{item.editorName||'更改'}}</button>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="buttonStyle.selectButton">{{item.chooseName||'选择日期'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.selectButton">{{item.chooseName||'选择日期'}}</button>
 						</view>
 					</view>
 					<!-- picker-city -->
@@ -97,10 +97,10 @@
 							<view class="fontColor666666" :style="classObj.content">
 								{{pickerObj[onLoadData+index].label}}
 							</view>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3 + buttonStyle.changeButton">{{item.editorName||'更改'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3 + classObj.changeButton">{{item.editorName||'更改'}}</button>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="buttonStyle.selectButton">{{item.chooseName||'选择城市'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.selectButton">{{item.chooseName||'选择城市'}}</button>
 						</view>
 					</view>
 					<!-- picker-custom -->
@@ -118,10 +118,10 @@
 									</view>
 								</view>
 							</block>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3 + buttonStyle.changeButton">{{item.editorName||'更改'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3 + classObj.changeButton">{{item.editorName||'更改'}}</button>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="buttonStyle.selectButton">{{item.chooseName||'选择'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.selectButton">{{item.chooseName||'选择'}}</button>
 						</view>
 					</view>
 					<!-- picker-custom2 -->
@@ -142,10 +142,10 @@
 									</view>
 								</view>
 							</block>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3 + buttonStyle.changeButton">{{item.editorName||'更改'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3 + classObj.changeButton">{{item.editorName||'更改'}}</button>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="buttonStyle.selectButton">{{item.chooseName||'选择'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.selectButton">{{item.chooseName||'选择'}}</button>
 						</view>
 					</view>
 					<!-- picker-provincialStreet -->
@@ -154,10 +154,10 @@
 							<view class="fontColor666666" :style="classObj.content">
 								{{pickerObj[onLoadData+index].label}}
 							</view>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3 + buttonStyle.changeButton">{{item.editorName||'更改'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.marginLeft3 + classObj.changeButton">{{item.editorName||'更改'}}</button>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="buttonStyle.selectButton">{{item.chooseName||'选择街道'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.selectButton">{{item.chooseName||'选择街道'}}</button>
 						</view>
 					</view>
 					<!-- text -->
@@ -212,7 +212,7 @@
 						<input type="text" value="" v-model="userCode" placeholder="请输入验证码" class="width100 borderBottom1pxf2f2f2" :style="classObj.titleFs" />
 					</view>
 					<view class="flex_row_e_c width55" :style="classObj.padding0_3">
-						<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="!startCode?getCode():''" :style="classObj.margin0 + buttonStyle.getcodeButton">{{startCode?codeCount + 's后重新获取':'获取验证码'}}</button>
+						<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="!startCode?getCode():''" :style="classObj.margin0 + classObj.getcodeButton">{{startCode?codeCount + 's后重新获取':'获取验证码'}}</button>
 					</view>
 				</view>
 			</view>
@@ -225,7 +225,7 @@
 			<view :style="'color:' + (ruleItem.color||ruleSet.color||'#007AFF') + ';'" @tap="openRuleFc(ruleItem.value)" v-for="(ruleItem, ruleIndex) in ruleSet.itemArray" :key="ruleIndex">{{ruleIndex==0?ruleItem.name:'、' + ruleItem.name}}</view>
 		</view>
 		<!-- 主按钮 -->
-		<button v-if="inputsArray&&inputsArray.length>0&&activeName" type="primary" @tap="activeFc" :class="[animationType||'']" :style="classObj.margin2_3 + classObj.animationDuration2 + buttonStyle.activeButton">{{activeName}}</button>
+		<button v-if="inputsArray&&inputsArray.length>0&&activeName" type="primary" @tap="activeFc" :class="[animationType||'']" :style="classObj.margin2_3 + classObj.animationDuration2 + classObj.activeButton">{{activeName}}</button>
 		<!-- mask -->
 		<view class="mask" @touchmove.prevent.stop="picker_hideFc" @tap.prevent.stop="picker_hideFc" v-show="maskShow"></view>
 		<!-- 日期选择 -->
@@ -233,31 +233,31 @@
 			<pickers-date class="width100" :startYear="P_data.startYear" :endYear="P_data.endYear" :defaultDate="P_data.defaultValue" @getDate="picker_change($event)" 
 			:mode="P_data.mode" :wH="wH" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" 
 			:fontSize="classObj.contentSize" :confirmName="P_data.confirmName" 
-			:index="P_data.index" :confirmStyle="buttonStyle.confirmButton"/>
+			:index="P_data.index" :confirmStyle="classObj.confirmButton"/>
 		</view>
 		<!-- 城市选择 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerCityShow">
 			<pickers-city class="width100" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
 			:fontSize="classObj.contentSize" @getCity="picker_change($event)" 
-			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="buttonStyle.confirmButton"/>
+			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="classObj.confirmButton"/>
 		</view>
 		<!-- picker自定义 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerCustomShow">
 			<picker-custom class="width100" :itemArray="P_data.itemArray" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
 			:fontSize="classObj.contentSize" @getCustom="picker_change($event)" 
-			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="buttonStyle.confirmButton"/>
+			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="classObj.confirmButton"/>
 		</view>
 		<!-- picker自定义2 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerCustom2Show">
 			<picker-custom2 class="width100" :itemArray="P_data.itemArray" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
 			:fontSize="classObj.contentSize" @getCustom="picker_change($event)" 
-			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="buttonStyle.confirmButton"/>
+			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="classObj.confirmButton"/>
 		</view>
 		<!-- 省市区街道四级联动 -->
 		<view class="flex_row_c_c picker_view" v-if="pickerProvincialStreetShow">
 			<picker-provincialStreet class="width100" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
 			:fontSize="classObj.contentSize" @getProvincialStreet="picker_change($event)" 
-			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="buttonStyle.confirmButton"/>
+			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="classObj.confirmButton"/>
 		</view>
 	</view>
 </template>
@@ -335,7 +335,18 @@
 				type: Number,
 				default: .2
 			},
-			buttonStyle: Object,
+			buttonStyle: {
+				type:Object,
+				default() {
+					return {
+						activeButton: '',
+						changeButton: '',
+						selectButton: '',
+						confirmButton: '',
+						getcodeButton: '',
+					}
+				}
+			},
 			titleHide: {
 				type: Boolean,
 				default: false
@@ -395,7 +406,12 @@
 					marginRight2: 'margin-right:' + wW*.02+'px;',
 					marginLeft3: 'margin-left:' + wW*.03+'px;',
 					animationDuration1: 'animation-duration:' + (this.inputsArray.length+1)*(this.animationDuration||.2) + 's;',
-					animationDuration2: 'animation-duration:' + (this.ifRule||this.ifCode?this.inputsArray.length+2:this.inputsArray.length+1)*(this.animationDuration||.2) + 's;'
+					animationDuration2: 'animation-duration:' + (this.ifRule||this.ifCode?this.inputsArray.length+2:this.inputsArray.length+1)*(this.animationDuration||.2) + 's;',
+					activeButton: this.buttonStyle.activeButton||'',
+					changeButton: this.buttonStyle.changeButton||'',
+					selectButton: this.buttonStyle.selectButton||'',
+					confirmButton: this.buttonStyle.confirmButton||'',
+					getcodeButton: this.buttonStyle.getcodeButton||'',
 				}
 			};
 		},
