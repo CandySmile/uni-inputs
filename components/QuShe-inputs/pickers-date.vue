@@ -51,7 +51,7 @@
 				</picker-view-column>
 			</block>
 		</picker-view>
-		<button type="primary" :style="classObj.marginTop5 + confirmStyle" @tap="confirmFc">{{confirmName||'确定'}}</button>
+		<button type="primary" :style="classObj.marginTop5 + confirmStyle" @tap="confirmFc()">{{confirmName||'确定'}}</button>
 	</view>
 </template>
 
@@ -76,12 +76,11 @@
 			confirmStyle: String
 		},
 		data() {
-			let _this = this;
 			const dateTime = 'picker-dateTime';
 			const date = 'picker-date';
 			const time = 'picker-time';
 			let defaultDate;
-			if(_this.defaultDate) defaultDate = new Date(_this.defaultDate); else defaultDate = new Date();
+			if(this.defaultDate) defaultDate = new Date(this.defaultDate); else defaultDate = new Date();
 			let years = _app.countYears(this.startYear||new Date().getFullYear() - 5, this.endYear||new Date().getFullYear() + 5);
 			let endYear = years[years.length - 1];
 			let defaultYear = defaultDate.getFullYear(),
@@ -93,9 +92,9 @@
 			let compareY = defaultYear > endYear;
 			let year = compareY? endYear:defaultYear;
 			let month = compareY? 11:defaultMonth;
-			let days = _app.countDays(year, month, false, _this.mode).days;
+			let days = _app.countDays(year, month, false, this.mode).days;
 			let dateVlue = [];
-			if (_this.mode != _app.picker_date_obj.time) {
+			if (this.mode != _app.picker_date_obj.time) {
 				if(compareY)
 					dateVlue.push(years.length-1);
 				else
@@ -107,7 +106,7 @@
 				dateVlue.push(compareY?11:month);
 				dateVlue.push(compareY?days:defaultDay - 1);
 			}
-			if (_this.mode != _app.picker_date_obj.date) {
+			if (this.mode != _app.picker_date_obj.date) {
 				dateVlue.push(defaultHour);
 				dateVlue.push(defaultMinute);
 				dateVlue.push(defaultSecond);
@@ -135,10 +134,10 @@
 				let _this = this;
 				const dateValue = _this.dateVlue;
 				let Y = _this.years;
-				let data =  _this.mode == _app.picker_date_obj.date ?
-					`${Y[dateValue[0]]}-${dateValue[1]+1}-${dateValue[2]+1}` : _this.mode == _app.picker_date_obj.time ?
-					`${dateValue[0]}:${dateValue[1]}:${dateValue[2]}` :
-					`${Y[dateValue[0]]}-${dateValue[1]+1}-${dateValue[2]+1} ${dateValue[3]}:${dateValue[4]}:${dateValue[5]}`;
+				let data = ( _this.mode == _app.picker_date_obj.date) ?
+					(`${Y[dateValue[0]]}/${dateValue[1]+1}/${dateValue[2]+1}`) : (_this.mode == _app.picker_date_obj.time) ?
+					(`${dateValue[0]}:${dateValue[1]}:${dateValue[2]}`) :
+					(`${Y[dateValue[0]]}/${dateValue[1]+1}/${dateValue[2]+1} ${dateValue[3]}:${dateValue[4]}:${dateValue[5]}`);
 				_this.$emit('getDate',{data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_date.name});
 			},
 			voidFc() {}

@@ -488,13 +488,13 @@
 								}
 								switch (item.mode){
 									case 'picker-date':
-										data = `${Y}-${M}-${D}`;
+										data = `${Y}/${M}/${D}`;
 										break;
 									case 'picker-time':
 										data = `${defaultDate.getHours()}:${defaultDate.getMinutes()}:${defaultDate.getSeconds()}`;
 										break;
 									default:
-										data = `${Y}-${M}-${D} ${defaultDate.getHours()}:${defaultDate.getMinutes()}:${defaultDate.getSeconds()}`;
+										data = `${Y}/${M}/${D} ${defaultDate.getHours()}:${defaultDate.getMinutes()}:${defaultDate.getSeconds()}`;
 										break;
 								}
 								_this[itemVariableName] = data;

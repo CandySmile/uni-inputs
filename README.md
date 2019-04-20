@@ -19,6 +19,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 版本号 | 更新说明 |
 |----|------|
+| 4.8 | 修复picker-date类型在iOS上的问题（初始化日期格式已定死，详见 八、日期选择 的defaultValue属性），感谢unique542@qq.com(243558987)小伙伴发现并查找解决问题！|
 | 4.7 | 1、修复picker-custom2所传的数据类型问题（如果使用无联动类型请传itemArray参数，如果使用联动类型请传itemObject参数，因为类型不同，不分开来会报错）<br />2、inputsArray循环时改为使用item.title作为key，所以title每项都必须传！！，不然报错|
 | 4.6 | 修复没传buttonStyle就报错问题|
 | 4.5 | 1、新增text类型用于展示信息<br />2、增强布局可控性（新增titleHide属性，可以隐藏title，并且在设置titleHide为true时，可控制右边部分的width-->contentSet.width，contentSet与titleSet的layout属性新增center值居中显示，因此，在设置titleHide为true并且设置contentSet.layout为center以及设置contentSet.width<100的值时，可以实现预览图中模拟登陆的布局效果）<br />3、获取验证码按钮移到了验证码input的右边<br />4、删除title的冒号，若要回复则在inputs.vue中将title相应的代码取消注释，并删除另外的<br />5、规则及协议改为居中布局<br />6、修复picker-custom2中itemArray的类型|
@@ -811,7 +812,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | mode| | String| 'picker-date'| picker-date的类型|
 | startYear| | Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
 | endYear| | Number| new Date().getFullYear() + 5 (后五年)|  结束年份, 可直接输入四位数字|
-| defaultValue| |String| 现在|默认日期, 例: '2019-03-30 10:00:00'、'2019-03-30',不支持直接初始化time|
+| defaultValue| |String| 现在| 默认日期,注意：格式尽量传YYYY/MM/dd的格式，不然iOS中有可能new不了Date对象! 例: '2019/03/30 10:00:00'、'2019/03/30',不支持直接初始化time|
 | chooseName| | String| 选择日期| 选择日期按钮命名|
 | editorName| | String| 更改| 更改日期按钮命名|
 | confirmName| | String| 确定| 弹出时,确定选择日期按钮命名|
