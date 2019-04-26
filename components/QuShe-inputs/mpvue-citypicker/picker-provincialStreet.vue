@@ -27,8 +27,27 @@
 	import streetData from './city-data/streets.js';
 	import _app from '../app.js';
 	export default {
+		props: {
+			indicatorStyle: String,
+			height: Number,
+			wH: Number,
+			/* 默认值 */
+			pickerValueDefault: Array,
+			/* 主题色 */
+			themeColor: String,
+			fontSize: {
+				type: Number,
+				default: 10
+			},
+			confirmName: String,
+			index: Number,
+			confirmStyle: String
+		},
 		data() {
-			let pickerValue = this.pickerValueDefault||[0,0,0,0];
+			let pickerValue = [0,0,0,0];
+			if(this.pickerValueDefault instanceof Array && this.pickerValueDefault.length == 4) {
+				pickerValue = this.pickerValueDefault;
+			}
 			let provinceDataList = provinceData;
 			let cityDataList = cityData[pickerValue[0]];
 			let areaDataList =
@@ -47,22 +66,6 @@
 				}
 			};
 		},
-		props: {
-			indicatorStyle: String,
-			height: Number,
-			wH: Number,
-			/* 默认值 */
-			pickerValueDefault: Array,
-			/* 主题色 */
-			themeColor: String,
-			fontSize: {
-				type: Number,
-				default: 10
-			},
-			confirmName: String,
-			index: Number,
-			confirmStyle: String
-		},
 		methods: {
 			pickerChange(e) {
 				let changePickerValue = e.detail.value;
@@ -70,22 +73,18 @@
 					// 第一级发生滚动
 					this.cityDataList = cityData[changePickerValue[0]];
 					this.areaDataList = areaData[changePickerValue[0]][0];
-					this.streetDataList =
-						streetData[changePickerValue[0]][0][0];
+					this.streetDataList = streetData[changePickerValue[0]]&&streetData[changePickerValue[0]][0]&&streetData[changePickerValue[0]][0][0]?streetData[changePickerValue[0]][0][0]:[];
 					changePickerValue[1] = 0;
 					changePickerValue[2] = 0;
 					changePickerValue[3] = 0;
 				} else if (this.pickerValue[1] !== changePickerValue[1]) {
 					// 第二级滚动
-					this.areaDataList =
-						areaData[changePickerValue[0]][changePickerValue[1]];
-					this.streetDataList =
-						streetData[changePickerValue[0]][changePickerValue[1]][0];
+					this.areaDataList = areaData[changePickerValue[0]][changePickerValue[1]];
+					this.streetDataList = streetData[changePickerValue[0]]&&streetData[changePickerValue[0]][changePickerValue[1]]&&streetData[changePickerValue[0]][changePickerValue[1]][0]?streetData[changePickerValue[0]][changePickerValue[1]][0]:[];
 					changePickerValue[2] = 0;
 					changePickerValue[3] = 0;
 				}else if (this.pickerValue[2] !== changePickerValue[2]) {
-					this.streetDataList =
-						streetData[changePickerValue[0]][changePickerValue[1]][changePickerValue[2]];
+					this.streetDataList = streetData[changePickerValue[0]]&&streetData[changePickerValue[0]][changePickerValue[1]]&&streetData[changePickerValue[0]][changePickerValue[1]][changePickerValue[2]]?streetData[changePickerValue[0]][changePickerValue[1]][changePickerValue[2]]:[];
 					changePickerValue[3] = 0;
 				}
 				this.pickerValue = changePickerValue;
