@@ -20,6 +20,9 @@
 					"getcodeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;" //获取验证码按钮样式
 				},
 				"inputsArray": [{
+						"type": "sku",
+						"ignore": true
+					},{
 						"segmentationTitle": "展示信息", //分割大标题
 						"border_top": "1px solid #f2f2f2", //上划线
 						"type": "text",

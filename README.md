@@ -19,7 +19,7 @@ picker-date类型在较为复杂的页面，“日”一列的picker-view-column
 
 | 版本号 | 更新说明 |
 |----|------|
-| 4.9 | 修复picker-provincialStreet类型在自定义组件模式下报错问题，并修复重庆、甘肃等地区的乡、镇、街道数据|
+| 4.9 | 修复picker-provincialStreet类型在自定义组件模式下报错问题，并修复重庆、甘肃等地区的乡、镇、街道数据，若所选择的地区没有街道数据，则为空， 感谢qq：3127653386小伙伴发现的问题~|
 | 4.8 | 修复picker-date类型在iOS上的问题（初始化日期格式已定死，详见 八、日期选择 的defaultValue属性），感谢unique542@qq.com(243558987)小伙伴发现并查找解决问题！|
 | 4.7 | 1、修复picker-custom2所传的数据类型问题（如果使用无联动类型请传itemArray参数，如果使用联动类型请传itemObject参数，因为类型不同，不分开来会报错）<br />2、inputsArray循环时改为使用item.title作为key，所以title每项都必须传！！，不然报错|
 | 4.6 | 修复没传buttonStyle就报错问题|

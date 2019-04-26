@@ -160,6 +160,10 @@
 							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.selectButton">{{item.chooseName||'选择街道'}}</button>
 						</view>
 					</view>
+					<!-- sku -->
+					<view class="width100 flex_column" :style="classObj.padding0_3" v-else-if="item.type&&item.type=='sku'">
+						<sku :wH="wH" :wW="wW"/>
+					</view>
 					<!-- text -->
 					<view :class="[classObj.contentLayout]" :style="classObj.contentWidth"
 					 v-else-if="item.type&&item.type=='text'">
@@ -270,6 +274,7 @@
 	import pickerCustom from './picker-custom.vue';
 	import pickerCustom2 from './picker-custom2.vue';
 	import pickerProvincialStreet from './mpvue-citypicker/picker-provincialStreet.vue';
+	import sku from './sku.vue';
 	
 	export default {
 		props: {
@@ -1044,7 +1049,8 @@
 			pickersCity,
 			pickerCustom,
 			pickerCustom2,
-			pickerProvincialStreet
+			pickerProvincialStreet,
+			sku
 		}
 	}
 </script>

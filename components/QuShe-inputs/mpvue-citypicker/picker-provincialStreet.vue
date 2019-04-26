@@ -105,8 +105,8 @@
 					this.cityDataList[this.pickerValue[1]].label +
 					'-' +
 					this.areaDataList[this.pickerValue[2]].label + 
-					'-' + 
-					this.streetDataList[this.pickerValue[3]];
+					
+					(this.streetDataList[this.pickerValue[3]]?'-' + this.streetDataList[this.pickerValue[3]]: '');
 				return pcikerLabel;
 			},
 			_getCityCode() {
