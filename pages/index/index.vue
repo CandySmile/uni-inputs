@@ -2,7 +2,7 @@
 	<view>
 		<inputs :inputsArray="inputsArray" activeName="获取输入" :ruleSet="ruleSet" ifRule ifCode @chaildOpenEvent="openWin"
 		 @activeFc="activeFc" :onLoadData="onLoadData" animationType="rotate3d-fade" :animationDuration=".1"
-		 submitReSet :buttonStyle="buttonStyle"/>
+		 submitReSet :buttonStyle="buttonStyle" :inputDebounceSet="inputDebounceSet"/>
 		 <button type="primary" @tap="openTest()" style="margin-top: 50px;">打开test页面</button>
 	</view>
 </template>
@@ -12,6 +12,10 @@
 	export default {
 		data() {
 			return {
+				inputDebounceSet: {
+					openInputDebounce: true,
+					delay: 500
+				},
 				"buttonStyle": { //按钮样式
 					"activeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //主按钮样式
 					"changeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //picker类型更改按钮样式
@@ -20,9 +24,6 @@
 					"getcodeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;" //获取验证码按钮样式
 				},
 				"inputsArray": [{
-						"type": "sku",
-						"ignore": true
-					},{
 						"segmentationTitle": "展示信息", //分割大标题
 						"border_top": "1px solid #f2f2f2", //上划线
 						"type": "text",
@@ -78,7 +79,7 @@
 						}, {
 							"name": "b",
 							"value": "b",
-							"defaultValue": true,
+							// "defaultValue": true,
 							"disabled": true
 						}, {
 							"name": "c",
@@ -89,7 +90,7 @@
 						"color": "#c0ebd7"
 					}, {
 						"title": "手机号校验",
-						"verifyFc": function(value) {
+						verifyFc: function(value) {
 							if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value))
 								return true;
 							return false;
@@ -103,7 +104,7 @@
 						"password": true, //input密码类型
 						"icon": "search", //input左边图标
 						"iconColor": "#c0ebd7", //input图标颜色
-						"filterFc": function(value) { //input值过滤函数
+						filterFc: function(value) { //input值过滤函数
 							//自定义过滤函数
 							value = "filter过滤后的值";
 							return value;

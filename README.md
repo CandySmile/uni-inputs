@@ -10,15 +10,14 @@
 本组件目前支持 input、textarea、radio、checkbox、switch、slider、上传图片、日期选择、城市选择、省市区乡镇街道、picker可联动自定义等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
 
 ---
-# 警告(已解决)
-picker-date类型在较为复杂的页面，“日”一列的picker-view-column可能会有例如从3月31日切换为2月时的28日跳到27日的bug，并且滑动至28时，值不会变成28而是27，只能点击选择28才能变更，这是在我自己的项目中发现的问题，是嵌套在官方组件segmented-control的tab切换显示或隐藏环境中出现此bug
-
-已找到原因：是在下样式设置的太死了(还打扰官方人员那么久，，，实在抱歉)，详见picker类型附近的picker注意事项
+# 警告
+自定义组件模式好像传不了函数属性， 所以 input类型的过滤函数及校验函数不起作用
 
 # 更新说明
 
 | 版本号 | 更新说明 |
 |----|------|
+| 5.0 | 优化input类型输入防抖（新增inputDebounceSet属性, 其实防抖的不止input类型，是除了picker与checkbox类型的其他类型）, 修复checkbox类型的初始值视图问题|
 | 4.9 | 修复picker-provincialStreet类型在自定义组件模式下报错问题，并修复重庆、甘肃等地区的乡、镇、街道数据，若所选择的地区没有街道数据，则为空， 感谢qq：3127653386小伙伴发现的问题~|
 | 4.8 | 修复picker-date类型在iOS上的问题（初始化日期格式已定死，详见 八、日期选择 的defaultValue属性），感谢unique542@qq.com(243558987)小伙伴发现并查找解决问题！|
 | 4.7 | 1、修复picker-custom2所传的数据类型问题（如果使用无联动类型请传itemArray参数，如果使用联动类型请传itemObject参数，因为类型不同，不分开来会报错）<br />2、inputsArray循环时改为使用item.title作为key，所以title每项都必须传！！，不然报错|
@@ -72,7 +71,8 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 ```html
 <template>
   <view>
-	<inputs :inputsArray="inputsArray" activeName="获取输入" :ruleSet="ruleSet" ifRule ifCode v-on:chaildOpenEvent="openWin" v-on:activeFc="activeFc" :onLoadData="onLoadData" cssMode="wrap" animationType="rotate3d-fade" :animationDuration=".4" submitReSet :buttonStyle="buttonStyle" />
+	<inputs :inputsArray="inputsArray" activeName="获取输入" :ruleSet="ruleSet" ifRule ifCode v-on:chaildOpenEvent="openWin" v-on:activeFc="activeFc" :onLoadData="onLoadData" cssMode="wrap" animationType="rotate3d-fade" :animationDuration=".4" submitReSet :buttonStyle="buttonStyle" 
+	 :inputDebounceSet="inputDebounceSet"/>
   </view>
 </template>
 ```
@@ -83,7 +83,11 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
   export default {
     data() {
       return {
-		"buttonStyle": { //按钮样式
+				inputDebounceSet: {
+					openInputDebounce: true,
+					delay: 500
+				},
+		        "buttonStyle": { //按钮样式
 					"activeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //主按钮样式
 					"changeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //picker类型更改按钮样式
 					"selectButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //picker类型选择按钮样式
@@ -567,6 +571,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | titleSet| | Object<String>|  | title(左边)设置|
 | contentSet| | Object<String>| | content(右边)设置|
 | titleHide| | Boolean| false| 隐藏title|
+| inputDebounceSet| | Object| | input类型输入防抖设置, 详见下方inputDebounceSet属性说明|
 注：titleFontSize、titleFontColor、contentFontSize、changeReSet、ruleArray等属性已废弃
 
 ### animationType属性说明
@@ -620,6 +625,14 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | size| content字体大小(默认 屏幕高度*.018)  |
 | width| content的宽度，在titleHide设置为true时生效，单位 %  |
 | layout| content对齐方式(设置 left 则为左对齐，center为居中， 否则右对齐) |
+
+### inputDebounceSet属性说明(5.0新增)
+| 值| 值类型| 说明|
+|---|---|---|
+| openInputDebounce| Boolean  |是否开启input输入防抖  |
+| delay| Number  |输出延迟时间(默认500)  |
+
+注：  其实防抖的不止input类型，是除了picker与checkbox类型的其他类型
 
 ---
 

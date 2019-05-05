@@ -36,8 +36,7 @@
 						</view>
 					</view>
 					<!-- switch -->
-					<view :class="[classObj.contentLayout]" :style="classObj.contentWidth"
-					 v-else-if="item.type&&item.type=='switch'">
+					<view :class="[classObj.contentLayout]" :style="classObj.contentWidth" v-else-if="item.type&&item.type=='switch'">
 						<switch :checked="inputsObj[onLoadData+index]" :disabled="item.disabled" :type="item.mode||'switch'" :color="item.color"
 						 @change="inputs_change($event, index)" />
 					</view>
@@ -160,10 +159,6 @@
 							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.selectButton">{{item.chooseName||'选择街道'}}</button>
 						</view>
 					</view>
-					<!-- sku -->
-					<view class="width100 flex_column" :style="classObj.padding0_3" v-else-if="item.type&&item.type=='sku'">
-						<sku :wH="wH" :wW="wW"/>
-					</view>
 					<!-- text -->
 					<view :class="[classObj.contentLayout]" :style="classObj.contentWidth"
 					 v-else-if="item.type&&item.type=='text'">
@@ -274,9 +269,12 @@
 	import pickerCustom from './picker-custom.vue';
 	import pickerCustom2 from './picker-custom2.vue';
 	import pickerProvincialStreet from './mpvue-citypicker/picker-provincialStreet.vue';
-	import sku from './sku.vue';
+	
+	const debounceName = 'inputdebounce_';
+	var inputDebounce = {};
 	
 	export default {
+		name: 'inputs',
 		props: {
 			inputsArray: { //用户自定义的输入类型
 				type: Array,
@@ -355,6 +353,15 @@
 			titleHide: {
 				type: Boolean,
 				default: false
+			},
+			inputDebounceSet: {
+				type: Object,
+				default() {
+					return {
+						openInputDebounce: false,
+						delay: 500
+					}
+				}
 			}
 		},
 		data() {
@@ -465,8 +472,8 @@
 									status.push('');
 								}
 							}
-							_this[itemVariableName] = {value, status: this.checkbox_status(status)};
-							_this.$set(_this.inputsObj, itemVariableName, value);
+							_this[itemVariableName] = {value, status: _app.checkbox_status(status)};
+							_this.$set(_this.inputsObj, itemVariableName, _app.checkbox_status(status));
 							break;
 						case 'pics':
 							for (let j = 0; j < item.itemArray.length; j++) {
@@ -778,37 +785,60 @@
 					});
 					_this.inputsObj[_this.onLoadData + index] = newArray; //视图暂存
 				}
-				_this[_this.onLoadData + index] = {value:e.detail.value, status: this.checkbox_status(newArray)};
-			},
-			checkbox_status(data) {
-				for(let i = 0; i < data.length; i++) {
-					if(data[i]) data[i] = true; else data[i] = false;
-				}
-				return data;
+				_this[_this.onLoadData + index] = {value:e.detail.value, status: _app.checkbox_status(newArray)};
 			},
 			inputs_change(e, index, filterFc) { // 用户输入时，根据index赋值
 				//console.log(e.detail.value);
 				let _this = this;
-				let val = e.detail.value;
-				if(filterFc&&typeof(filterFc)=='function') {	//有filterFc则过滤
-					val = filterFc(val);
-					if(val !== e.detail.value) {
-						let deletePromise = new Promise((reslove,reject)=>{
-							_this.$delete(_this.inputsObj, _this.onLoadData + index);
-							reslove();
-						})
-						deletePromise.then(()=>{
+				if(_this.inputDebounceSet.openInputDebounce) {
+					if(inputDebounce[debounceName+index]) clearTimeout(inputDebounce[debounceName+index]);
+					inputDebounce[debounceName+index] = setTimeout(()=>{
+						let val = e.detail.value;
+						if(filterFc&&typeof(filterFc)=='function') {	//有filterFc则过滤
+							val = filterFc(val);
+							if(val !== e.detail.value) {
+								let deletePromise = new Promise((reslove,reject)=>{
+									_this.$delete(_this.inputsObj, _this.onLoadData + index);
+									reslove();
+								})
+								deletePromise.then(()=>{
+									_this.$set(_this.inputsObj, _this.onLoadData + index, val);
+									_this[_this.onLoadData + index] = val;
+								})
+							}else{
+								_this.$set(_this.inputsObj, _this.onLoadData + index, val);
+								_this[_this.onLoadData + index] = val;
+							}
+						}else{
 							_this.$set(_this.inputsObj, _this.onLoadData + index, val);
 							_this[_this.onLoadData + index] = val;
-						})
+						}
+					}, _this.inputDebounceSet.delay||500);
+				}else{
+					let val = e.detail.value;
+					if(filterFc&&typeof(filterFc)=='function') {	//有filterFc则过滤
+						val = filterFc(val);
+						if(val !== e.detail.value) {
+							let deletePromise = new Promise((reslove,reject)=>{
+								_this.$delete(_this.inputsObj, _this.onLoadData + index);
+								reslove();
+							})
+							deletePromise.then(()=>{
+								_this.$set(_this.inputsObj, _this.onLoadData + index, val);
+								_this[_this.onLoadData + index] = val;
+							})
+						}else{
+							_this.$set(_this.inputsObj, _this.onLoadData + index, val);
+							_this[_this.onLoadData + index] = val;
+						}
 					}else{
 						_this.$set(_this.inputsObj, _this.onLoadData + index, val);
 						_this[_this.onLoadData + index] = val;
 					}
-				}else{
-					_this.$set(_this.inputsObj, _this.onLoadData + index, val);
-					_this[_this.onLoadData + index] = val;
 				}
+				
+				// if(!inputDebounce[debounceName+index])
+					// inputDebounce[debounceName+index] = d;
 			},
 			picker_change(res) { //picker类型选择后赋值 
 				console.log('pickerValue：' + JSON.stringify(res));
@@ -1049,8 +1079,7 @@
 			pickersCity,
 			pickerCustom,
 			pickerCustom2,
-			pickerProvincialStreet,
-			sku
+			pickerProvincialStreet
 		}
 	}
 </script>

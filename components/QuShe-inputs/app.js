@@ -99,6 +99,12 @@ let _app = {
 			y.push(sy + i);
 		}
 		return y;
+	},
+	checkbox_status(data) {
+		for(let i = 0; i < data.length; i++) {
+			if(data[i]) data[i] = true; else data[i] = false;
+		}
+		return data;
 	}
 }
 export default _app;
