@@ -17,15 +17,17 @@
 				<view :class="[classObj.contentsWidth, classObj.contentsLayout]">
 					<!-- pics -->
 					<view class="box-sizing-border-box" v-if="item.type&&item.type=='pics'" :style="classObj.padding1_0 + classObj.contentWidth">
-						<view class="width100" :class="[item.cssMode||cssMode||'wrap', classObj.contentLayout]">
-							<view class="flex_column_c_c box-sizing-border-box" :style="classObj.padding1" v-for="(picsItem, picsIndex) in item.itemArray"
+						<view class="width100 wrap" :class="[classObj.contentLayout]">
+							<view class="flex_column_c_c box-sizing-border-box" :style="classObj.paddingPoint5" v-for="(picsItem, picsIndex) in item.itemArray"
 							 :key="picsIndex">
-								<view class="flex_row_c_c border1pxf2f2f2 position_relative" :style="classObj.picsBox" @tap="!picsObj[onLoadData + index + onLoadData + picsIndex]?chooseImg(index, picsIndex): ''">
-									<image :src="picsObj[onLoadData + index + onLoadData + picsIndex]" mode="aspectFill" :style="classObj.picsBox"
-									 v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap="showImg(picsObj[onLoadData + index + onLoadData + picsIndex])"></image>
-									<view class="fontColorADADAD" :style="classObj.content" v-else>+</view>
-									<view class="position_absolute" :style="classObj.picsClear_position" v-if="picsObj[onLoadData + index + onLoadData + picsIndex]"
-									 @tap.stop.prevent="clearPic(index, picsIndex)">
+								<view class="flex_row_c_c border1pxf2f2f2 position_relative border_radius_4px bacnground_color_f8f8f8" :style="classObj.picsBox"
+								 @tap="!picsObj[onLoadData + index + onLoadData + picsIndex]?chooseImg(index, picsIndex): ''">
+									<image :src="picsObj[onLoadData + index + onLoadData + picsIndex]" class="border_radius_4px box_shadow_2px_2px_5px_ADADAD" mode="aspectFill"
+									 :style="classObj.picsBox" v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap="showImg(picsObj[onLoadData + index + onLoadData + picsIndex])"></image>
+									<view v-else>
+										<uni-icon type="image" :pxSize="wW*.08" color="#999999" />
+									</view>
+									<view class="picsClear" v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap.stop.prevent="clearPic(index, picsIndex)">
 										<uni-icon type="clear" :color="item.clearColor||'#f5105c'" :pxSize="wH*.03" />
 									</view>
 								</view>
@@ -37,8 +39,10 @@
 					</view>
 					<!-- switch -->
 					<view :class="[classObj.contentLayout]" :style="classObj.contentWidth" v-else-if="item.type&&item.type=='switch'">
-						<switch :checked="inputsObj[onLoadData+index]" :disabled="item.disabled" :type="item.mode||'switch'" :color="item.color"
-						 @change="inputs_change($event, index)" />
+						<view class="position_relative">
+							<switch :checked="inputsObj[onLoadData+index]" :disabled="item.disabled" :type="item.mode||'switch'" :color="item.color"
+							 @change="inputs_change($event, index)" :style="'transform: scale(' + item.scale||.9 + ');'" />
+						</view>
 					</view>
 					<!-- slider -->
 					<view :style="classObj.contentWidth" v-else-if="item.type&&item.type=='slider'">
@@ -49,34 +53,34 @@
 					</view>
 					<!-- radio -->
 					<view :style="classObj.contentWidth" v-else-if="item.type&&item.type=='radio'">
-						<radio-group @change="inputs_change($event, index)" class="width100" :class="[item.cssMode||cssMode||'wrap', classObj.contentLayout]">
+						<radio-group @change="inputs_change($event, index)" class="width100 wrap" :class="[classObj.contentLayout]">
 							<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="classObj.content + classObj.padding1 + classObj.marginRight2"
 							 v-for="(radioItem, radioIndex) in item.itemArray" :key="radioIndex">
 								<radio :value="radioItem.value" :checked="inputsObj[onLoadData+index]==radioItem.value" :disabled="radioItem.disabled"
-								 :color="radioItem.color||item.color" />
-								<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?wW*.15 + 'px': ''}">{{radioItem.name}}</view>
+								 :color="radioItem.color||item.color" :style="'transform: scale(' + item.scale||.9 + ');'" />
+								<view class="flex_row_none_c">{{radioItem.name}}</view>
 							</label>
 						</radio-group>
 					</view>
 					<!-- checkbox -->
 					<view :style="classObj.contentWidth" v-else-if="item.type&&item.type=='checkbox'">
-						<checkbox-group @change="checkbox_change($event, index)" class="width100" :class="[item.cssMode||cssMode||'wrap', classObj.contentLayout]">
+						<checkbox-group @change="checkbox_change($event, index)" class="width100 wrap" :class="[classObj.contentLayout]">
 							<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="classObj.content + classObj.padding1 + classObj.marginRight2"
 							 v-for="(checkboxItem, checkboxIndex) in item.itemArray" :key="checkboxIndex">
 								<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index][checkboxIndex]" :disabled="checkboxItem.disabled"
-								 :color="checkboxItem.color||item.color" />
-								<view class="flex_row_none_c" :style="{'width': cssMode=='scrollX'||item.cssMode=='scrollX'?wW*.15 + 'px': ''}">{{checkboxItem.name}}</view>
+								 :color="checkboxItem.color||item.color" :style="'transform: scale(' + item.scale||.9 + ');'" />
+								<view class="flex_row_none_c">{{checkboxItem.name}}</view>
 							</label>
 						</checkbox-group>
 					</view>
 					<!-- textarea -->
-					<view :style="classObj.contentWidth" v-else-if="item.type&&item.type=='textarea'">
+					<view :class="[classObj.contentLayout]" :style="classObj.contentWidth" v-else-if="item.type&&item.type=='textarea'">
 						<textarea :value="inputsObj[onLoadData+index]" :placeholder="item.placeholder||'请输入' + item.title"
-						 :placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class" :style="{'font-size': classObj.contentSize + 'px', 'height': !item.auto_height?(item.height||wH*.1)+'px':''}"
-						 class="border1pxf2f2f2 width100" :disabled="item.disabled" :maxlength="item.maxlength||140" :focus="item.focus"
+						 :placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class" :style="{'font-size': classObj.contentSize + 'px', 'height': !item.auto_height?(item.height||wH*.1)+'px':'', 'width': item.width||'60%', 'background-color': item.backgroundColor||'#F8F8F8', 'color': item.color||'#666666'}"
+						 class="width100 border_radius_4px padding8px" :disabled="item.disabled" :maxlength="item.maxlength||140" :focus="item.focus"
 						 :auto-height="item.auto_height" :fixed="item.fixed" :cursor-spacing="item.cursor_spacing" :cursor="item.cursor"
 						 :show-confirm-bar="item.show_confirm_bar" :selection-start="item.selection_start" :selection-end="item.selection_end"
-						 :adjust-position="item.adjust_position" @input="inputs_change($event, index)" />
+						 :adjust-position="item.adjust_position" @input="inputs_change($event, index, item.filterFc, true)" />
 						</view>
 					<!-- picker-date -->
 					<view :class="[classObj.contentLayout]" :style="classObj.padding0_3 + classObj.contentWidth" v-else-if="item.type&&item.type=='picker-date'">
@@ -172,18 +176,18 @@
 						</view>
 					</view>
 					<!-- input -->
-					<view class="flex_row_none_c" :style="classObj.contentWidth" v-else>
-						<view :class="item.tapClear&&item.password?'width70':item.tapClear||item.password?'width85':'width100'" class="flex_row_none_c borderBottom1pxf2f2f2">
+					<view class="flex_row_none_c borderBottom1pxf2f2f2" :style="classObj.contentWidth" v-else>
+						<view :class="item.tapClear&&item.password?'width70':item.tapClear||item.password?'width85':'width100'" class="flex_row_none_c">
 							<view class="width15" v-if="item.icon">
 								<view class="flex_row_c_c width100">
 									<uni-icon :type="item.icon" :pxSize="classObj.iconSize" :color="item.iconColor||'#999999'"></uni-icon>
 								</view>
 							</view>
-							<input :type="item.inputType||'text'" :value="inputsObj[onLoadData+index]" @input="inputs_change($event, index, item.filterFc)" :placeholder="item.placeholder||'请输入' + item.title"
+							<input :type="item.inputType||'text'" :value="inputsObj[onLoadData+index]" @input="inputs_change($event, index, item.filterFc, true)" :placeholder="item.placeholder||'请输入' + item.title"
 							 :password="inputsObj[onLoadData+index+'password']" :placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class"
 							 :maxlength="item.maxlength||140" :cursor-spacing="item.cursor_spacing" :focus="item.focus"
 							 :confirm-type="item.confirm_type" :confirm-hold="item.confirm_hold" :selection-start="item.selection_start" :selection-end="item.selection_end"
-							 :cursor="item.cursor" :adjust-position="item.adjust_position" :class="item.icon?'width85':'width100'" :disabled="item.disabled" :style="classObj.titleFs" />
+							 :cursor="item.cursor" :adjust-position="item.adjust_position" :class="item.icon?'width85':'width100'" :disabled="item.disabled" :style="classObj.titleFs" class="fontColor666666"/>
 						</view>
 						<view class="width15" v-if="item.password">
 							<view class="flex_row_c_c width100" @tap.prevent.stop="inputTap('passwordSwitch', index)">
@@ -270,11 +274,20 @@
 	import pickerCustom2 from './picker-custom2.vue';
 	import pickerProvincialStreet from './mpvue-citypicker/picker-provincialStreet.vue';
 	
+	const inputsObj = {};
 	const debounceName = 'inputdebounce_';
+	const debounceTimeName = 'inputdebounce_time_';
 	var inputDebounce = {};
-	
 	export default {
 		name: 'inputs',
+		components: {
+			uniIcon,
+			pickersDate,
+			pickersCity,
+			pickerCustom,
+			pickerCustom2,
+			pickerProvincialStreet
+		},
 		props: {
 			inputsArray: { //用户自定义的输入类型
 				type: Array,
@@ -321,10 +334,6 @@
 			onLoadData: { // 数据变量名（+index）
 				type: String,
 				default: 'data_'
-			},
-			cssMode: { //拥有子数组序列类型的布局方式
-				type: String,
-				default: 'wrap'
 			},
 			submitReSet: { //提交后重置
 				type: Boolean,
@@ -405,6 +414,7 @@
 					iconSize: (this.contentSet.size||wH*scale_two) + 8, //number
 					padding1_0: 'padding:' + wH*.01 + 'px 0;',
 					padding1: 'padding:' + wH*.01 + 'px;',
+					paddingPoint5: 'padding:' + wH*.005 + 'px;',
 					padding0_3: 'padding:' +  '0 ' + wW*.03+'px;',
 					padding2_3: 'padding:' + wH*.02 + 'px ' + wW*.03 + 'px;',
 					padding1_3: 'padding:' + wH*.01 + 'px ' + wW*.03 + 'px;',
@@ -412,8 +422,7 @@
 					margin0_15: 'margin: 0 ' + wH*.015 + 'px;',
 					margin0_1: 'margin: 0 ' + wH*.01 + 'px;',
 					margin0: 'margin: 0;',
-					picsBox: 'height:' + wH*.07+'px;width:' + wW*.2+'px;',
-					picsClear_position: 'top:' + (0-wH*.03)+'px;right:' + (0-wH*.025)+'px;padding:' + wH*.01+'px;',
+					picsBox: 'height:' + wW*.14+'px;width:' + wW*.17+'px;',
 					picsTitle:'width:' + wW*.2+'px;margin-top:' + wH*.01+'px;',
 					marginRight2: 'margin-right:' + wW*.02+'px;',
 					marginLeft3: 'margin-left:' + wW*.03+'px;',
@@ -429,6 +438,7 @@
 		},
 		watch: {
 			'inputsArray'(n, o) { //父级传入的inputsArray改变时自动初始化默认数据
+				console.log('inputsArray变化了:' + JSON.stringify(n));
 				if (n) this.init();
 			}
 		},
@@ -453,10 +463,10 @@
 								}
 							}
 							if(data) {
-								_this[itemVariableName] = data;
+								inputsObj[itemVariableName] = data;
 								_this.$set(_this.inputsObj, itemVariableName, data);
 							}else{
-								_this[itemVariableName] = '';
+								inputsObj[itemVariableName] = '';
 								_this.$set(_this.inputsObj, itemVariableName, '');
 							}
 							break;
@@ -472,7 +482,7 @@
 									status.push('');
 								}
 							}
-							_this[itemVariableName] = {value, status: _app.checkbox_status(status)};
+							inputsObj[itemVariableName] = {value, status: _app.checkbox_status(status)};
 							_this.$set(_this.inputsObj, itemVariableName, _app.checkbox_status(status));
 							break;
 						case 'pics':
@@ -509,13 +519,13 @@
 										data = `${Y}/${M}/${D} ${defaultDate.getHours()}:${defaultDate.getMinutes()}:${defaultDate.getSeconds()}`;
 										break;
 								}
-								_this[itemVariableName] = data;
+								inputsObj[itemVariableName] = data;
 								_this.$set(_this.pickerObj, itemVariableName, data);
-								this[_app.pickerChoosedType.pickerChoosedType_date.value + i] = ''; //初始化时清空记忆数据
+								inputsObj[_app.pickerChoosedType.pickerChoosedType_date.value + i] = ''; //初始化时清空记忆数据
 							}else{
-								_this[itemVariableName] = '';
+								inputsObj[itemVariableName] = '';
 								_this.$set(_this.pickerObj, itemVariableName, '');
-								this[_app.pickerChoosedType.pickerChoosedType_date.value + i] = ''; //初始化时清空记忆数据
+								inputsObj[_app.pickerChoosedType.pickerChoosedType_date.value + i] = ''; //初始化时清空记忆数据
 							}
 							break;
 						case 'picker-city':
@@ -535,13 +545,13 @@
 									value: defaultValue,
 									cityCode: areaDataList[defaultValue[2]].value
 								};
-								_this[itemVariableName] = data;
+								inputsObj[itemVariableName] = data;
 								_this.$set(_this.pickerObj, itemVariableName, data);
-								this[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
+								inputsObj[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
 							}else{
-								_this[itemVariableName] = null;
+								inputsObj[itemVariableName] = null;
 								_this.$set(_this.pickerObj, itemVariableName, null);
-								this[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
+								inputsObj[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
 							}
 							break;
 						case 'picker-custom':
@@ -594,13 +604,13 @@
 										data.result.push(d[v[i]]);
 									}
 								}
-								_this[itemVariableName] = data;
+								inputsObj[itemVariableName] = data;
 								_this.$set(_this.pickerObj, itemVariableName, data);
-								this[_app.pickerChoosedType.pickerChoosedType_custom.value + i] = null;
+								inputsObj[_app.pickerChoosedType.pickerChoosedType_custom.value + i] = null;
 							}else{
-								_this[itemVariableName] = '';
+								inputsObj[itemVariableName] = '';
 								_this.$set(_this.pickerObj, itemVariableName, '');
-								this[_app.pickerChoosedType.pickerChoosedType_custom.value + i] = null;
+								inputsObj[_app.pickerChoosedType.pickerChoosedType_custom.value + i] = null;
 							}
 							break;
 						case 'picker-custom2':
@@ -653,21 +663,21 @@
 										data.result.push(d[v[i]]);
 									}
 								}
-								_this[itemVariableName] = data;
+								inputsObj[itemVariableName] = data;
 								_this.$set(_this.pickerObj, itemVariableName, data);
-								this[_app.pickerChoosedType.pickerChoosedType_custom2.value + i] = null;
+								inputsObj[_app.pickerChoosedType.pickerChoosedType_custom2.value + i] = null;
 							}else{
-								_this[itemVariableName] = '';
+								inputsObj[itemVariableName] = '';
 								_this.$set(_this.pickerObj, itemVariableName, '');
-								this[_app.pickerChoosedType.pickerChoosedType_custom2.value + i] = null;
+								inputsObj[_app.pickerChoosedType.pickerChoosedType_custom2.value + i] = null;
 							}
 							break;
 						case 'switch':
-							_this[itemVariableName] = item.defaultValue || false;
+							inputsObj[itemVariableName] = item.defaultValue || false;
 							_this.$set(_this.inputsObj, itemVariableName, item.defaultValue || false);
 							break;
 						case 'slider':
-							_this[itemVariableName] = item.defaultValue || item.min || 0;
+							inputsObj[itemVariableName] = item.defaultValue || item.min || 0;
 							_this.$set(_this.inputsObj, itemVariableName, item.defaultValue || item.min || 0);
 							break;
 						case 'picker-provincialStreet':
@@ -690,23 +700,23 @@
 									value: defaultValue,
 									cityCode: areaDataList[defaultValue[2]].value
 								};
-								_this[itemVariableName] = data;
+								inputsObj[itemVariableName] = data;
 								_this.$set(_this.pickerObj, itemVariableName, data);
-								this[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
+								inputsObj[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
 							}else{
-								_this[itemVariableName] = null;
+								inputsObj[itemVariableName] = null;
 								_this.$set(_this.pickerObj, itemVariableName, null);
-								this[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
+								inputsObj[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
 							}
 							break;
 						case 'text':
 							break;
 						default:
 							if(item.defaultValue) {
-								_this[itemVariableName] = item.defaultValue;
+								inputsObj[itemVariableName] = item.defaultValue;
 								_this.$set(_this.inputsObj, itemVariableName, item.defaultValue);
 							}else{
-								_this[itemVariableName] = '';
+								inputsObj[itemVariableName] = '';
 								_this.$set(_this.inputsObj, itemVariableName, '');
 							}
 							if(item.password) {
@@ -725,32 +735,32 @@
 					switch (obj.type) {
 						case 'picker-date':
 							//记忆数据优先
-							if(this[_app.pickerChoosedType.pickerChoosedType_date.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_date.value + index];
+							if(inputsObj[_app.pickerChoosedType.pickerChoosedType_date.value + index]) obj.defaultValue = inputsObj[_app.pickerChoosedType.pickerChoosedType_date.value + index];
 							_this.P_data = obj;
 							_this.pickerDateShow = true;
 							break;
 						case 'picker-city':
 							//记忆数据优先
-							if(this[_app.pickerChoosedType.pickerChoosedType_city.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_city.value + index];
+							if(inputsObj[_app.pickerChoosedType.pickerChoosedType_city.value + index]) obj.defaultValue = inputsObj[_app.pickerChoosedType.pickerChoosedType_city.value + index];
 							_this.P_data = obj;
 							_this.pickerCityShow = true;
 							break;
 						case 'picker-custom':
 							//记忆数据优先
-							if(this[_app.pickerChoosedType.pickerChoosedType_custom.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_custom.value + index];
+							if(inputsObj[_app.pickerChoosedType.pickerChoosedType_custom.value + index]) obj.defaultValue = inputsObj[_app.pickerChoosedType.pickerChoosedType_custom.value + index];
 							_this.P_data = obj;
 							_this.pickerCustomShow = true;
 							break;
 						case 'picker-custom2':
 							//记忆数据优先
-							if(this[_app.pickerChoosedType.pickerChoosedType_custom2.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_custom2.value + index];
+							if(inputsObj[_app.pickerChoosedType.pickerChoosedType_custom2.value + index]) obj.defaultValue = inputsObj[_app.pickerChoosedType.pickerChoosedType_custom2.value + index];
 							console.log(JSON.stringify(obj));
 							_this.P_data = obj;
 							_this.pickerCustom2Show = true;
 							break;
 						case 'picker-provincialStreet':
 							//记忆数据优先
-							if(this[_app.pickerChoosedType.pickerChoosedType_provincialStreet.value + index]) obj.defaultValue = this[_app.pickerChoosedType.pickerChoosedType_provincialStreet.value + index];
+							if(inputsObj[_app.pickerChoosedType.pickerChoosedType_provincialStreet.value + index]) obj.defaultValue = inputsObj[_app.pickerChoosedType.pickerChoosedType_provincialStreet.value + index];
 							_this.P_data = obj;
 							_this.pickerProvincialStreetShow = true;
 							break;
@@ -785,80 +795,73 @@
 					});
 					_this.inputsObj[_this.onLoadData + index] = newArray; //视图暂存
 				}
-				_this[_this.onLoadData + index] = {value:e.detail.value, status: _app.checkbox_status(newArray)};
+				inputsObj[_this.onLoadData + index] = {value:e.detail.value, status: _app.checkbox_status(newArray)};
 			},
-			inputs_change(e, index, filterFc) { // 用户输入时，根据index赋值
+			inputs_change(e, index, filterFc, isInput) { // 用户输入时，根据index赋值
 				//console.log(e.detail.value);
-				let _this = this;
-				if(_this.inputDebounceSet.openInputDebounce) {
+				if(this.inputDebounceSet.openInputDebounce&&isInput) {
 					if(inputDebounce[debounceName+index]) clearTimeout(inputDebounce[debounceName+index]);
-					inputDebounce[debounceName+index] = setTimeout(()=>{
-						let val = e.detail.value;
-						if(filterFc&&typeof(filterFc)=='function') {	//有filterFc则过滤
-							val = filterFc(val);
-							if(val !== e.detail.value) {
-								let deletePromise = new Promise((reslove,reject)=>{
-									_this.$delete(_this.inputsObj, _this.onLoadData + index);
-									reslove();
-								})
-								deletePromise.then(()=>{
-									_this.$set(_this.inputsObj, _this.onLoadData + index, val);
-									_this[_this.onLoadData + index] = val;
-								})
-							}else{
-								_this.$set(_this.inputsObj, _this.onLoadData + index, val);
-								_this[_this.onLoadData + index] = val;
-							}
-						}else{
-							_this.$set(_this.inputsObj, _this.onLoadData + index, val);
-							_this[_this.onLoadData + index] = val;
-						}
-					}, _this.inputDebounceSet.delay||500);
-				}else{
-					let val = e.detail.value;
-					if(filterFc&&typeof(filterFc)=='function') {	//有filterFc则过滤
-						val = filterFc(val);
-						if(val !== e.detail.value) {
-							let deletePromise = new Promise((reslove,reject)=>{
-								_this.$delete(_this.inputsObj, _this.onLoadData + index);
-								reslove();
-							})
-							deletePromise.then(()=>{
-								_this.$set(_this.inputsObj, _this.onLoadData + index, val);
-								_this[_this.onLoadData + index] = val;
-							})
-						}else{
-							_this.$set(_this.inputsObj, _this.onLoadData + index, val);
-							_this[_this.onLoadData + index] = val;
-						}
+					if(inputDebounce[debounceTimeName+index]&&new Date().getTime()-inputDebounce[debounceTimeName+index]<(this.inputDebounceSet.delay||500)) {
+						console.log('防抖冲突,立即执行')
+						this.inputs_changeFc(e, index, filterFc, true);
 					}else{
-						_this.$set(_this.inputsObj, _this.onLoadData + index, val);
-						_this[_this.onLoadData + index] = val;
+						inputDebounce[debounceName+index] = setTimeout(()=>{
+							console.log('防抖')
+							this.inputs_changeFc(e, index, filterFc);
+						}, this.inputDebounceSet.delay||500);
 					}
+				}else{
+					console.log('无防抖')
+					this.inputs_changeFc(e, index, filterFc);
 				}
-				
-				// if(!inputDebounce[debounceName+index])
-					// inputDebounce[debounceName+index] = d;
+			},
+			inputs_changeFc(e, index, filterFc, clash) {
+				if(this.inputDebounceSet.openInputDebounce) {
+					if(clash)
+						inputDebounce[debounceTimeName+index] = 0;
+					else
+						inputDebounce[debounceTimeName+index] = new Date().getTime();
+				}
+				let val = e.detail.value;
+				if(filterFc&&typeof(filterFc)=='function') {	//有filterFc则过滤
+					val = filterFc(val);
+					if(val !== e.detail.value) {
+						new Promise((reslove,reject)=>{
+							this.$delete(this.inputsObj, this.onLoadData + index);
+							reslove();
+						})
+						.then(()=>{
+							this.$set(this.inputsObj, this.onLoadData + index, val);
+							inputsObj[this.onLoadData + index] = val;
+						})
+					}else{
+						this.$set(this.inputsObj, this.onLoadData + index, val);
+						inputsObj[this.onLoadData + index] = val;
+					}
+				}else{
+					this.$set(this.inputsObj, this.onLoadData + index, val);
+					inputsObj[this.onLoadData + index] = val;
+				}
 			},
 			picker_change(res) { //picker类型选择后赋值 
 				console.log('pickerValue：' + JSON.stringify(res));
 				this.pickerObj[this.onLoadData + res.index] = res.data;
-				this[this.onLoadData + res.index] = res.data;
+				inputsObj[this.onLoadData + res.index] = res.data;
 				switch (res.type){		// 该项picker的value记忆
 					case _app.pickerChoosedType.pickerChoosedType_date.name:
-						this[_app.pickerChoosedType.pickerChoosedType_date.value+res.index] = res.data;
+						inputsObj[_app.pickerChoosedType.pickerChoosedType_date.value+res.index] = res.data;
 						break;
 					case _app.pickerChoosedType.pickerChoosedType_city.name:
-						this[_app.pickerChoosedType.pickerChoosedType_city.value+res.index] = res.data.value;
+						inputsObj[_app.pickerChoosedType.pickerChoosedType_city.value+res.index] = res.data.value;
 						break;
 					case _app.pickerChoosedType.pickerChoosedType_custom.name:
-						this[_app.pickerChoosedType.pickerChoosedType_custom.value+res.index] = res.data.value;
+						inputsObj[_app.pickerChoosedType.pickerChoosedType_custom.value+res.index] = res.data.value;
 						break;
 					case _app.pickerChoosedType.pickerChoosedType_custom2.name:
-						this[_app.pickerChoosedType.pickerChoosedType_custom2.value+res.index] = res.data.value;
+						inputsObj[_app.pickerChoosedType.pickerChoosedType_custom2.value+res.index] = res.data.value;
 						break;
 					case _app.pickerChoosedType.pickerChoosedType_provincialStreet.name:
-						this[_app.pickerChoosedType.pickerChoosedType_provincialStreet.value+res.index] = res.data.value;
+						inputsObj[_app.pickerChoosedType.pickerChoosedType_provincialStreet.value+res.index] = res.data.value;
 						break;
 					default:
 						break;
@@ -872,7 +875,7 @@
 						break;
 					case 'clear':	//一键清除
 						this.$set(this.inputsObj, this.onLoadData + index, '');
-						this[this.onLoadData + index] = '';
+						inputsObj[this.onLoadData + index] = '';
 						break;
 					default:
 						_app.showToast('inputTap类型错误');
@@ -885,7 +888,7 @@
 				let d = _this.inputsArray;
 				for (let i = 0; i < d.length; i++) {
 					if (d[i].phone) {
-						phone = _this[_this.onLoadData + i];
+						phone = inputsObj[_this.onLoadData + i];
 						console.log('手机号: ' + phone);
 					}
 				}
@@ -951,7 +954,7 @@
 						case 'text':
 							break;
 						default:
-							if (!_this[onLoadData]) {
+							if (!inputsObj[onLoadData]) {
 								if (d[i].ignore) {
 									inputsDataObj[variableName] = '';
 								} else {
@@ -961,12 +964,12 @@
 							} else {
 								let verifyFc = d[i].verifyFc;
 								if(verifyFc) {
-									if(!verifyFc(_this[onLoadData])) {
+									if(!verifyFc(inputsObj[onLoadData])) {
 										_app.showToast(d[i].verifyErr||(d[i].title + '校验错误'))
 										return;
 									}
 								}
-								inputsDataObj[variableName] = _this[onLoadData];
+								inputsDataObj[variableName] = inputsObj[onLoadData];
 							}
 							break;
 					}
@@ -1072,20 +1075,12 @@
 				this.maskShow = false;
 				this.P_data = {};
 			}
-		},
-		components: {
-			uniIcon,
-			pickersDate,
-			pickersCity,
-			pickerCustom,
-			pickerCustom2,
-			pickerProvincialStreet
 		}
 	}
 </script>
 
 <style scoped>
-	view,button{
+	view,button, textarea, input{
 		box-sizing: border-box;
 	}
 	button::after {
@@ -1157,6 +1152,9 @@
 	.width85 {
 		width: 85%;
 	}
+	.height100{
+		height: 100%;
+	}
 
 	/* 公共样式(可剪切至App.vue) */
 	.word_wrap {
@@ -1166,10 +1164,6 @@
 
 	.wrap {
 		flex-wrap: wrap;
-	}
-
-	.scrollX {
-		overflow-x: scroll;
 	}
 
 	.width100 {
@@ -1262,6 +1256,13 @@
 	.border1pxf2f2f2 {
 		border: 1px solid #f2f2f2;
 	}
+	.bacnground_color_f8f8f8{
+		background-color: #f8f8f8;
+	}
+	
+	.border_radius_4px{
+		border-radius: 4px;
+	}
 
 	.mask {
 		height: 100vh;
@@ -1286,6 +1287,22 @@
 		padding: 1.5vh 3vw;
 		box-sizing: border-box;
 	}
+	
+	.padding8px{
+		padding: 8px;
+	}
+	
+	.picsClear{
+		position: absolute;
+		top: 0;
+		right: 0;
+		transform: translate(50%, -50%);
+	}
+	
+	.box_shadow_2px_2px_5px_ADADAD{
+		box-shadow: 2px 2px 5px #ADADAD;
+	}
+	
 	/* 新增 */
 	@keyframes fadeIn {
 		from {

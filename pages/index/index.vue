@@ -120,6 +120,9 @@
 						}, {
 							"title": "测试2",
 							"ignore": true
+						}, {
+							"title": "测试3",
+							"ignore": true
 						}],
 						"variableName": "pic",
 						"border_top": "1px solid #f2f2f2",

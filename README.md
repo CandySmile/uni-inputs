@@ -16,7 +16,10 @@
 # 更新说明
 
 | 版本号 | 更新说明 |
-|----|------|
+|--------|:----------|
+| 5.3 | 1、switch、radio、checkbox，新增scale属性<br />2、限制防抖只能input与textarea类型使用<br />3、pics类型图片选中后，增加阴影, 废弃cssMode属性，统一wrap布局<br />4、test页面新增 根据后端获取值给inputs赋值初始值示例、动态增加inputs类型示例|
+| 5.2 | 优化部分样式（pics与textarea类型，textarea类型新增width、backgroundColor、color属性）|
+| 5.1 | 优化input类型输入防抖间隔冲突，防止用户在防抖间隔后立即输入时出现卡顿的感觉，优化用户体验|
 | 5.0 | 优化input类型输入防抖（新增inputDebounceSet属性, 其实防抖的不止input类型，是除了picker与checkbox类型的其他类型）, 修复checkbox类型的初始值视图问题|
 | 4.9 | 修复picker-provincialStreet类型在自定义组件模式下报错问题，并修复重庆、甘肃等地区的乡、镇、街道数据，若所选择的地区没有街道数据，则为空， 感谢qq：3127653386小伙伴发现的问题~|
 | 4.8 | 修复picker-date类型在iOS上的问题（初始化日期格式已定死，详见 八、日期选择 的defaultValue属性），感谢unique542@qq.com(243558987)小伙伴发现并查找解决问题！|
@@ -556,12 +559,12 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | inputsArray| 是| Array\<Object\>| | 需循环的inputs数组（可从后端接口获取）|
 | @activeFc| 是| Function| | 主功能方法，携带一个用户所输入的数据对象|
 | activeName| | String| | 主功能按钮的文字说明，不传该值，则主按钮不显示，可以用ref调用inputs的activeFc方法获取输入|
-| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善846-880行的发送验证码方法, 并需设置一项input的phone属性为true|
+| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善916-921行的发送验证码方法, 并需设置一项input的phone属性为true|
 | ifRule| | Boolean| false| 是否需要用户同意某规则或协议|
 | ruleArray(废弃,请使用ruleSet)| ifRule为true时是| Array\<Object\>| | 需要用户同意某规则或协议的数组|
 | @chaildOpenEvent| ifRule为true时是| Function| | 打开某规则或协议的方法|
 | onLoadData| | String| 'data_'| activeFc返回的对象中的数据变量名前缀，后面跟index，看下方说明|
-| cssMode| | String| 'wrap'| 可控制拥有子项数组的类型的项内布局方式的项内布局方式|
+| cssMode（废弃，统一wrap布局）| | String| 'wrap'| 可控制拥有子项数组的类型的项内布局方式|
 | changeReSet(废弃)| | Boolean| false| 在inputsArray改变时可重置所有数据为空，但不重置视图，若需重置视图看下方说明|
 | submitReSet| | Boolean| false| 提交数据后是否重置数据为初始化|
 | animationType| | String| | 入场动画类型|
@@ -728,6 +731,9 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | selection_start| | Number| -1| 光标起始位置，自动聚集时有效，需与selection-end搭配使用|
 | selection_end| | Number| -1| 光标结束位置，自动聚集时有效，需与selection-start搭配使用|
 | adjust_position| | Boolean| true| 详见官网textarea|
+| width| | String| '60%'| textarea的宽度，自带单位|
+| backgroundColor| | Color| '#F8F8F8'| textarea背景颜色|
+| color| | Color| '#666666'| textarea的文字颜色|
 注：最好看源码对照官网属性，在微信小程序上 textarea类型尽量不要与picker类型同时使用
 
 ---
@@ -737,7 +743,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | type| 是| String| | 传固定值 type: 'pics'|
 | itemArray| 是| Array\<Object\>| | 循环的图片数组，下方说明|
 | title| | String| | 该项图片的标题|
-| cssMode| | String| 'wrap'| 项内布局方式|
+| cssMode（废弃，统一wrap布局）| | String| 'wrap'| 项内布局方式|
 | clearColor| | color| '#f5105c'| 清除按钮颜色|
 
 #### pics的itemArray属性说明
@@ -747,7 +753,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | nullErr| | String| this.title + '不能为空'| 为空时提示|
 | ignore| | Boolean| false| 可以为空， 不判断是否为空,默认为必填，必填则在title前面有 * 标识|
 | defaultValue| | String| | 该项pics的初始化默认图片路径(本地图片路径)|
-注：若启用此项，则需完善973-979行的上传图片至服务器方法，并且完善998-1001的拼接返回的图片路径方法
+注：若启用此项，则需完善1012-1021行的上传图片至服务器方法，并且完善1039-1042的拼接返回的图片路径方法
 
 ---
 ### 四、radio(单选)
@@ -755,8 +761,9 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'radio'|
 | itemArray| 是| Array\<Object\>| | 需循环的radio数组|
-| cssMode| | String| 'wrap'| 项内布局方式|
+| cssMode（废弃，统一wrap布局）| | String| 'wrap'| 项内布局方式|
 | color| | Color| | radio的颜色|
+| scale| | Number| .9| 大小比例, 取0-1的值|
 #### radio的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
@@ -774,8 +781,10 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 type: 'checkbox'|
 | itemArray| 是| Array\<Object\>| | 需循环的checkbox数组|
-| cssMode| | String| 'wrap'| 项内布局方式|
+| cssMode（废弃，统一wrap布局）| | String| 'wrap'| 项内布局方式|
 | color| | Color| | checkbox的颜色|
+| scale| | Number| .9| 大小比例, 取0-1的值|
+
 #### checkbox的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|-----|----|----|-------|
@@ -795,6 +804,7 @@ radio-custom、checkbox-custom、switch-custom、slider-custom、table、sku(先
 | disabled| | Boolean| false| 是否禁用|
 | mode| | String| switch| switch的type|
 | color| | Color| | switch的颜色|
+| scale| | Number| .9| 大小比例, 取0-1的值|
 
 ---
 ### 七、slider
