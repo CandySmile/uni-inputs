@@ -17,7 +17,7 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
-| 5.3 | 1、switch、radio、checkbox，新增scale属性<br />2、限制防抖只能input与textarea类型使用<br />3、pics类型图片选中后，增加阴影, 废弃cssMode属性，统一wrap布局<br />4、test页面新增 根据后端获取值给inputs赋值初始值示例、动态增加inputs类型示例|
+| 5.3 | 1、switch、radio、checkbox，新增scale属性<br />2、限制防抖只能input与textarea类型使用<br />3、pics类型图片选中后，增加阴影<br />4、废弃cssMode属性，统一wrap布局<br />5、test页面新增 根据后端获取值给inputs赋值初始值示例、动态增加inputs类型示例|
 | 5.2 | 优化部分样式（pics与textarea类型，textarea类型新增width、backgroundColor、color属性）|
 | 5.1 | 优化input类型输入防抖间隔冲突，防止用户在防抖间隔后立即输入时出现卡顿的感觉，优化用户体验|
 | 5.0 | 优化input类型输入防抖（新增inputDebounceSet属性, 其实防抖的不止input类型，是除了picker与checkbox类型的其他类型）, 修复checkbox类型的初始值视图问题|
