@@ -22,6 +22,53 @@ const pickerChoosedType_provincialStreet = {
 	name: 'provincialStreet',
 	value: 'p_custom_provincialStreet_'
 };
+
+const verifyTypeObj = {
+	Tel: {
+		reg: /^[1][3,4,5,7,8][0-9]{9}$/,
+		name: '手机号'
+	},
+	Email: {
+		reg: /^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/,
+		name: '电子邮箱'
+	},
+	idCart: {
+		reg: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+		name: '身份证号'
+	},
+	NationalNumber: {
+		reg: /\d{3}-\d{8}|\d{4}-\d{7}/,
+		name: '国内号码'
+	},
+	QQ: {
+		reg: /[1-9][0-9]{4,}/,
+		name: 'QQ号'
+	},
+	PostalCode: {
+		reg: /[1-9]\d{5}(?!\d)/,
+		name: '邮政编码'
+	},
+	IpAddress: {
+		reg: /\d+\.\d+\.\d+\.\d+/,
+		name: 'IP地址'
+	},
+	Chinese: {
+		reg: /[\u4e00-\u9fa5]/,
+		name: '中文字符'
+	},
+	Char: {
+		reg: /^[A-Za-z]+$/,
+		name: '英文字母'
+	},
+	Int: {
+		reg: /^\d+$/,
+		name: '整数'
+	},
+	Number: {
+		reg: /^([1-9]\d*(\.\d+)?)|(\d+(\.\d+))$/,
+		name: '数字'
+	}
+};
 let _app = {
 	picker_date_obj: {
 		dateTime,
@@ -38,6 +85,7 @@ let _app = {
 	interface: {
 		upLoadImg: '', // 服务器地址
 	},
+	verifyTypeObj, // 内置正则验证
 	showToast(msg) {
 		uni.showToast({
 			title: msg,
@@ -55,11 +103,19 @@ let _app = {
 	},
 	UpLoadFile(url, data, name, filePath, scb, fcb) { // 服务器地址， 携带数据， name， 文件路径， 成功回调函数， 失败回调函数
 		let _this = this;
+		if(!url) {
+			_this.showToast('上传文件的url不能为空');
+			return;
+		}
+		if(!filePath) {
+			_this.showToast('上传文件的filePath不能为空');
+			return;
+		}
 		_this.showLoading('上传文件中');
 		uni.uploadFile({
 			url,
 			formData: data,
-			name: name,
+			name,
 			filePath,
 			success(res) {
 				console.log('上传成功')

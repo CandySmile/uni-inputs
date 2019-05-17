@@ -34,7 +34,7 @@
 				},
 				"contentSet": {
 					"width": 80,
-					"layout": "center"
+					"layout": "left"
 				},
 				"onLoadData": "data_",
 			}

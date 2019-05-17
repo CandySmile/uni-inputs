@@ -1,9 +1,25 @@
 <template>
 	<view>
-		<inputs :inputsArray="inputsArray" activeName="获取输入" :ruleSet="ruleSet" ifRule ifCode @chaildOpenEvent="openWin"
-		 @activeFc="activeFc" :onLoadData="onLoadData" animationType="rotate3d-fade" :animationDuration=".1"
-		 submitReSet :buttonStyle="buttonStyle" :inputDebounceSet="inputDebounceSet"/>
-		 <button type="primary" @tap="openTest()" style="margin-top: 50px;">打开test页面</button>
+		<inputs 
+		ref="inputs"
+		:inputsArray="inputsArray" 
+		activeName="获取输入" 
+		:ruleSet="ruleSet" 
+		ifRule 
+		ifCode 
+		@chaildOpenEvent="openWin"
+		@activeFc="activeFc" 
+		:onLoadData="onLoadData" 
+		animationType="rotate3d-fade" 
+		:animationDuration=".1"
+		submitReSet 
+		:buttonStyle="buttonStyle" 
+		:inputDebounceSet="inputDebounceSet"
+		:focusStyle="focusStyle"/>
+		
+		 <button type="primary" @tap="setfocus1()" style="margin-top: 50px;">设置textarea focus</button>
+		 <button type="primary" @tap="setfocus2()" style="margin-top: 5px;">设置input focus</button>
+		 <button type="primary" @tap="openTest()" style="margin-top: 5px;">打开test页面</button>
 	</view>
 </template>
 
@@ -12,7 +28,11 @@
 	export default {
 		data() {
 			return {
-				inputDebounceSet: {
+				focusStyle: { //控制input或textarea类型focus或blur时的边框颜色
+					focusBorderStyle: '#999999',
+					blurBorderStyle: '#f8f8f8'
+				},
+				inputDebounceSet: { //input、textarea防抖设置
 					openInputDebounce: true,
 					delay: 500
 				},
@@ -28,7 +48,7 @@
 						"border_top": "1px solid #f2f2f2", //上划线
 						"type": "text",
 						"title": "text示例",
-						"content": "展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息",
+						"content": "展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息",
 						"ellipsis": true
 					},{
 						"segmentationTitle": "表单组件", //分割大标题
@@ -54,6 +74,7 @@
 						"title": "switch",
 						"color": "#c0ebd7",
 						"defaultValue": true,
+						"scale": '.8',	//比例大小
 						"variableName": "switch" //自定义变量名
 					},
 					{
@@ -67,7 +88,8 @@
 							"name": "bb",
 							"value": "bb"
 						}],
-						"color": "#c0ebd7"
+						"color": "#c0ebd7",
+						"scale": '.8',	//比例大小
 					},
 					{
 						"title": "checkbox",
@@ -87,7 +109,12 @@
 							"defaultValue": true
 						}],
 						"variableName": "checkbox",
+						"scale": '.8',	//比例大小
 						"color": "#c0ebd7"
+					}, {
+						"title": "内置正则校验Email",
+						"verifyType": "Email", // 内置正则校验
+						"defaultValue": "494843897@qq.com"
 					}, {
 						"title": "手机号校验",
 						verifyFc: function(value) {
@@ -477,6 +504,18 @@
 				uni.navigateTo({
 					url: '../test/test'
 				})
+			},
+			setfocus1() { //设置focus示例1
+				this.$refs.inputs.setFocus(2, true);
+			},
+			setfocus2() { //设置focus示例2
+				this.$refs.inputs.setFocus((inputsArray)=>{
+					let i = inputsArray.findIndex((item)=>{	//findIndex方法 返回符合测试条件的第一个数组元素索引，如果没有符合条件的则返回 -1
+						return item.title === '手机号校验';
+					})
+					return i;
+					//可以不使用findIndex方法，但是必须return一个Number
+				}, true);
 			}
 		},
 		components: {
