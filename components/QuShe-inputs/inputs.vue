@@ -1162,7 +1162,7 @@
 						break;
 				}
 				
-				if(i&&typeof(i)=='number'&&i>=0) this.$set(this.focusObj, this.onLoadData + i + 'focus', val); else console.log('setFocus方法参数找不到或错误')
+				if(typeof(i)=='number'&&i>=0) this.$set(this.focusObj, this.onLoadData + i + 'focus', val); else console.log('setFocus方法参数找不到或错误')
 			}
 		}
 	}
