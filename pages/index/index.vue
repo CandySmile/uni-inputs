@@ -15,7 +15,9 @@
 		submitReSet 
 		:buttonStyle="buttonStyle" 
 		:inputDebounceSet="inputDebounceSet"
-		:focusStyle="focusStyle"/>
+		:focusStyle="focusStyle"
+		:fontSizeScaleSet="fontSizeScaleSet"/>
+		
 		
 		 <button type="primary" @tap="setfocus1()" style="margin-top: 50px;">设置textarea focus</button>
 		 <button type="primary" @tap="setfocus2()" style="margin-top: 5px;">设置input focus</button>
@@ -28,6 +30,11 @@
 	export default {
 		data() {
 			return {
+				fontSizeScaleSet: { //inputs内的字体大小系数设置(字体大小为屏幕宽高度以此系数)
+					allScale: .018,
+					titleScale: .018,
+					contentScale: .017
+				},
 				focusStyle: { //控制input或textarea类型focus或blur时的边框颜色
 					focusBorderStyle: '#999999',
 					blurBorderStyle: '#f8f8f8'
@@ -116,13 +123,19 @@
 						"verifyType": "Email", // 内置正则校验
 						"defaultValue": "494843897@qq.com"
 					}, {
+						"title": "内置过滤函数",
+						"filterType": "twoDecimalPlaces",
+						"ignore": true,
+						"placeholder": "限制输入小数点后一位"
+					}, {
 						"title": "手机号校验",
 						verifyFc: function(value) {
 							if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value))
 								return true;
 							return false;
 						},
-						"verifyErr": "手机号校验错误"
+						"verifyErr": "手机号校验错误",
+						"ignore": true
 					}, {
 						"title": "input",
 						"ignore": true, //是否可忽略该值(判断时此项值可以为空)
@@ -153,7 +166,8 @@
 						}],
 						"variableName": "pic",
 						"border_top": "1px solid #f2f2f2",
-						"clearColor": "#c0ebd7"
+						"clearColor": "#c0ebd7",
+						"customId": "自定义一标识"
 					},
 					{
 						"segmentationTitle": "picker类型",
@@ -474,7 +488,8 @@
 					}, {
 						"title": "手机号",
 						"phone": true,
-						"defaultValue": "13305679845"
+						"defaultValue": "13305679845",
+						"customId": "验证码自定义标识"
 					}
 				],
 				"ruleSet": {

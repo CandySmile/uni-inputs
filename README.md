@@ -11,12 +11,13 @@
 
 ---
 # 警告
-自定义组件模式好像传不了函数属性， 所以 input类型的过滤函数及校验函数不起作用
+自定义组件模式下，app、小程序 props中传不了function， 所以 input、textarea类型的过滤函数及校验函数不起作用，并且目前最新版本更新后自定义组件模式下，选择图片也选不了, 非自定义组件模式没有问题，晚上更新
 
 # 更新说明
 
 | 版本号 | 更新说明 |
 |--------|:----------|
+| v5.7<br />`重要` | 1、`如果用了pcis类型或者开启了发送验证码功能的小伙伴需要改一下代码了`,inputs代码中的`上传图片方法、发送验证码提取到app.js文件中`，方便修改，以后inputs组件更新，也不用很麻烦的去inputs里面更新，只要把原先的app.js里的代码复制一下就好, 并且pics、input类型新增`customId`属性，用来控制上传图片方法、发送验证码方法的属性赋值走向，`拼接上传图片返回数据的方法也转到了app.js中`, 详见3.0.3与1.中的ifcode项<br />2、input、textarea新增`filterType`内置过滤函数，详见3.0.1.0.4<br />3、修复了更新版本后自定义组件模式下APP、微信小程序无法选择图片的问题<br />4、新增`fontSizeScaleSet`属性，控制title、content字体大小系数，详见1.1.0|
 | v5.6 | 修复setFocus方法传入参数为0时判断出错问题,顺便修复验证码框focusStyle问题|
 | v5.5 | 1、inputs新增`focusStyle`属性(控制input、textarea类型focus或blur时的边框颜色)，input、textarea类型新增focusBorderStyle、blurBorderStyle属性(控制input、textarea类型focus或blur时的边框颜色,优先级大于focusStyle), 详见`1.`<br />2、inputs内新增`setFocus`方法, 用于设置指定的input或textarea的focus属性, 可用`ref方式`调用, 详见`2.0.1`<br />3、突然发现验证码的input框忘记加focusStyle了，下次更新吧|
 | v5.4 | 1、input、textarea类型新增`verifyType`(内置正则验证, 有需求的自行添加)<br />2、验证码输入框强制防抖<br />3、修改picker类型的按钮字体大小默认大小与右边文字默认大小一致，并修复该类型的按钮会变形的bug<br />4、修改switch、radio、checkbox的scale默认值为'.8', 并且修改该属性的值类型为`String`<br />5、优化activeFc方法中判断pics的代码|
@@ -581,7 +582,7 @@
 | inputsArray| 是| Array\<Object\>| | 需循环的inputs数组（可从后端接口获取）, 详见3.|
 | @activeFc| 是| Function| | 主功能方法，携带一个用户所输入的数据对象|
 | activeName| | String| | 主功能按钮的文字说明，不传该值，则主按钮不显示，可以用ref调用inputs的activeFc方法获取输入|
-| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善916-921行的发送验证码方法, 并需设置一项input的phone属性为true|
+| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善app.js中`sendSMS`发送验证码方法, 并需设置一项input的phone属性为true|
 | ifRule| | Boolean| false| 是否需要用户同意某规则或协议|
 | ~~ruleArray(废弃,请使用ruleSet)~~| ifRule为true时是| Array\<Object\>| | 需要用户同意某规则或协议的数组|
 | @chaildOpenEvent| ifRule为true时是| Function| | 打开某规则或协议的方法|
@@ -598,6 +599,7 @@
 | titleHide| | Boolean| false| 隐藏title|
 | inputDebounceSet| | Object| | input类型输入防抖设置, 详见1.0.8|
 | focusStyle| | Object| | 控制input或textarea类型focus或blur时的边框颜色, 详见1.0.9|
+| fontSizeScaleSet| | Object| | 控制title和content的字体大小系数, 详见1.1.0|
 注：titleFontSize、titleFontColor、contentFontSize、changeReSet、ruleArray等属性已废弃
 
 ### 1.0.1 animationType属性说明
@@ -658,7 +660,7 @@
 | openInputDebounce| Boolean |`false`|是否开启input输入防抖 |
 | delay| Number |`500`|输出延迟时间 |
 
-注：  其实防抖的不止input类型，是除了picker与checkbox类型的其他类型
+注：  input与textarea类型有效
 
 ### 1.0.9 focusStyle属性说明(5.5新增)
 | 值| 值类型| 默认值| 说明|
@@ -666,14 +668,24 @@
 | focusBorderStyle| Color| `#999999`|  input或textarea类型focus时的边框颜色 |
 | blurBorderStyle| Color| `#f8f8f8`|  input或textarea类型blur时的边框颜色 |
 
+### 1.1.0 fontSizeScaleSet属性说明(5.7新增)
+| 值| 值类型| 默认值| 说明|
+|---|---|---|---|
+| allScale| Number| |  title与content的`字体大小系数`(屏幕高度乘以此系数) |
+| titleScale| Number| `.018`|  title的`字体大小系数`(屏幕高度乘以此系数),优先级大于allScale |
+| contentScale| Number| `.017`|  content的`字体大小系数`(屏幕高度乘以此系数),优先级大于allScale |
+
+注：fontSizeScaleSet设置的字体大小优先级小于titleSet与contentSet中设置的字体大小
+
 ---
 
 # 2. ref调用方法说明(列出的是可能用到的)
+
 | 方法名| 功能| 参数|
-|------|----|----|----|-------|
+|------|----|----|
 | activeFc| 主功能方法， 触发绑定的activeFc获取用户输入方法| |
 | setFocus| 设置指定input、textarea类型的focus值| 见下方示例|
-| picker_hideFc| 关闭所有弹出picker| |
+| picker_hideFc| 关闭所有弹出的picker| |
 | inputs_reSet| 重置inputs为初始化| |
 
 ## 2.0.1 setFocus示例
@@ -735,12 +747,14 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | tapClear| | Boolean| false| 是否开启`一键清除功能`|
 | icon| | String| | input左边`自定义图标`(目前使用官方uniIcon，可自行修改)|
 | iconColor| | String| `#999999`| 左边自定义图标与密码显示时图标颜色（密码显示默认颜色为`#33CC33`）|
-| filterFc| | Fuction| | `自定义过滤值函数`|
-| verifyFc| | Fuction| | `自定义校验值函数`|
+| filterFc| | Fuction| | `自定义过滤值函数`, `自定义组件模式下APP、小程序不可用`|
+| verifyFc| | Fuction| | `自定义校验值函数`, `自定义组件模式下APP、小程序不可用`|
 | verifyErr| | String| | `校验错误提示`|
-| verifyType| | String| | `内置正则校验`, 可取值见下方, 优先级大于自定义的verifyFc |
+| verifyType| | String| | `内置正则校验`, 可取值见下方, 优先级大于自定义的verifyFc, 弥补自定义组件模式不能使用verifyFc的缺陷 |
 | focusBorderStyle| | Color| `#999999`| input或textarea类型focus时的边框颜色, 优先级大于focusStyle |
 | blurBorderStyle| |Color| `#f8f8f8`| input或textarea类型blur时的边框颜色, 优先级大于focusStyle |
+| customId| |all| | phone属性为true时可填写该属性，用来控制发送验证码发法的属性赋值走向 |
+| filterType| | String| | `内置过滤函数`, 可取值见下方, 优先级大于自定义的verifyFc, 弥补自定义组件模式不能使用filterFc的缺陷 |
 注：最好看源码对照官网属性
 
 #### 3.0.1.0.1 filterFc示例  3.8更新
@@ -769,6 +783,8 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 }
 ```
 
+注：`自定义组件模式下`APP、小程序, 传递不了function，所以filterFc与verifyFc不可用, 可以使用verifyType、filterType弥补（可以在app.js文件中相对应的代码下增加类型）
+
 #### 3.0.1.0.3 verifyType属性可取值(内置正则校验)
 | 可取值| 说明|
 |------|-------|
@@ -783,6 +799,11 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | Char| 英文字母|
 | Int| 整数|
 | Number| 数字|
+
+#### 3.0.1.0.4 filterType属性可取值(内置过滤函数)
+| 可取值| 说明|
+|------|-------|
+| twoDecimalPlaces| 数字并限制小数点后一位小数|
 
 ---
 
@@ -808,13 +829,14 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | width| | String| `60%`| textarea的宽度，自带单位|
 | backgroundColor| | Color| `#F8F8F8`| textarea背景颜色|
 | color| | Color| `#666666`| textarea的文字颜色|
-| filterFc| | Fuction| | `自定义过滤值函数`, 详见一、input类型的filterFc|
-| verifyFc| | Fuction| | `自定义校验值函数`, 详见一、input类型的verifyFc|
-| verifyErr| | String| | `校验错误提示`, 详见一、input类型的verifyErr|
-| verifyType| | String| | `内置正则校验`, 可取值见下方, 优先级大于自定义的verifyFc, 详见一、input类型的verifyType |
+| filterFc| | Fuction| | `自定义过滤值函数`, 详见3.0.1 input类型的filterFc, `自定义组件模式下APP、小程序不可用`|
+| verifyFc| | Fuction| | `自定义校验值函数`, 详见3.0.1 input类型的verifyFc, `自定义组件模式下APP、小程序不可用`|
+| verifyErr| | String| | `校验错误提示`, 详见3.0.1 input类型的verifyErr|
+| verifyType| | String| | `内置正则校验`, 可取值见下方, 优先级大于自定义的verifyFc, 详见3.0.1 input类型的verifyType |
 | focusBorderStyle| | Color| `#999999`| input或textarea类型focus时的边框颜色, 优先级大于focusStyle |
 | blurBorderStyle| | Color| `#f8f8f8`| input或textarea类型blur时的边框颜色, 优先级大于focusStyle |
-注：最好看源码对照官网属性，在微信小程序上 textarea类型尽量不要与picker类型同时使用
+| filterType| | String| | `内置过滤函数`, 可取值见下方, 优先级大于自定义的verifyFc, 弥补自定义组件模式不能使用filterFc的缺陷, 详见3.0.1 input类型的filterType|
+注：最好看源码对照官网属性
 
 ---
 ### 3.0.3 上传图片
@@ -823,8 +845,9 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | type| 是| String| | 传固定值 `type: 'pics'`|
 | itemArray| 是| Array\<Object\>| | 循环的图片数组，下方说明|
 | title| | String| | 该项图片的标题|
-| cssMode（废弃，统一wrap布局）| | String| `wrap`| 项内布局方式|
+| ~~cssMode（废弃，统一wrap布局）~~| | String| `wrap`| 项内布局方式|
 | clearColor| | Color| `#f5105c`| 清除按钮颜色|
+| customId| |all| | 用来控制上传文件发法的属性赋值走向,在app.js文件中的UpLoadFile方法内判断此属性 |
 
 #### 3.0.3.0.1 pics的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
@@ -833,7 +856,7 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | nullErr| | String| `this.title + '不能为空'`| 为空时提示|
 | ignore| | Boolean| `false`| 可以为空， 不判断是否为空,默认为必填，必填则在title前面有 * 标识|
 | defaultValue| | String| | 该项pics的初始化默认图片路径(本地图片路径)|
-注：若启用此项，则需完善1012-1021行的上传图片至服务器方法，并且完善1039-1042的拼接返回的图片路径方法
+注：若启用此项，则需完善app.js中的UpLoadFile上传图片至服务器方法，并且完善pics_splice拼接返回的图片路径方法
 
 ---
 ### 3.0.4 radio(单选)
@@ -841,7 +864,7 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'radio'`|
 | itemArray| 是| Array\<Object\>| | 需循环的radio数组|
-| cssMode（废弃，统一wrap布局）| | String| `wrap`| 项内布局方式|
+| ~~cssMode（废弃，统一wrap布局）~~| | String| `wrap`| 项内布局方式|
 | color| | Color| | radio的颜色|
 | scale| | String| `.8`| 大小比例, 取0-1的值|
 
@@ -863,7 +886,7 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'checkbox'`|
 | itemArray| 是| Array\<Object\>| | 需循环的checkbox数组|
-| cssMode（废弃，统一wrap布局）| | String| `wrap`| 项内布局方式|
+| ~~cssMode（废弃，统一wrap布局）~~| | String| `wrap`| 项内布局方式|
 | color| | Color| | checkbox的颜色|
 | scale| | String| `.8`| 大小比例, 取0-1的值|
 
@@ -915,7 +938,7 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'picker-date'`|
-| indicatorStyle| | String| `'height: '+ 屏幕高度*.048 +'px;'`| picker的行内样式|
+| indicatorStyle| | cssStyle| `'height: '+ 屏幕高度*.048 +'px;'`| picker的行内样式|
 | height| | String| 屏幕高度*.2 px| picker的高度|
 | mode| | String| `picker-date`| picker-date的类型|
 | startYear| | Number| new Date().getFullYear() - 5（前五年）| 开始年份, 可直接输入四位数字|
@@ -939,7 +962,7 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'picker-city'`|
-| indicatorStyle| | String| `'height: '+ 屏幕高度*.048 +'px;'`| picker的行内样式|
+| indicatorStyle| | cssStyle| `'height: '+ 屏幕高度*.048 +'px;'`| picker的行内样式|
 | height| | String| 屏幕高度*.2 px| picker的高度|
 | defaultValue| |Array| `[0, 0, 0]`|默认城市(需注意对应的项是否存在)|
 | chooseName| | String| 选择城市| 选择城市按钮命名|
@@ -959,7 +982,7 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 |steps|linkage为true时是| Object| | 自定义阶级变量名，详见下方示例与说明|
 |linkageNum| | Number| | 联动级数|
 | defaultValue| |Array| `[0,0,……]`|默认值(需注意对应的项是否存在)|
-| indicatorStyle| | String| `'height: '+ 屏幕高度*.048 +'px;'`| picker的行内样式|
+| indicatorStyle| | cssStyle| `'height: '+ 屏幕高度*.048 +'px;'`| picker的行内样式|
 | height| | String| `屏幕高度*.2 px`| picker的高度|
 | chooseName| | String| 选择| 选择按钮命名|
 | editorName| | String| 更改| 更改按钮命名|
@@ -1204,7 +1227,7 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 注：picker-cutsom取值时无联动类型返回数组，联动类型返回对象
 
 ---
-### 3.1.1 picker-custom2 自定义（同类型优化版,解决custom数据类型问题）
+### 3.1.1 picker-custom2 自定义（同类型优化版,返回数据更简单）
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'picker-custom2'`|
@@ -1214,7 +1237,7 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 |steps|linkage为true时是| Object| | 自定义阶级变量名，详见下方示例与说明|
 |linkageNum| | Number| | 联动级数|
 | defaultValue| |Array| `[0,0,……]`|默认值(需注意对应的项是否存在)|
-| indicatorStyle| | String| `'height: '+ 屏幕高度*.048 +'px;'`| picker的行内样式|
+| indicatorStyle| | cssStyle| `'height: '+ 屏幕高度*.048 +'px;'`| picker的行内样式|
 | height| | String| `屏幕高度*.2 px`| picker的高度|
 | chooseName| | String| 选择| 选择按钮命名|
 | editorName| | String| 更改| 更改按钮命名|
@@ -1373,7 +1396,7 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'picker-provincialStreet'`|
-| indicatorStyle| | String| `'height: '+ 屏幕高度*.048 +'px;'`| picker的行内样式|
+| indicatorStyle| | cssStyle| `'height: '+ 屏幕高度*.048 +'px;'`| picker的行内样式|
 | height| | String| `屏幕高度*.2 px`| picker的高度|
 | defaultValue| |Array| `[0, 0, 0, 0]`|默认城市(需注意对应的项是否存在)|
 | chooseName| | String| 选择| 选择按钮命名|

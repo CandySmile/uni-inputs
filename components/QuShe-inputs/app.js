@@ -1,26 +1,27 @@
 const dateTime = 'picker-dateTime';
 const date = 'picker-date';
 const time = 'picker-time';
-
-const pickerChoosedType_date = {
-	name: 'date',
-	value: 'p_date_choosed_'
-};
-const pickerChoosedType_city = {
-	name: 'city',
-	value: 'p_city_choosed_'
-};
-const pickerChoosedType_custom = {
-	name: 'custom',
-	value: 'p_custom_choosed_'
-};
-const pickerChoosedType_custom2 = {
-	name: 'custom2',
-	value: 'p_custom2_choosed_'
-};
-const pickerChoosedType_provincialStreet = {
-	name: 'provincialStreet',
-	value: 'p_custom_provincialStreet_'
+const pickerChoosedType = {
+	pickerChoosedType_date: {
+		name: 'date',
+		value: 'p_date_choosed_'
+	},
+	pickerChoosedType_city: {
+		name: 'city',
+		value: 'p_city_choosed_'
+	},
+	pickerChoosedType_custom: {
+		name: 'custom',
+		value: 'p_custom_choosed_'
+	},
+	pickerChoosedType_custom2: {
+		name: 'custom2',
+		value: 'p_custom2_choosed_'
+	},
+	pickerChoosedType_provincialStreet: {
+		name: 'provincialStreet',
+		value: 'p_custom_provincialStreet_'
+	}
 };
 
 const verifyTypeObj = {
@@ -69,23 +70,30 @@ const verifyTypeObj = {
 		name: '数字'
 	}
 };
-let _app = {
+const filterTypeObj = {	// 内置过滤函数，可根据需求自行添加拓展
+	twoDecimalPlaces(value){	// 必须接受一个参数
+		value = value.replace(/[^\d.]/g, ""); //清除“数字”和“.”以外的字符
+		value = value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
+		value = value.replace(/^(\-)*(\d+)\.(\d).*$/, '$1$2.$3'); //只能输入1个小数 
+		value = value.replace(/^\.(\d).*$/, '.$1'); //只能输入1个小数
+		if (value == '') value = null;
+		if (value != '0') value = parseFloat(value);
+		return value;	// 必须return
+	}
+};
+
+const interfaces = {
+	upLoadImg: '', // 服务器地址
+};
+const _app = {
 	picker_date_obj: {
 		dateTime,
 		date,
 		time
 	},
-	pickerChoosedType: {
-		pickerChoosedType_date,
-		pickerChoosedType_city,
-		pickerChoosedType_custom,
-		pickerChoosedType_custom2,
-		pickerChoosedType_provincialStreet
-	},
-	interface: {
-		upLoadImg: '', // 服务器地址
-	},
+	pickerChoosedType,
 	verifyTypeObj, // 内置正则验证
+	filterTypeObj, // 内置过滤函数
 	showToast(msg) {
 		uni.showToast({
 			title: msg,
@@ -101,33 +109,79 @@ let _app = {
 	hideLoading() {
 		uni.hideLoading();
 	},
-	UpLoadFile(url, data, name, filePath, scb, fcb) { // 服务器地址， 携带数据， name， 文件路径， 成功回调函数， 失败回调函数
+	UpLoadFile(customId, filePath) { // 自定义上传标识, 文件路径
 		let _this = this;
+		let url = '';
+		let formData = {};
+		let name = '';
+		switch (customId){	//判断该项pics类型自带的UpLoadFileType, 根据此值来确定不同的url、formData、name
+			case 'UpLoadImage_1':	//自定义的标识
+				url = '';
+				formData = {};
+				name = '';
+				break;
+			default:	//若无判断需求可直接写在这里
+				url = interfaces.upLoadImg;
+				formData = {};
+				name = '';
+				break;
+		}
 		if(!url) {
 			_this.showToast('上传文件的url不能为空');
-			return;
+			return new Promise((rs, rj)=>{
+				rj('上传文件的url不能为空');
+			});
 		}
 		if(!filePath) {
 			_this.showToast('上传文件的filePath不能为空');
-			return;
+			return new Promise((rs, rj)=>{
+				rj('上传文件的filePath不能为空');
+			});
 		}
-		_this.showLoading('上传文件中');
-		uni.uploadFile({
-			url,
-			formData: data,
-			name,
-			filePath,
-			success(res) {
-				console.log('上传成功')
-				_this.hideLoading();
-				if (scb && typeof(scb) == 'function') scb(res);
-			},
-			fail(err) {
-				console.log('上传失败')
-				_this.hideLoading();
-				if (fcb && typeof(fcb) == 'function') fcb(err);
-			}
+		return new Promise((reslove, reject)=>{
+			_this.showLoading('上传文件中');
+			uni.uploadFile({
+				url,
+				formData,
+				name,
+				filePath,
+				success(res) {
+					console.log('进入UpLoadFile方法的success回调')
+					_this.hideLoading();
+					// if (scb && typeof(scb) == 'function') scb(res);
+					reslove(res)
+				},
+				fail(err) {
+					console.log('进入UpLoadFile方法的fail回调')
+					console.log(JSON.stringify(err))
+					_this.hideLoading();
+					// if (fcb && typeof(fcb) == 'function') fcb(err);
+					reject();
+				}
+			})
 		})
+	},
+	//拼接上传图片返回的数据
+	pics_splice(vals, val) { // vals是拼接后的数据， val是新添项
+		if (typeof(vals) !== 'string')	// 第一次传进来是一个数组
+			vals = val || '|';	// 可更改分隔符
+		else
+			vals += val ? '|' + val : '|';
+		return vals; // 必须returnvals
+	},
+	sendSMS(customId, phone) {
+		let code = ''; // 生成验证码
+		switch (customId){ // 判断自定义标识
+			case '1':
+				code = '';
+				break;
+			default:	//若无判断需求可直接写在这里
+				code = '123456';
+				break;
+		}
+		//发送验证码
+		this.showToast(`发送验证码给${phone}成功,请注意查收`);
+		return code; // 必须return生成的验证码
 	},
 	previewImage(imgPath) {
 		if (typeof(imgPath) != 'array')

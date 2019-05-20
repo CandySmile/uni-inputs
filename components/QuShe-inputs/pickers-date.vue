@@ -76,9 +76,6 @@
 			confirmStyle: String
 		},
 		data() {
-			const dateTime = 'picker-dateTime';
-			const date = 'picker-date';
-			const time = 'picker-time';
 			let defaultDate;
 			if(this.defaultDate) defaultDate = new Date(this.defaultDate); else defaultDate = new Date();
 			let years = _app.countYears(this.startYear||new Date().getFullYear() - 5, this.endYear||new Date().getFullYear() + 5);

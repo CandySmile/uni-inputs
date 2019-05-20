@@ -1,14 +1,19 @@
 <template>
 	<view class="width100 overflow_x_hidden">
-		<view class="width100 box-sizing-border-box" :class="[item.animationType||animationType||'']" :style="{'padding': wH*.02 + 'px ' + wW*.03 + 'px', 'animation-duration': (index+1)*(item.animationDuration||animationDuration||.2) + 's'}"
+		<view class="width100 box-sizing-border-box" :class="[item.animationType||animationType||'']" 
+		:style="classObj.padding2_3 + 'animation-duration:' + (index+1)*(item.animationDuration||animationDuration||.2) + 's;'"
 		 v-for="(item, index) in inputsArray" :key="item.title">
 			<!-- segmentationTitle -->
 			<view class="width100 flex_row view_Title_Left" :style="classObj.segmentationTitle" v-if="item.segmentationTitle">
 				{{item.segmentationTitle}}
 			</view>
-			<view class="flex_row" :style="{'padding-bottom': item.border_bottom?wH*.015+'px':'none','border-bottom': item.border_bottom||'none', 'padding-top':item.border_top?wH*.015+'px':'none','border-top': item.border_top||'none'}">
+			<view class="flex_row" :style="{
+			'padding-bottom': item.border_bottom?wH*.015+'px':'none',
+			'border-bottom': item.border_bottom||'none', 
+			'padding-top':item.border_top?wH*.015+'px':'none',
+			'border-top': item.border_top||'none'}">
 				<!-- title -->
-				<view class="width20 marginRight5 flex_row_e_c" :style="classObj.titleColor + classObj.titleFs" v-if="!titleHide&&item.type!=='sku'">
+				<view class="width20 marginRight5 flex_row_e_c" :style="classObj.titleColor + classObj.titleFs" v-if="!titleHide">
 					<view class="width100 word_wrap" :class="classObj.titleLayout">
 						<view class="fontColorF1505C" v-if="item.type!='pics'&&!item.ignore&&item.title">*</view>{{item.title?item.title:''}}
 						<!-- <view class="fontColorF1505C" v-if="item.type!='pics'&&!item.ignore&&item.title">*</view>{{item.title?item.title + ':':''}} -->
@@ -18,16 +23,26 @@
 					<!-- pics -->
 					<view class="box-sizing-border-box" v-if="item.type&&item.type=='pics'" :style="classObj.padding1_0 + classObj.contentWidth">
 						<view class="width100 wrap" :class="[classObj.contentLayout]">
-							<view class="flex_column_c_c box-sizing-border-box" :style="classObj.paddingPoint5" v-for="(picsItem, picsIndex) in item.itemArray"
-							 :key="picsIndex">
-								<view class="flex_row_c_c border1pxf2f2f2 position_relative border_radius_4px bacnground_color_f8f8f8" :style="classObj.picsBox"
-								 @tap="!picsObj[onLoadData + index + onLoadData + picsIndex]?chooseImg(index, picsIndex): ''">
-									<image :src="picsObj[onLoadData + index + onLoadData + picsIndex]" class="border_radius_4px box_shadow_2px_2px_5px_ADADAD" mode="aspectFill"
-									 :style="classObj.picsBox" v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap="showImg(picsObj[onLoadData + index + onLoadData + picsIndex])"></image>
+							<view class="flex_column_c_c box-sizing-border-box" :style="classObj.paddingPoint5" 
+							v-for="(picsItem, picsIndex) in item.itemArray"
+							:key="picsIndex">
+								<view 
+								class="flex_row_c_c border1pxf2f2f2 position_relative border_radius_4px bacnground_color_f8f8f8" 
+								:style="classObj.picsBox"
+								@tap="chooseImg(index, picsIndex)">
+									<image 
+									:src="picsObj[onLoadData + index + onLoadData + picsIndex]" 
+									class="border_radius_4px box_shadow_2px_2px_5px_ADADAD" mode="aspectFill"
+									:style="classObj.picsBox" v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" 
+									@tap="showImg(picsObj[onLoadData + index + onLoadData + picsIndex])">
+									</image>
 									<view v-else>
-										<uni-icon type="image" :pxSize="wW*.08" color="#999999" />
+										<uni-icon type="image" :pxSize="wH*.05" color="#999999" />
 									</view>
-									<view class="picsClear" v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" @tap.stop.prevent="clearPic(index, picsIndex)">
+									<view 
+									class="picsClear" 
+									v-if="picsObj[onLoadData + index + onLoadData + picsIndex]" 
+									@tap.stop.prevent="clearPic(index, picsIndex)">
 										<uni-icon type="clear" :color="item.clearColor||'#f5105c'" :pxSize="wH*.03" />
 									</view>
 								</view>
@@ -40,24 +55,29 @@
 					<!-- switch -->
 					<view :class="[classObj.contentLayout]" :style="classObj.contentWidth" v-else-if="item.type&&item.type=='switch'">
 						<view class="position_relative">
-							<switch :checked="inputsObj[onLoadData+index]" :disabled="item.disabled" :type="item.mode||'switch'" :color="item.color"
-							 @change="inputs_change($event, index)" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
+							<switch :checked="inputsObj[onLoadData+index]" 
+							:disabled="item.disabled" :type="item.mode||'switch'" 
+							:color="item.color"
+							@change="inputs_change($event, index)" 
+							:style="'transform: scale(' + (item.scale||'.8') + ');'" />
 						</view>
 					</view>
 					<!-- slider -->
 					<view :style="classObj.contentWidth" v-else-if="item.type&&item.type=='slider'">
 						<slider @change="inputs_change($event, index)" :min="item.min||0" :max="item.max||100" :step="item.step||1"
-						 :disabled="item.disabled" :value="inputsObj[onLoadData+index]" :color="item.color" :selected-color="item.selected_color"
-						 :activeColor="item.activeColor" :backgroundColor="item.backgroundColor" :block-size="item.block_size"
-						 :block-color="item.block_color" :show-value="item.show_value" />
+						 :disabled="item.disabled" :value="inputsObj[onLoadData+index]" :color="item.color" 
+						 :selected-color="item.selected_color" :activeColor="item.activeColor" :backgroundColor="item.backgroundColor" 
+						 :block-size="item.block_size" :block-color="item.block_color" :show-value="item.show_value" />
 					</view>
 					<!-- radio -->
 					<view :style="classObj.contentWidth" v-else-if="item.type&&item.type=='radio'">
 						<radio-group @change="inputs_change($event, index)" class="width100 wrap" :class="[classObj.contentLayout]">
-							<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="classObj.content + classObj.padding1 + classObj.marginRight2"
-							 v-for="(radioItem, radioIndex) in item.itemArray" :key="radioIndex">
+							<label 
+							class="fontColor666666 flex_row_none_c box-sizing-border-box" 
+							:style="classObj.content + classObj.padding1 + classObj.marginRight2"
+							v-for="(radioItem, radioIndex) in item.itemArray" :key="radioIndex">
 								<radio :value="radioItem.value" :checked="inputsObj[onLoadData+index]==radioItem.value" :disabled="radioItem.disabled"
-								 :color="radioItem.color||item.color" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
+								 :color="radioItem.color||item.color" :style="'transform: scale(' + (item.scale||'.8') + ');'"/>
 								<view class="flex_row_none_c">{{radioItem.name}}</view>
 							</label>
 						</radio-group>
@@ -65,10 +85,12 @@
 					<!-- checkbox -->
 					<view :style="classObj.contentWidth" v-else-if="item.type&&item.type=='checkbox'">
 						<checkbox-group @change="checkbox_change($event, index)" class="width100 wrap" :class="[classObj.contentLayout]">
-							<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="classObj.content + classObj.padding1 + classObj.marginRight2"
-							 v-for="(checkboxItem, checkboxIndex) in item.itemArray" :key="checkboxIndex">
-								<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index][checkboxIndex]" :disabled="checkboxItem.disabled"
-								 :color="checkboxItem.color||item.color" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
+							<label class="fontColor666666 flex_row_none_c box-sizing-border-box" 
+							:style="classObj.content + classObj.padding1 + classObj.marginRight2"
+							v-for="(checkboxItem, checkboxIndex) in item.itemArray" :key="checkboxIndex">
+								<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index][checkboxIndex]" 
+								:disabled="checkboxItem.disabled" :color="checkboxItem.color||item.color" 
+								:style="'transform: scale(' + (item.scale||'.8') + ');'" />
 								<view class="flex_row_none_c">{{checkboxItem.name}}</view>
 							</label>
 						</checkbox-group>
@@ -79,10 +101,15 @@
 						:value="inputsObj[onLoadData+index]"
 						:placeholder="item.placeholder||'请输入' + item.title"
 						:placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class" 
-						:style="{'font-size': classObj.contentSize + 'px', 'height': !item.auto_height?(item.height||wH*.1)+'px':'', 
-						 'width': item.width||'60%', 'background-color': item.backgroundColor||'#F8F8F8', 'color': item.color||'#666666', 
-						 'border': '1px solid ' + (focusObj[onLoadData+index+'focus']?(item.focusBorderStyle||focusStyle.focusBorderStyle||'#999999'):(item.blurBorderStyle||focusStyle.blurBorderStyle||'#f8f8f8'))}"
-						class="width100 border_radius_4px padding8px transition_point6s" :disabled="item.disabled" :maxlength="item.maxlength||140" 
+						:style="{
+						'font-size': classObj.contentSize + 'px', 
+						'height': !item.auto_height?(item.height||wH*.1)+'px':'', 
+						'width': item.width||'60%', 'background-color': item.backgroundColor||'#F8F8F8', 
+						'color': item.color||'#666666', 
+						'border': '1px solid ' + (focusObj[onLoadData+index+'focus']?(item.focusBorderStyle||focusStyle.focusBorderStyle||'#999999'):(item.blurBorderStyle||focusStyle.blurBorderStyle||'#f8f8f8'))}"
+						class="width100 border_radius_4px padding8px transition_point6s" 
+						:disabled="item.disabled" 
+						:maxlength="item.maxlength||140" 
 						:focus="focusObj[onLoadData+index+'focus']"
 						:auto-height="item.auto_height"
 						:fixed="item.fixed"
@@ -95,7 +122,7 @@
 						@input="inputs_change($event, index, item.filterFc, true)"
 						@focus="focusChange(index)"
 						@blur="blurChange(index)"/>
-						</view>
+					</view>
 					<!-- picker-date -->
 					<view :class="[classObj.contentLayout]" :style="classObj.padding0_3 + classObj.contentWidth" v-else-if="item.type&&item.type=='picker-date'">
 						<view class="flex_row_none_c width100" v-if="pickerObj[onLoadData+index]">
@@ -103,11 +130,17 @@
 								{{pickerObj[onLoadData+index]}}
 							</view>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.content + classObj.marginLeft3 + classObj.changeButton">{{item.editorName||'更改'}}</button>
+								<button type="primary" @tap="showPicker(item, index)" size="mini" 
+								:style="classObj.content + classObj.marginLeft3 + classObj.changeButton">
+								{{item.editorName||'更改'}}
+								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.content + classObj.selectButton">{{item.chooseName||'选择日期'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" 
+							:style="classObj.content + classObj.selectButton">
+							{{item.chooseName||'选择日期'}}
+							</button>
 						</view>
 					</view>
 					<!-- picker-city -->
@@ -117,11 +150,17 @@
 								{{pickerObj[onLoadData+index].label}}
 							</view>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.content + classObj.marginLeft3 + classObj.changeButton">{{item.editorName||'更改'}}</button>
+								<button type="primary" @tap="showPicker(item, index)" size="mini" 
+								:style="classObj.content + classObj.marginLeft3 + classObj.changeButton">
+								{{item.editorName||'更改'}}
+								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.content + classObj.selectButton">{{item.chooseName||'选择城市'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" 
+							:style="classObj.content + classObj.selectButton">
+							{{item.chooseName||'选择城市'}}
+							</button>
 						</view>
 					</view>
 					<!-- picker-custom -->
@@ -140,11 +179,17 @@
 								</view>
 							</block>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.content + classObj.marginLeft3 + classObj.changeButton">{{item.editorName||'更改'}}</button>
+								<button type="primary" @tap="showPicker(item, index)" size="mini" 
+								:style="classObj.content + classObj.marginLeft3 + classObj.changeButton">
+								{{item.editorName||'更改'}}
+								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.content + classObj.selectButton">{{item.chooseName||'选择'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" 
+							:style="classObj.content + classObj.selectButton">
+							{{item.chooseName||'选择'}}
+							</button>
 						</view>
 					</view>
 					<!-- picker-custom2 -->
@@ -166,11 +211,17 @@
 								</view>
 							</block>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.content + classObj.marginLeft3 + classObj.changeButton">{{item.editorName||'更改'}}</button>
+								<button type="primary" @tap="showPicker(item, index)" size="mini" 
+								:style="classObj.content + classObj.marginLeft3 + classObj.changeButton">
+								{{item.editorName||'更改'}}
+								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.content + classObj.selectButton">{{item.chooseName||'选择'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" 
+							:style="classObj.content + classObj.selectButton">
+							{{item.chooseName||'选择'}}
+							</button>
 						</view>
 					</view>
 					<!-- picker-provincialStreet -->
@@ -180,11 +231,17 @@
 								{{pickerObj[onLoadData+index].label}}
 							</view>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.content + classObj.marginLeft3 + classObj.changeButton">{{item.editorName||'更改'}}</button>
+								<button type="primary" @tap="showPicker(item, index)" size="mini" 
+								:style="classObj.content + classObj.marginLeft3 + classObj.changeButton">
+								{{item.editorName||'更改'}}
+								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" :style="classObj.content + classObj.selectButton">{{item.chooseName||'选择街道'}}</button>
+							<button type="primary" @tap="showPicker(item, index)" size="mini" 
+							:style="classObj.content + classObj.selectButton">
+							{{item.chooseName||'选择街道'}}
+							</button>
 						</view>
 					</view>
 					<!-- text -->
@@ -212,7 +269,7 @@
 							 :maxlength="item.maxlength||140" :cursor-spacing="item.cursor_spacing" :focus="focusObj[onLoadData+index+'focus']"
 							 :confirm-type="item.confirm_type" :confirm-hold="item.confirm_hold" :selection-start="item.selection_start" :selection-end="item.selection_end"
 							 :cursor="item.cursor" :adjust-position="item.adjust_position" :class="item.icon?'width85':'width100'" :disabled="item.disabled" 
-							 :style="classObj.titleFs" class="fontColor666666" @focus="focusChange(index)" @blur="blurChange(index)"/>
+							 :style="classObj.content" class="fontColor666666" @focus="focusChange(index)" @blur="blurChange(index)"/>
 						</view>
 						<view class="width15" v-if="item.password">
 							<view class="flex_row_c_c width100" @tap.prevent.stop="inputTap('passwordSwitch', index)">
@@ -237,10 +294,10 @@
 			<view :class="[classObj.contentsWidth, classObj.contentsLayout]">
 				<view class="flex_row" :style="classObj.contentWidth">
 					<view class="width45">
-						<input type="text" :value="userCode" placeholder="请输入验证码" class="width100 borderBottom1pxf2f2f2" :style="classObj.titleFs" @input="code_change($event)"/>
+						<input type="text" :value="userCode" placeholder="请输入验证码" class="width100 borderBottom1pxf2f2f2" :style="classObj.content" @input="code_change($event)"/>
 					</view>
 					<view class="flex_row_e_c width55" :style="classObj.padding0_3">
-						<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="!startCode?getCode():''" :style="classObj.content + classObj.margin0 + classObj.getcodeButton">{{startCode?codeCount + 's':'获取验证码'}}</button>
+						<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="getCode()" :style="classObj.content + classObj.getcodeButton">{{startCode?codeCount + 's':'获取验证码'}}</button>
 					</view>
 				</view>
 			</view>
@@ -303,9 +360,13 @@
 	const debounceName = 'inputdebounce_';
 	const debounceTimeName = 'inputdebounce_time_';
 	const inputDebounce = {};
-	//验证码防抖
-	var inputCodeDebounce;
-	var inputCodeDebounceTime;
+	
+	
+	var inputCodeDebounce;	//验证码输入防抖
+	var inputCodeDebounceTime;	//验证码输入防抖间隔记录时间戳
+	
+	var phoneIndex = -1; //记录inputsArray项内属性phone为true的下标，获取验证码时就不用循环判断了
+	
 	export default {
 		name: 'inputs',
 		components: {
@@ -394,13 +455,19 @@
 					}
 				}
 			},
-			focusStyle: {
+			focusStyle: { //input、textarea类型focus时的边框样式
 				type: Object,
 				default() {
 					return {
 						onFocusBorderStyle: '#999999',
 						offFocusBorderStyle: '#f8f8f8'
 					}
+				}
+			},
+			fontSizeScaleSet: { //字体大小系数控制
+				type: Object,
+				default() {
+					return {};
 				}
 			}
 		},
@@ -409,8 +476,9 @@
 			const systemData = uni.getSystemInfoSync();
 			const wH = systemData.screenHeight;
 			const wW = systemData.screenWidth;
-			const scale_one = .018; //title(左边)字体大小系数
-			const scale_two = .016; //content(右边)字体大小系数
+			const f = this.fontSizeScaleSet;
+			const scale_one = f.titleScale||f.allScale||.018; //title(左边)字体大小系数
+			const scale_two = f.contentScale||f.allScale||.017; //content(右边)字体大小系数
 			return {
 				code: '', //本地验证码
 				userCode: '', //用户输入的验证码
@@ -418,10 +486,7 @@
 				codeCount: 90, //获取验证码后倒计时时间
 				startCode: false, //获取验证码状态
 				picsObj: {}, //pics类型存储值
-				scale_one, //title(左边)字体大小系数
-				scale_two, //content(右边)字体大小系数
 				wH, //屏幕高度
-				wW, //屏幕宽度
 				maskShow: false, //遮罩层是否显示
 				pickerDateShow: false, //picker-date组件是否显示
 				pickerCityShow: false, //picker-city组件是否显示
@@ -431,19 +496,19 @@
 				P_data: {}, //picker类型显示对象暂存
 				pickerObj: {}, //picker类型视图对象暂存
 				inputsObj: {} ,//inputsArray除特有暂存对象外的各类型视图暂存对象
-				focusObj:{},
+				focusObj:{},//input、textarea视图暂存
 				classObj: { //拼接页面需用的样式
 					segmentationTitle: 'font-size:' + wH*.024 + 'px;padding:' + wH*.015+'px '+ wW*.03+'px;',
 					titleFs: 'font-size:' + (this.titleSet.size||wH*scale_one) + 'px;',
 					titleColor: 'color:' + (this.titleSet.color||'#666666') + ';',
 					content: 'font-size:' + (this.contentSet.size||wH*scale_two) + 'px;',
-					contentWidth: 'width:' + (this.titleHide?this.contentSet.width:'100') + '%;', //class非style
+					contentWidth: 'width:' + (this.titleHide?this.contentSet.width:'100') + '%;',
 					contentsLayout: this.titleHide?this.contentSet.layout=='left'?'flex_row_none_c':this.contentSet.layout=='center'?'flex_row_c_c':'flex_row_e_c':'flex_row_e_c',
 					contentLayout: this.contentSet.layout=='left'?'flex_row_none_c':this.contentSet.layout=='center'?'flex_row_c_c':'flex_row_e_c',
 					titleLayout: this.titleSet.layout=='left'?'flex_row_none_c':this.titleSet.layout=='center'?'flex_row_c_c':'flex_row_e_c',
 					contentsWidth:  this.titleHide?'width100':'width75',
 					contentSize: this.contentSet.size||wH*scale_two, //number
-					iconSize: (this.contentSet.size||wH*scale_two) + 8, //number
+					iconSize: (this.contentSet.sizewH*scale_two) + 8, //number
 					padding1_0: 'padding:' + wH*.01 + 'px 0;',
 					padding1: 'padding:' + wH*.01 + 'px;',
 					paddingPoint5: 'padding:' + wH*.005 + 'px;',
@@ -453,7 +518,6 @@
 					margin2_3: 'margin:' + wH*.02 + 'px ' + wH*.03 + 'px;',
 					margin0_15: 'margin: 0 ' + wH*.015 + 'px;',
 					margin0_1: 'margin: 0 ' + wH*.01 + 'px;',
-					margin0: 'margin: 0;',
 					picsBox: 'height:' + wW*.14+'px;width:' + wW*.17+'px;',
 					picsTitle:'width:' + wW*.2+'px;margin-top:' + wH*.01+'px;',
 					marginRight2: 'margin-right:' + wW*.02+'px;',
@@ -482,9 +546,12 @@
 				let _this = this;
 				//console.log('初始化inputs');
 				let data = _this.inputsArray;
+				if(phoneIndex >= 0) phoneIndex = -1;
 				for (let i = 0; i < data.length; i++) { //循环inputsArray，对 相应类型相应初始化默认值
 					let item = data[i];
 					let itemVariableName = _this.onLoadData + i;
+					if(item.phone)
+						if(!phoneIndex) phoneIndex = i;
 					switch (item.type) {
 						case 'radio':
 							let data;
@@ -806,8 +873,8 @@
 				else
 					_app.showToast('picker参数错误');
 			},
-			IgreeFc(e) { // 用户是否同意规则
-				this.Igree = e.detail.value;
+			IgreeFc({detail: {value}}) { // 用户是否同意规则
+				this.Igree = value;
 			},
 			openRuleFc(value) { // 打开规则页面的父级方法
 				this.$emit('chaildOpenEvent', value);
@@ -857,23 +924,31 @@
 						inputDebounce[debounceTimeName+index] = new Date().getTime();
 				}
 				if(filterFc&&typeof(filterFc)=='function') {	//有filterFc则过滤
-					let val = filterFc(val);
-					if(val !== value) {
-						new Promise((reslove,reject)=>{
-							this.$delete(this.inputsObj, this.onLoadData + index);
-							reslove();
-						})
-						.then(()=>{
-							this.$set(this.inputsObj, this.onLoadData + index, val);
-							inputsObj[this.onLoadData + index] = val;
-						})
+					this.input_filter_change(value, index, filterFc);
+				}else{
+					let d = this.inputsArray;
+					if(d[index].filterType&&_app.filterTypeObj[d[index].filterType]&&typeof(_app.filterTypeObj[d[index].filterType])=='function') {
+						this.input_filter_change(value, index, _app.filterTypeObj[d[index].filterType]);
 					}else{
+						this.$set(this.inputsObj, this.onLoadData + index, value);
+						inputsObj[this.onLoadData + index] = value;
+					}
+				}
+			},
+			input_filter_change(value, index, filterFc) {
+				let val = filterFc(value);
+				if(val != value) {
+					new Promise((reslove,reject)=>{
+						this.$delete(this.inputsObj, this.onLoadData + index);
+						reslove();
+					})
+					.then(()=>{
 						this.$set(this.inputsObj, this.onLoadData + index, val);
 						inputsObj[this.onLoadData + index] = val;
-					}
+					})
 				}else{
-					this.$set(this.inputsObj, this.onLoadData + index, value);
-					inputsObj[this.onLoadData + index] = value;
+					this.$set(this.inputsObj, this.onLoadData + index, val);
+					inputsObj[this.onLoadData + index] = val;
 				}
 			},
 			picker_change(res) { //picker类型选择后赋值 
@@ -917,14 +992,14 @@
 			},
 			code_change({detail: {value}}) { //验证码防抖输入
 				if(inputCodeDebounce) clearTimeout(inputCodeDebounce);
-				if(inputCodeDebounceTime&&new Date().getTime()-inputCodeDebounceTime<300) {
+				if(inputCodeDebounceTime&&new Date().getTime()-inputCodeDebounceTime<500) {
 					console.log('防抖冲突,立即执行')
 					this.code_changeFc(value, true);
 				}else{
 					inputCodeDebounce = setTimeout(()=>{
 						console.log('防抖')
 						this.code_changeFc(value);
-					}, 300);
+					}, 500);
 				}
 			},
 			code_changeFc(value, clash) { //验证码防抖输入
@@ -936,38 +1011,39 @@
 			},
 			getCode() { // 判断是否正确输入手机号后发送验证码并倒计时
 				let _this = this;
-				let phone = '';
+				if(_this.startCode) return;
+				let index;
 				let d = _this.inputsArray;
-				for (let i = 0; i < d.length; i++) {
-					if (d[i].phone) {
-						phone = inputsObj[_this.onLoadData + i];
-						console.log('手机号: ' + phone);
+				if(typeof(phoneIndex)==='number'&&phoneIndex>=0) {
+					index = phoneIndex;
+				}else{
+					for (let i = 0; i < d.length; i++) {
+						if (d[i].phone) index = i;
 					}
 				}
-				if (/^[1][3,4,5,7,8][0-9]{9}$/.test(phone)) //正则判断
-					_this.sendSMS(phone);
-				else {
+				if(!typeof(index)==='number' || index < 0) {
+					_app.showToast('判断phone属性时出错');
+					return;
+				}
+				let phone = inputsObj[_this.onLoadData + index];
+				if (/^[1][3,4,5,7,8][0-9]{9}$/.test(phone)) { //正则判断
+					this.code = _app.sendSMS(d[index].customId, phone);
+				} else {
 					_app.showToast('请正确输入11位手机号');
 					return;
 				}
 
-				_this.setInterValFunc = setInterval(() => { //定时器
+				let setInterValFunc = setInterval(() => { //定时器
 					if (_this.codeCount > 0)
 						--_this.codeCount;
 					else {
 						_this.startCode = false;
-						clearInterval(_this.setInterValFunc);
+						clearInterval(setInterValFunc);
 						_this.code = '';
 						_this.codeCount = 90;
 					}
 				}, 1000)
 				_this.startCode = true;
-			},
-			sendSMS(phone) { // 生成验证码并发送给手机的方法
-				//生成验证码
-				this.code = '123456';
-				//发送验证码
-				_app.showToast('发送验证码成功')
 			},
 			activeFc() { // 主功能按钮方法
 				let _this = this;
@@ -1006,6 +1082,13 @@
 							inputsDataObj[variableName] = _this[onLoadData];
 							break;
 						case 'text':
+							break;
+						case 'checkbox':
+							if ((!inputsObj[onLoadData].value||inputsObj[onLoadData].value.length===0) && !d[i].ignore) {
+								_app.showToast(d[i].nullErr || ((d[i].title||'第' + i + '项') + '不能为空'));
+								return;
+							}
+							inputsDataObj[variableName] = inputsObj[onLoadData];
 							break;
 						default:
 							if (!inputsObj[onLoadData]) {
@@ -1070,12 +1153,14 @@
 								if (inputsDataObj[variableName][j]) {
 									pic_promise.push(new Promise(function(reslove, reject) {
 										// push Promise 上传图片到服务器并返回图片在服务器的地址并拼接的方法
-										_app.UpLoadFile(_app.interface.upLoadImg, {}, 'name', inputsDataObj[variableName][j], function(res) {
+										_app.UpLoadFile(d[index].customId, inputsDataObj[variableName][j]).then((res)=>{
 											reslove({
 												index1: index,
 												index2: j,
 												data: res.data
-											}); // index2 基本无用， 若无需求可删
+											})
+										}).catch((err)=>{
+											reject(err||(d[index].itemArray[j].title||((d[index].title)||('第' + index + '的') + '第' + j + '项') + '上传失败'));
 										});
 									}));
 								} else {
@@ -1096,14 +1181,13 @@
 						for (let i = 0; i < res.length; i++) { // 注: 此处根据自己的需求拼接数据   (在下返回数据后的拼接是以 ‘|’ 分隔)
 							let onLoadData = _this.onLoadData + res[i].index1;
 							let variableName = d[res[i].index1].variableName || onLoadData; // 自定义变量名或默认变量名
-							if (typeof(inputsDataObj[variableName]) !== 'string')
-								inputsDataObj[variableName] = res[i].data || '|';
-							else
-								inputsDataObj[variableName] += res[i].data ? '|' + res[i].data : '|';
+							inputsDataObj[variableName] = _app.pics_splice(inputsDataObj[variableName], res[i].data);
 						}
 					_this.$emit('activeFc', inputsDataObj); // 把用户输入数据对象输出给父级
 					_this.inputs_reSet(); //提交后重置
-					return inputsDataObj;
+				}).catch((err)=>{
+					console.log(err);
+					_app.showToast(err);
 				});
 			},
 			inputs_reSet() {
@@ -1115,11 +1199,11 @@
 				if(this.submitReSet) this.init();
 			},
 			chooseImg(index, picsIndex) { //选择图片
-				let _this = this
+				if(this.picsObj[this.onLoadData + index + this.onLoadData + picsIndex]) return;
 				uni.chooseImage({
-					success: function(res) {
+					success: res => {
 						// console.log(res.tempFilePaths[0]);
-						_this.$set(_this.picsObj, _this.onLoadData + index + _this.onLoadData + picsIndex, res.tempFilePaths[0]);
+						this.$set(this.picsObj, this.onLoadData + index + this.onLoadData + picsIndex, res.tempFilePaths[0]);
 					}
 				})
 			},
@@ -1169,6 +1253,9 @@
 </script>
 
 <style scoped>
+	.font_size_upx {
+		font-size: 15upx;
+	}
 	.transition_point6s{
 		transition: all .6s;
 	}
