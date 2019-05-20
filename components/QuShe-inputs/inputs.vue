@@ -1076,10 +1076,10 @@
 							}
 							break;
 						case 'switch':
-							inputsDataObj[variableName] = _this[onLoadData]?true:false;
+							inputsDataObj[variableName] = inputsObj[onLoadData]?true:false;
 							break;
 						case 'slider':
-							inputsDataObj[variableName] = _this[onLoadData];
+							inputsDataObj[variableName] = inputsObj[onLoadData];
 							break;
 						case 'text':
 							break;

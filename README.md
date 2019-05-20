@@ -10,14 +10,12 @@
 本组件目前支持 input、textarea、radio、checkbox、switch、slider、上传图片、日期选择、城市选择、省市区乡镇街道、picker可联动自定义等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
 
 ---
-# 警告
-自定义组件模式下，app、小程序 props中传不了function， 所以 input、textarea类型的过滤函数及校验函数不起作用，并且目前最新版本更新后自定义组件模式下，选择图片也选不了, 非自定义组件模式没有问题，晚上更新
 
 # 更新说明
 
 | 版本号 | 更新说明 |
 |--------|:----------|
-| v5.7<br />`重要` | 1、`如果用了pcis类型或者开启了发送验证码功能的小伙伴需要改一下代码了`,inputs代码中的`上传图片方法、发送验证码提取到app.js文件中`，方便修改，以后inputs组件更新，也不用很麻烦的去inputs里面更新，只要把原先的app.js里的代码复制一下就好, 并且pics、input类型新增`customId`属性，用来控制上传图片方法、发送验证码方法的属性赋值走向，`拼接上传图片返回数据的方法也转到了app.js中`, 详见3.0.3与1.中的ifcode项<br />2、input、textarea新增`filterType`内置过滤函数，详见3.0.1.0.4<br />3、修复了更新版本后自定义组件模式下APP、微信小程序无法选择图片的问题<br />4、新增`fontSizeScaleSet`属性，控制title、content字体大小系数，详见1.1.0|
+| v5.7、v5.8<br />`重要` | 1、`如果用了pcis类型或者开启了发送验证码功能的小伙伴需要改一下代码了`,inputs代码中的`上传图片方法、发送验证码提取到app.js文件中`，方便修改，以后inputs组件更新，也不用很麻烦的去inputs里面更新，只要把原先的app.js里的代码复制一下就好, 并且pics、input类型新增`customId`属性，用来控制上传图片方法、发送验证码方法的属性赋值走向，`拼接上传图片返回数据的方法也转到了app.js中`, 详见3.0.3与1.中的ifcode项<br />2、input、textarea新增`filterType`内置过滤函数，详见3.0.1.0.4<br />3、修复了更新版本后自定义组件模式下APP、微信小程序无法选择图片的问题<br />4、新增`fontSizeScaleSet`属性，控制title、content字体大小系数，详见1.1.0<br />5、修复一些小问题|
 | v5.6 | 修复setFocus方法传入参数为0时判断出错问题,顺便修复验证码框focusStyle问题|
 | v5.5 | 1、inputs新增`focusStyle`属性(控制input、textarea类型focus或blur时的边框颜色)，input、textarea类型新增focusBorderStyle、blurBorderStyle属性(控制input、textarea类型focus或blur时的边框颜色,优先级大于focusStyle), 详见`1.`<br />2、inputs内新增`setFocus`方法, 用于设置指定的input或textarea的focus属性, 可用`ref方式`调用, 详见`2.0.1`<br />3、突然发现验证码的input框忘记加focusStyle了，下次更新吧|
 | v5.4 | 1、input、textarea类型新增`verifyType`(内置正则验证, 有需求的自行添加)<br />2、验证码输入框强制防抖<br />3、修改picker类型的按钮字体大小默认大小与右边文字默认大小一致，并修复该类型的按钮会变形的bug<br />4、修改switch、radio、checkbox的scale默认值为'.8', 并且修改该属性的值类型为`String`<br />5、优化activeFc方法中判断pics的代码|

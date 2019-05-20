@@ -148,14 +148,12 @@ const _app = {
 				success(res) {
 					console.log('进入UpLoadFile方法的success回调')
 					_this.hideLoading();
-					// if (scb && typeof(scb) == 'function') scb(res);
 					reslove(res)
 				},
 				fail(err) {
 					console.log('进入UpLoadFile方法的fail回调')
 					console.log(JSON.stringify(err))
 					_this.hideLoading();
-					// if (fcb && typeof(fcb) == 'function') fcb(err);
 					reject();
 				}
 			})
@@ -167,7 +165,7 @@ const _app = {
 			vals = val || '|';	// 可更改分隔符
 		else
 			vals += val ? '|' + val : '|';
-		return vals; // 必须returnvals
+		return vals; // 必须return vals
 	},
 	sendSMS(customId, phone) {
 		let code = ''; // 生成验证码
@@ -212,7 +210,7 @@ const _app = {
 	},
 	checkbox_status(data) {
 		for(let i = 0; i < data.length; i++) {
-			if(data[i]) data[i] = true; else data[i] = false;
+			if(data[i]||data[i]===0) data[i] = true; else data[i] = false;
 		}
 		return data;
 	}
