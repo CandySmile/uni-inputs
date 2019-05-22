@@ -1249,7 +1249,6 @@
 				if(verifyStatusSet.openChangeBorderColor)
 					this.$set(this.verifyStatusObj, this.onLoadData + index + (typeof(index2)=='number'&&index2>=0?this.onLoadData + index2:''), c);
 				if(verifyStatusSet.openScroll&&ifnotSuccess) {
-					if(!verifyStatusSet.inputsId) { console.log('找不到inputsId'); return; }
 					let view;
 					// #ifdef H5
 					view = document.getElementById(`Id_${index}`);
@@ -1259,15 +1258,18 @@
 					})
 					// #endif
 					// #ifndef H5
+					if(!verifyStatusSet.inputsId) { console.log('找不到inputsId'); return; }
 					view = uni.createSelectorQuery().select(`#${verifyStatusSet.inputsId} >>> #Id_${index}`);
-					let p1 = new Promise((rs, rj)=>{ view.fields({ rect: true }, data => { rs(data); }).exec(); })
-					let p2 = new Promise((rs, rj)=>{ uni.createSelectorQuery().selectViewport().scrollOffset(res => {  rs(res); }).exec(); })
+					let p1 = new Promise((rs, rj)=>{ view.fields({ rect: true }, data => { if(data) rs(data); else rj('目前APP、WX小程序在非自定义组件模式中滚动不生效'); }).exec(); })
+					let p2 = new Promise((rs, rj)=>{ uni.createSelectorQuery().selectViewport().scrollOffset(res => {  if(res) rs(res); else rj('获取滚动条位置信息失败'); }).exec(); })
 					Promise.all([p1, p2]).then(([{top}, {scrollTop}])=>{
 						let t = (scrollTop + top) - 100;
 						uni.pageScrollTo({
 							scrollTop:t < 0?0:t,
 							duration: 300
 						})
+					}).catch((err)=>{
+						console.log(err);
 					})
 					// #endif
 				}
