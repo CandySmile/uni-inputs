@@ -1,13 +1,30 @@
 ## 可直接拖进项目运行
 
 ## 作者想说
+```
 感谢各位小伙伴的不断建议，inputs组件的进步都是因为你们哦~！
 
 如果该组件有什么问题还请大家说出来哦，还有如果有什么建议的话也可以提下呐 ~
-如果觉得好用，可以回来给个五星好评么~~(❁´◡`❁)\*✲ﾟ\*  蟹蟹~拜托啦~
+如果觉得好用，可以回来给个五星好评么~~(❁´◡`❁)*✲ﾟ*  蟹蟹~拜托啦~
+```
 
 ## 组件简介
-本组件目前支持 input、textarea、radio、checkbox、switch、slider、上传图片、日期选择、城市选择、省市区乡镇街道、picker可联动自定义等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
+```
+本组件目前支持 
+3.0.1 input
+3.0.2 textarea
+3.0.4 radio
+3.0.5 checkbox
+3.0.6 switch
+3.0.7 slider
+3.0.3 上传图片
+3.0.8 日期选择
+3.0.9 城市选择
+3.1.2 省市区乡镇街道
+3.1.0、3.1.1 picker可联动自定义
+等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！
+甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
+```
 
 ---
 
@@ -15,6 +32,7 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
+| v5.9 | 1、修复使用多个inputs组件时判断出错问题<br />2、新增校验状态管理verifyStatusSet属性,详见1.<br />3、input防抖默认更改为开启|
 | v5.7、v5.8<br />`重要` | 1、`如果用了pcis类型或者开启了发送验证码功能的小伙伴需要改一下代码了`,inputs代码中的`上传图片方法、发送验证码提取到app.js文件中`，方便修改，以后inputs组件更新，也不用很麻烦的去inputs里面更新，只要把原先的app.js里的代码复制一下就好, 并且pics、input类型新增`customId`属性，用来控制上传图片方法、发送验证码方法的属性赋值走向，`拼接上传图片返回数据的方法也转到了app.js中`, 详见3.0.3与1.中的ifcode项<br />2、input、textarea新增`filterType`内置过滤函数，详见3.0.1.0.4<br />3、修复了更新版本后自定义组件模式下APP、微信小程序无法选择图片的问题<br />4、新增`fontSizeScaleSet`属性，控制title、content字体大小系数，详见1.1.0<br />5、修复一些小问题|
 | v5.6 | 修复setFocus方法传入参数为0时判断出错问题,顺便修复验证码框focusStyle问题|
 | v5.5 | 1、inputs新增`focusStyle`属性(控制input、textarea类型focus或blur时的边框颜色)，input、textarea类型新增focusBorderStyle、blurBorderStyle属性(控制input、textarea类型focus或blur时的边框颜色,优先级大于focusStyle), 详见`1.`<br />2、inputs内新增`setFocus`方法, 用于设置指定的input或textarea的focus属性, 可用`ref方式`调用, 详见`2.0.1`<br />3、突然发现验证码的input框忘记加focusStyle了，下次更新吧|
@@ -72,22 +90,30 @@
 <template>
   <view>
 	<inputs 
-	ref="inputs"
+	id="inputs" 
+	ref="inputs" 
 	:inputsArray="inputsArray" 
-	ifRule
+	activeName="获取输入" 
+	:ruleSet="ruleSet" 
+	ifRule 
 	ifCode 
-	activeName="获取输入"
-	:ruleSet="ruleSet"
 	@chaildOpenEvent="openWin"
-	@activeFc="activeFc"
-	:onLoadData="onLoadData"
-	cssMode="wrap"
-	animationType="rotate3d-fade"
-	:animationDuration=".4"
+	@activeFc="activeFc" 
+	:onLoadData="onLoadData" 
+	animationType="rotate3d-fade" 
+	:animationDuration=".2" 
 	submitReSet
-	:buttonStyle="buttonStyle"
-	:inputDebounceSet="inputDebounceSet"
-	:focusStyle="focusStyle"/>
+	:buttonStyle="buttonStyle" 
+	:inputDebounceSet="inputDebounceSet" 
+	:focusStyle="focusStyle" 
+	:fontSizeScaleSet="fontSizeScaleSet"
+	:verifyStatusSet="verifyStatusSet" />
+
+    
+
+    <button type="primary" @tap="setfocus1()" style="margin-top: 50px;">设置textarea focus</button>
+    <button type="primary" @tap="setfocus2()" style="margin-top: 5px;">设置input focus</button>
+    <button type="primary" @tap="openTest()" style="margin-top: 5px;">打开test页面</button>
   </view>
 </template>
 ```
@@ -95,11 +121,24 @@
 ## JS中引入、注册并使用组件
 ```javascript
 <script>
-  import inputs from /*inputs组件文件路径；*/
-  export default {
-    data() {
-      return {
-                focusStyle: { //控制input或textarea类型focus或blur时的边框颜色
+	import inputs from "@/components/QuShe-inputs/inputs.vue";
+	export default {
+		data() {
+			return {
+				verifyStatusSet: {
+					inputsId: 'inputs', // inputs组件的id属性值
+					openVerifyStatus: true,
+					openScroll: true,
+					openChangeBorderColor: true,
+					errNullColor: 'rgba(255,255,0,.7)',
+					verifyErrorCaolor: 'rgba(245,16,92,.7)'
+				},
+				fontSizeScaleSet: { //inputs内的字体大小系数设置(字体大小为屏幕宽高度以此系数)
+					allScale: .018,
+					titleScale: .018,
+					contentScale: .017
+				},
+				focusStyle: { //控制input或textarea类型focus或blur时的边框颜色
 					focusBorderStyle: '#999999',
 					blurBorderStyle: '#f8f8f8'
 				},
@@ -107,7 +146,7 @@
 					openInputDebounce: true,
 					delay: 500
 				},
-		        "buttonStyle": { //按钮样式
+				"buttonStyle": { //按钮样式
 					"activeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //主按钮样式
 					"changeButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //picker类型更改按钮样式
 					"selectButton": "background-color: #c0ebd7;border-radius: 30px;box-shadow: 2px 2px 1px 1px #c0ebd7;", //picker类型选择按钮样式
@@ -119,9 +158,9 @@
 						"border_top": "1px solid #f2f2f2", //上划线
 						"type": "text",
 						"title": "text示例",
-						"content": "展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息展示text展示text信息展示text信息展示text信息展示text展示text信息展示text信息",
+						"content": "展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息",
 						"ellipsis": true
-					},{
+					}, {
 						"segmentationTitle": "表单组件", //分割大标题
 						"type": "slider", //类型
 						"title": "slider", //标题
@@ -145,6 +184,7 @@
 						"title": "switch",
 						"color": "#c0ebd7",
 						"defaultValue": true,
+						"scale": '.8', //比例大小
 						"variableName": "switch" //自定义变量名
 					},
 					{
@@ -158,7 +198,8 @@
 							"name": "bb",
 							"value": "bb"
 						}],
-						"color": "#c0ebd7"
+						"color": "#c0ebd7",
+						"scale": '.8', //比例大小
 					},
 					{
 						"title": "checkbox",
@@ -170,7 +211,7 @@
 						}, {
 							"name": "b",
 							"value": "b",
-							"defaultValue": true,
+							// "defaultValue": true,
 							"disabled": true
 						}, {
 							"name": "c",
@@ -178,19 +219,26 @@
 							"defaultValue": true
 						}],
 						"variableName": "checkbox",
+						"scale": '.8', //比例大小
 						"color": "#c0ebd7"
 					}, {
 						"title": "内置正则校验Email",
-						"verifyType": "Email",
-						"defaultValue": "494843897@qq.com"
+						"verifyType": "Email", // 内置正则校验
+						"defaultValue": "494843897@qq"
+					}, {
+						"title": "内置过滤函数",
+						"filterType": "twoDecimalPlaces",
+						"ignore": true,
+						"placeholder": "限制输入小数点后一位"
 					}, {
 						"title": "手机号校验",
-						"verifyFc": function(value) {
+						verifyFc: function(value) {
 							if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value))
 								return true;
 							return false;
 						},
-						"verifyErr": "手机号校验错误"
+						"verifyErr": "手机号校验错误",
+						"ignore": true
 					}, {
 						"title": "input",
 						"ignore": true, //是否可忽略该值(判断时此项值可以为空)
@@ -199,7 +247,7 @@
 						"password": true, //input密码类型
 						"icon": "search", //input左边图标
 						"iconColor": "#c0ebd7", //input图标颜色
-						"filterFc": function(value) { //input值过滤函数
+						filterFc: function(value) { //input值过滤函数
 							//自定义过滤函数
 							value = "filter过滤后的值";
 							return value;
@@ -215,10 +263,14 @@
 						}, {
 							"title": "测试2",
 							"ignore": true
+						}, {
+							"title": "测试3",
+							"ignore": true
 						}],
 						"variableName": "pic",
 						"border_top": "1px solid #f2f2f2",
-						"clearColor": "#c0ebd7"
+						"clearColor": "#c0ebd7",
+						"customId": "自定义一标识"
 					},
 					{
 						"segmentationTitle": "picker类型",
@@ -539,7 +591,8 @@
 					}, {
 						"title": "手机号",
 						"phone": true,
-						"defaultValue": "13305679845"
+						"defaultValue": "13305679845",
+						"customId": "验证码自定义标识"
 					}
 				],
 				"ruleSet": {
@@ -551,24 +604,42 @@
 					}],
 				},
 				"onLoadData": "data_",
-      };
-    },
-    methods: {
-      openWin(value) {
-        //打开规则或协议页
-		//若有一个以上的rule，则根据value打开规则页面
-		console.log(value);
-      },
-      activeFc(res) {	// 最终取值
-        //主方法，携带用户输入的数据对象
-        let _this = this;
-        console.log(JSON.stringify(res));
-        // 如果项内定义了variableName属性，则取值为定义的variableName，否则取值为 this.onloadData + index, onloadData默认值为'data_'
-        // 需要把数据传至服务器时也可以把整个对象传过去，由后端直接处理数据，这样可以实现整体的表单类型、布局、取值都由后端决定
-        }
-    },
-    components: {inputs}
-  }
+			}
+		},
+		methods: {
+			openWin(value) {
+				//打开规则或协议页
+				//若有一个以上的rule，则根据value打开规则页面
+				console.log(value);
+			},
+			activeFc(res) {
+				uni.showToast({
+					title: "获取输入成功"
+				})
+				console.log(JSON.stringify(res));
+			},
+			openTest() {
+				uni.navigateTo({
+					url: '../test/test'
+				})
+			},
+			setfocus1() { //设置focus示例1
+				this.$refs.inputs.setFocus(2, true);
+			},
+			setfocus2() { //设置focus示例2
+				this.$refs.inputs.setFocus((inputsArray) => {
+					let i = inputsArray.findIndex((item) => { //findIndex方法 返回符合测试条件的第一个数组元素索引，如果没有符合条件的则返回 -1
+						return item.title === '手机号校验';
+					})
+					return i;
+					//可以不使用findIndex方法，但是必须return一个Number
+				}, true);
+			}
+		},
+		components: {
+			inputs
+		}
+	}
 </script>
 ```
 
@@ -584,7 +655,7 @@
 | ifRule| | Boolean| false| 是否需要用户同意某规则或协议|
 | ~~ruleArray(废弃,请使用ruleSet)~~| ifRule为true时是| Array\<Object\>| | 需要用户同意某规则或协议的数组|
 | @chaildOpenEvent| ifRule为true时是| Function| | 打开某规则或协议的方法|
-| onLoadData| | String| 'data_'| activeFc返回的对象中的数据变量名前缀，后面跟index，看下方说明|
+| onLoadData| | String| 'data_'| activeFc返回的对象中的数据变量名前缀，后面跟index，未定义自定义变量名时生效|
 | ~~cssMode（废弃，统一wrap布局）~~| | String| 'wrap'| 可控制拥有子项数组的类型的项内布局方式|
 | ~~changeReSet(废弃)~~| | Boolean| false| 在inputsArray改变时可重置所有数据为空，但不重置视图，若需重置视图看下方说明|
 | submitReSet| | Boolean| false| 提交数据后是否重置数据为初始化|
@@ -598,6 +669,7 @@
 | inputDebounceSet| | Object| | input类型输入防抖设置, 详见1.0.8|
 | focusStyle| | Object| | 控制input或textarea类型focus或blur时的边框颜色, 详见1.0.9|
 | fontSizeScaleSet| | Object| | 控制title和content的字体大小系数, 详见1.1.0|
+| verifyStatusSet| | Object| | 控制校验状态, 详见1.1.1|
 注：titleFontSize、titleFontColor、contentFontSize、changeReSet、ruleArray等属性已废弃
 
 ### 1.0.1 animationType属性说明
@@ -674,6 +746,18 @@
 | contentScale| Number| `.017`|  content的`字体大小系数`(屏幕高度乘以此系数),优先级大于allScale |
 
 注：fontSizeScaleSet设置的字体大小优先级小于titleSet与contentSet中设置的字体大小
+
+
+### 1.1.1 verifyStatusSet属性说明(5.9新增)
+| 值| 值类型| 默认值| 说明|
+|---|---|---|---|
+| inputsId| String| |  引入的inputs组件的id属性值 |
+| openVerifyStatus| Boolean| |  是否开启校验管理 |
+| openScroll| Boolean| |  校验失败时是否滚动至校验失败位置 |
+| openChangeBorderColor| Boolean| |  校验失败时是否改变边框颜色 |
+| verifyErrorCaolor| Color| `rgba(255,255,0,.7)`|  当该项校验函数失败时，将边框设置为此颜色 |
+| errNullColor| Color| `rgba(245,16,92,.7)`| 当该项判断为空时，将边框设置为此颜色 |
+
 
 ---
 

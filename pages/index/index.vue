@@ -1,7 +1,8 @@
 <template>
 	<view>
 		<inputs 
-		ref="inputs"
+		id="inputs" 
+		ref="inputs" 
 		:inputsArray="inputsArray" 
 		activeName="获取输入" 
 		:ruleSet="ruleSet" 
@@ -11,17 +12,18 @@
 		@activeFc="activeFc" 
 		:onLoadData="onLoadData" 
 		animationType="rotate3d-fade" 
-		:animationDuration=".1"
-		submitReSet 
+		:animationDuration=".2" 
+		submitReSet
 		:buttonStyle="buttonStyle" 
-		:inputDebounceSet="inputDebounceSet"
-		:focusStyle="focusStyle"
-		:fontSizeScaleSet="fontSizeScaleSet"/>
-		
-		
-		 <button type="primary" @tap="setfocus1()" style="margin-top: 50px;">设置textarea focus</button>
-		 <button type="primary" @tap="setfocus2()" style="margin-top: 5px;">设置input focus</button>
-		 <button type="primary" @tap="openTest()" style="margin-top: 5px;">打开test页面</button>
+		:inputDebounceSet="inputDebounceSet" 
+		:focusStyle="focusStyle" 
+		:fontSizeScaleSet="fontSizeScaleSet"
+		:verifyStatusSet="verifyStatusSet" />
+
+
+		<button type="primary" @tap="setfocus1()" style="margin-top: 50px;">设置textarea focus</button>
+		<button type="primary" @tap="setfocus2()" style="margin-top: 5px;">设置input focus</button>
+		<button type="primary" @tap="openTest()" style="margin-top: 5px;">打开test页面</button>
 	</view>
 </template>
 
@@ -30,6 +32,14 @@
 	export default {
 		data() {
 			return {
+				verifyStatusSet: {
+					inputsId: 'inputs', // inputs组件的id属性值
+					openVerifyStatus: true,
+					openScroll: true,
+					openChangeBorderColor: true,
+					errNullColor: 'rgba(255,255,0,.7)',
+					verifyErrorCaolor: 'rgba(245,16,92,.7)'
+				},
 				fontSizeScaleSet: { //inputs内的字体大小系数设置(字体大小为屏幕宽高度以此系数)
 					allScale: .018,
 					titleScale: .018,
@@ -57,7 +67,7 @@
 						"title": "text示例",
 						"content": "展示text信息展示text信息展示text信息展示text信息展示text信息展示text信息",
 						"ellipsis": true
-					},{
+					}, {
 						"segmentationTitle": "表单组件", //分割大标题
 						"type": "slider", //类型
 						"title": "slider", //标题
@@ -81,7 +91,7 @@
 						"title": "switch",
 						"color": "#c0ebd7",
 						"defaultValue": true,
-						"scale": '.8',	//比例大小
+						"scale": '.8', //比例大小
 						"variableName": "switch" //自定义变量名
 					},
 					{
@@ -96,7 +106,7 @@
 							"value": "bb"
 						}],
 						"color": "#c0ebd7",
-						"scale": '.8',	//比例大小
+						"scale": '.8', //比例大小
 					},
 					{
 						"title": "checkbox",
@@ -116,12 +126,12 @@
 							"defaultValue": true
 						}],
 						"variableName": "checkbox",
-						"scale": '.8',	//比例大小
+						"scale": '.8', //比例大小
 						"color": "#c0ebd7"
 					}, {
 						"title": "内置正则校验Email",
 						"verifyType": "Email", // 内置正则校验
-						"defaultValue": "494843897@qq.com"
+						"defaultValue": "494843897@qq"
 					}, {
 						"title": "内置过滤函数",
 						"filterType": "twoDecimalPlaces",
@@ -524,8 +534,8 @@
 				this.$refs.inputs.setFocus(2, true);
 			},
 			setfocus2() { //设置focus示例2
-				this.$refs.inputs.setFocus((inputsArray)=>{
-					let i = inputsArray.findIndex((item)=>{	//findIndex方法 返回符合测试条件的第一个数组元素索引，如果没有符合条件的则返回 -1
+				this.$refs.inputs.setFocus((inputsArray) => {
+					let i = inputsArray.findIndex((item) => { //findIndex方法 返回符合测试条件的第一个数组元素索引，如果没有符合条件的则返回 -1
 						return item.title === '手机号校验';
 					})
 					return i;
