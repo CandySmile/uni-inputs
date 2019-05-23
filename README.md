@@ -707,7 +707,7 @@
 
 ### 1.0.5 buttonStyle属性说明
 | 值| 值类型| 默认值| 说明|
-|---|---|---|---|---|---|
+|---|---|---|---|
 | activeButton| CssStyle| |  主按钮样式  |
 | changeButton| CssStyle|  |  picker类型更改按钮样式 |
 | selectButton| CssStyle|  |  picker类型选择按钮样式 |
@@ -716,7 +716,7 @@
 
 ### 1.0.6 titleSet属性说明
 | 值| 值类型| 默认值| 说明|
-|---|---|---|---|---|---|
+|---|---|---|---|
 | size| Number| 屏幕高度*`.021`| title字体大小 |
 | color| Color| `#666666`| title文字颜色|
 | layout| String| `right`| title对齐方式(设置 left 则为左对齐，center为居中， 否则右对齐) |
