@@ -18,7 +18,8 @@
 		:inputDebounceSet="inputDebounceSet" 
 		:focusStyle="focusStyle" 
 		:fontSizeScaleSet="fontSizeScaleSet"
-		:verifyStatusSet="verifyStatusSet" />
+		:verifyStatusSet="verifyStatusSet" 
+		:usingComponents="usingComponents"/>
 
 
 		<button type="primary" @tap="setfocus1()" style="margin-top: 50px;">设置textarea focus</button>
@@ -32,13 +33,14 @@
 	export default {
 		data() {
 			return {
+				usingComponents: true,
 				verifyStatusSet: {
 					inputsId: 'inputs', // inputs组件的id属性值
 					openVerifyStatus: true,
 					openScroll: true,
 					openChangeBorderColor: true,
 					errNullColor: 'rgba(255,255,0,.7)',
-					verifyErrorCaolor: 'rgba(245,16,92,.7)'
+					verifyErrorColor: 'rgba(245,16,92,.7)'
 				},
 				fontSizeScaleSet: { //inputs内的字体大小系数设置(字体大小为屏幕宽高度以此系数)
 					allScale: .018,

@@ -32,6 +32,7 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
+| v6.1 | 1、修复非自定义组件模式校验失败不能滚动的问题(新增`usingComponents`属性),详见1.与1.1.1<br />2、更改verifyErrorCaolor属性为verifyErrorColor（上个版本没注意）<br />3、修复previewImage的App平台，在HX 1.9.5至1.9.8之间current参数不填报错的问题 |
 | v5.9、6.0 | 1、修复使用多个inputs组件时判断出错问题<br />2、新增校验状态管理verifyStatusSet属性(自定义组件模式下滚动生效),详见1.<br />3、input防抖默认更改为开启|
 | v5.7、v5.8<br />`重要` | 1、`如果用了pcis类型或者开启了发送验证码功能的小伙伴需要改一下代码了`,inputs代码中的`上传图片方法、发送验证码提取到app.js文件中`，方便修改，以后inputs组件更新，也不用很麻烦的去inputs里面更新，只要把原先的app.js里的代码复制一下就好, 并且pics、input类型新增`customId`属性，用来控制上传图片方法、发送验证码方法的属性赋值走向，`拼接上传图片返回数据的方法也转到了app.js中`, 详见3.0.3与1.中的ifcode项<br />2、input、textarea新增`filterType`内置过滤函数，详见3.0.1.0.4<br />3、修复了更新版本后自定义组件模式下APP、微信小程序无法选择图片的问题<br />4、新增`fontSizeScaleSet`属性，控制title、content字体大小系数，详见1.1.0<br />5、修复一些小问题|
 | v5.6 | 修复setFocus方法传入参数为0时判断出错问题,顺便修复验证码框focusStyle问题|
@@ -107,7 +108,8 @@
 	:inputDebounceSet="inputDebounceSet" 
 	:focusStyle="focusStyle" 
 	:fontSizeScaleSet="fontSizeScaleSet"
-	:verifyStatusSet="verifyStatusSet" />
+	:verifyStatusSet="verifyStatusSet"
+	:usingComponents="usingComponents"/>
 
     
 
@@ -125,13 +127,14 @@
 	export default {
 		data() {
 			return {
+				usingComponents: true,
 				verifyStatusSet: {
-					inputsId: 'inputs', // inputs组件的id属性值
+					inputsId: 'inputs', // inputs组件的id属性值,自定义组件模式必填
 					openVerifyStatus: true,
 					openScroll: true,
 					openChangeBorderColor: true,
 					errNullColor: 'rgba(255,255,0,.7)',
-					verifyErrorCaolor: 'rgba(245,16,92,.7)'
+					verifyErrorColor: 'rgba(245,16,92,.7)'
 				},
 				fontSizeScaleSet: { //inputs内的字体大小系数设置(字体大小为屏幕宽高度以此系数)
 					allScale: .018,
@@ -670,6 +673,7 @@
 | focusStyle| | Object| | 控制input或textarea类型focus或blur时的边框颜色, 详见1.0.9|
 | fontSizeScaleSet| | Object| | 控制title和content的字体大小系数, 详见1.1.0|
 | verifyStatusSet| | Object| | 控制校验状态, 详见1.1.1|
+| usingComponents| Boolean| `false`| 编译模式为自定义组件模式，则建议填此项为true(v6.1新增) |
 注：titleFontSize、titleFontColor、contentFontSize、changeReSet、ruleArray等属性已废弃
 
 ### 1.0.1 animationType属性说明
@@ -751,11 +755,11 @@
 ### 1.1.1 verifyStatusSet属性说明(5.9新增)
 | 值| 值类型| 默认值| 说明|
 |---|---|---|---|
-| inputsId| String| |  引入的inputs组件的id属性值 (若需开启滚动则APP、小程序必填) |
 | openVerifyStatus| Boolean| |  是否开启校验管理 |
-| openScroll| Boolean| |  校验失败时是否滚动至校验失败位置，`APP、wx小程序目前自定义组件模式生效` |
+| inputsId| String| |  引入的inputs组件的id属性值 (自定义组件模式下，若需开启滚动则APP、小程序必填) |
+| openScroll| Boolean| |  校验失败时是否滚动至校验失败位置，`APP、wx小程序在自定义组件模式下，建议设置1.中的usingComponents为true, 否则会多一次执行` |
 | openChangeBorderColor| Boolean| |  校验失败时是否改变边框颜色 |
-| verifyErrorCaolor| Color| `rgba(255,255,0,.7)`|  当该项校验函数失败时，将边框设置为此颜色 |
+| verifyErrorColor| Color| `rgba(255,255,0,.7)`|  当该项校验函数失败时，将边框设置为此颜色 |
 | errNullColor| Color| `rgba(245,16,92,.7)`| 当该项判断为空时，将边框设置为此颜色 |
 
 

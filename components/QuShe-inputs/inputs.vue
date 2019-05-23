@@ -73,7 +73,7 @@
 						<checkbox-group @change="checkbox_change($event, index)" class="width100 wrap" :class="[classObj.contentLayout]">
 							<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="classObj.content + classObj.padding1 + classObj.marginRight2"
 							 v-for="(checkboxItem, checkboxIndex) in item.itemArray" :key="checkboxIndex">
-								<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index].status[checkboxIndex]" :disabled="checkboxItem.disabled"
+								<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index]&&inputsObj[onLoadData+index].status&&inputsObj[onLoadData+index].status[checkboxIndex]" :disabled="checkboxItem.disabled"
 								 :color="checkboxItem.color||item.color" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
 								<view class="flex_row_none_c">{{checkboxItem.name}}</view>
 							</label>
@@ -447,9 +447,13 @@
 						openChangeBorderColor: false,
 						inputsId: '',
 						errNullColor: 'rgba(245,16,92,.7)',
-						verifyErrorCaolor: 'rgba(255,255,0,.7)'
+						verifyErrorColor: 'rgba(255,255,0,.7)'
 					};
 				}
+			},
+			usingComponents: {
+				type: Boolean,
+				default: false
 			}
 		},
 		data() {
@@ -1242,12 +1246,12 @@
 				let ifnotSuccess = false;
 				switch (statu){
 					case 0: c = 'rgba(0,0,0,0)'; break;
-					case 1: c = verifyStatusSet.verifyErrorCaolor||'rgba(255,255,0,.7)'; ifnotSuccess = true; break;
+					case 1: c = verifyStatusSet.verifyErrorColor||'rgba(255,255,0,.7)'; ifnotSuccess = true; break;
 					case 2: c = verifyStatusSet.errNullColor||'rgba(245,16,92,.7)'; ifnotSuccess = true; break;
 					default: c = 'rgba(0,0,0,0)'; break;
 				}
 				if(verifyStatusSet.openChangeBorderColor)
-					this.$set(this.verifyStatusObj, this.onLoadData + index + (typeof(index2)=='number'&&index2>=0?this.onLoadData + index2:''), c);
+					this.$set(this.verifyStatusObj, this.onLoadData + index + (typeof(index2)=='number'&&index2>=0?this.onLoadData + index2:''), c); // 校验失败时, 改变边框颜色
 				if(verifyStatusSet.openScroll&&ifnotSuccess) {
 					let view;
 					// #ifdef H5
@@ -1258,10 +1262,14 @@
 					})
 					// #endif
 					// #ifndef H5
-					if(!verifyStatusSet.inputsId) { console.log('找不到inputsId'); return; }
-					view = uni.createSelectorQuery().select(`#${verifyStatusSet.inputsId} >>> #Id_${index}`);
-					let p1 = new Promise((rs, rj)=>{ view.fields({ rect: true }, data => { if(data) rs(data); else rj('目前APP、WX小程序在非自定义组件模式中滚动不生效'); }).exec(); })
-					let p2 = new Promise((rs, rj)=>{ uni.createSelectorQuery().selectViewport().scrollOffset(res => {  if(res) rs(res); else rj('获取滚动条位置信息失败'); }).exec(); })
+					if(this.usingComponents) {
+						if(!verifyStatusSet.inputsId) { console.log('找不到inputsId, 请在verifyStatusSet中传此参数'); return; }
+						view = uni.createSelectorQuery().select(`#${verifyStatusSet.inputsId} >>> #Id_${index}`);
+					}else {
+						view = uni.createSelectorQuery().select(`#Id_${index}`);
+					}
+					let p1 = new Promise((rs, rj)=>{ view.fields({ rect: true }, data => { if(data) rs(data); else rj(1); }).exec(); })
+					let p2 = new Promise((rs, rj)=>{ uni.createSelectorQuery().selectViewport().scrollOffset(res => {  if(res) rs(res); else rj(2); }).exec(); })
 					Promise.all([p1, p2]).then(([{top}, {scrollTop}])=>{
 						let t = (scrollTop + top) - 100;
 						uni.pageScrollTo({
@@ -1269,10 +1277,41 @@
 							duration: 300
 						})
 					}).catch((err)=>{
-						console.log(err);
+						switch (err){
+							case 1:
+								console.log('首次滚动失败, 正在尝试切换参数后重试滚动, 注意: 注意自己的编译模式, 若为自定义组件模式, 请传参数usingComponents为true, 详见v6.1更新说明 http://ext.dcloud.net.cn/plugin?id=149');
+								this.retryScroll(verifyStatusSet, index);
+								break;
+							case 2:
+								console.log('获取滚动条位置信息失败');
+								break;
+							default:
+								break;
+						}
 					})
 					// #endif
 				}
+			},
+			retryScroll(verifyStatusSet, index) {	//切换参数重试滚动
+				let view;
+				if(this.usingComponents) {
+					view = uni.createSelectorQuery().select(`#Id_${index}`);
+				}else{
+					if(!verifyStatusSet.inputsId) { console.log('找不到inputsId, 请在verifyStatusSet中传此参数'); return; }
+					view = uni.createSelectorQuery().select(`#${verifyStatusSet.inputsId} >>> #Id_${index}`);
+				}
+				let p1 = new Promise((rs, rj)=>{ view.fields({ rect: true }, data => { if(data) rs(data); else rj('重试滚动失败, 获取节点信息失败'); }).exec(); })
+				let p2 = new Promise((rs, rj)=>{ uni.createSelectorQuery().selectViewport().scrollOffset(res => {  if(res) rs(res); else rj('获取滚动条位置信息失败'); }).exec(); })
+				Promise.all([p1, p2]).then(([{top}, {scrollTop}])=>{
+					let t = (scrollTop + top) - 100;
+					uni.pageScrollTo({
+						scrollTop:t < 0?0:t,
+						duration: 300
+					})
+					console.log('重试滚动成功, 请注意自己的编译模式, 若为自定义组件模式, 则传usingComponents为true, 可免去此次重复操作, 详见v6.1更新说明 http://ext.dcloud.net.cn/plugin?id=149')
+				}).catch((err)=>{
+					console.log(err);
+				})
 			}
 		}
 	}

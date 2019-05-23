@@ -185,7 +185,8 @@ const _app = {
 		if (typeof(imgPath) != 'array')
 			imgPath = [imgPath];
 		uni.previewImage({
-			urls: imgPath
+			urls: imgPath,
+			current: 0
 		})
 	},
 	countDays(Y, M, val, mode) {
