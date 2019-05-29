@@ -77,12 +77,17 @@
 			indicatorStyle: String,
 			height: Number,
 			wH: Number,
-			pickerValueDefault: Array,
+			pickerValueDefault: {
+				type: Array,
+				default() {
+					return [];
+				}
+			},
 			confirmStyle: String
 		},
 		data() {
 			let value = [];
-			if(this.pickerValueDefault)
+			if(this.pickerValueDefault instanceof Array && this.pickerValueDefault)
 				value = this.pickerValueDefault;
 			else{
 				if(this.linkage)

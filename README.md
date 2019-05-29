@@ -32,6 +32,7 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
+| v6.2 | 1、修复picker类型的按钮会变形问题（定死按钮内的文字大小为所在view的60%, 所以在修改按钮样式时不要修改文字大小，以免变形）<br />2、修复picker类型可能出现初始值报错问题 |
 | v6.1 | 1、修复非自定义组件模式校验失败不能滚动的问题(新增`usingComponents`属性),详见1.与1.1.1<br />2、更改verifyErrorCaolor属性为verifyErrorColor（上个版本没注意）<br />3、修复previewImage的App平台，在HX 1.9.5至1.9.8之间current参数不填报错的问题 |
 | v5.9、6.0 | 1、修复使用多个inputs组件时判断出错问题<br />2、新增校验状态管理verifyStatusSet属性(自定义组件模式下滚动生效),详见1.<br />3、input防抖默认更改为开启|
 | v5.7、v5.8<br />`重要` | 1、`如果用了pcis类型或者开启了发送验证码功能的小伙伴需要改一下代码了`,inputs代码中的`上传图片方法、发送验证码提取到app.js文件中`，方便修改，以后inputs组件更新，也不用很麻烦的去inputs里面更新，只要把原先的app.js里的代码复制一下就好, 并且pics、input类型新增`customId`属性，用来控制上传图片方法、发送验证码方法的属性赋值走向，`拼接上传图片返回数据的方法也转到了app.js中`, 详见3.0.3与1.中的ifcode项<br />2、input、textarea新增`filterType`内置过滤函数，详见3.0.1.0.4<br />3、修复了更新版本后自定义组件模式下APP、微信小程序无法选择图片的问题<br />4、新增`fontSizeScaleSet`属性，控制title、content字体大小系数，详见1.1.0<br />5、修复一些小问题|
@@ -62,7 +63,7 @@
 | v3.2 | 优化布局，新增`segmentationTitle`、`border_bottom`、`border_top`等项内公共属性，修复input无法输入问题|
 | v3.1 | 新增textarea类型,完善input类型|
 | v3.0 | 1、新增switch、slider，修复checkbox、radio、input（初始化后不改动的情况下）从后台进入前台视图还原为初始化问题（数据不变）<br />2、input、radio、checkbox、switch、slider，各增disabled属性<br />3、修复H5 picker-date类型月份显示不正确问题|
-| v2.9 | 新增入场动画（小程序不建议使用此动画，会卡），animationType动画类型属性，animationDuration动画时长系数属性（父级需v-bind传入Number类型，不然H5会报错），这两个属性可以以父级属性统一传入，亦可以项内属性单独传入,详见下方 |
+| v2.9 | 新增入场动画，animationType动画类型属性，animationDuration动画时长系数属性（父级需v-bind传入Number类型，不然H5会报错），这两个属性可以以父级属性统一传入，亦可以项内属性单独传入,详见下方 |
 | v2.8 | 紧急修复从后台进入前台input视图为空bug（数据还在）,例如选择图片后返回时input视图为空 |
 | v2.7 | 修复picker初始值显示，并增加该属性，详见picker类型 |
 | v2.6 | 修复h5报错问题，修改picker类型选择方式为弹出,并增加picker按钮名属性 |
@@ -654,26 +655,26 @@
 | inputsArray| 是| Array\<Object\>| | 需循环的inputs数组（可从后端接口获取）, 详见3.|
 | @activeFc| 是| Function| | 主功能方法，携带一个用户所输入的数据对象|
 | activeName| | String| | 主功能按钮的文字说明，不传该值，则主按钮不显示，可以用ref调用inputs的activeFc方法获取输入|
-| ifCode| | Boolean| false| 是否启用验证码功能, 若启用则需完善app.js中`sendSMS`发送验证码方法, 并需设置一项input的phone属性为true|
-| ifRule| | Boolean| false| 是否需要用户同意某规则或协议|
-| ~~ruleArray(废弃,请使用ruleSet)~~| ifRule为true时是| Array\<Object\>| | 需要用户同意某规则或协议的数组|
-| @chaildOpenEvent| ifRule为true时是| Function| | 打开某规则或协议的方法|
-| onLoadData| | String| 'data_'| activeFc返回的对象中的数据变量名前缀，后面跟index，未定义自定义变量名时生效|
-| ~~cssMode（废弃，统一wrap布局）~~| | String| 'wrap'| 可控制拥有子项数组的类型的项内布局方式|
-| ~~changeReSet(废弃)~~| | Boolean| false| 在inputsArray改变时可重置所有数据为空，但不重置视图，若需重置视图看下方说明|
-| submitReSet| | Boolean| false| 提交数据后是否重置数据为初始化|
+| ifCode| | Boolean| `false`| 是否启用验证码功能, 若启用则需完善app.js中`sendSMS`发送验证码方法, 并需设置一项input的phone属性为true|
+| ifRule| | Boolean| `false`| 是否需要用户同意某规则或协议|
+| ~~ruleArray(废弃,请使用ruleSet)~~| | Array\<Object\>| | 需要用户同意某规则或协议的数组|
+| @chaildOpenEvent| | Function| | 打开某规则或协议的方法|
+| onLoadData| | String| `data_`| activeFc返回的对象中的数据变量名前缀，后面跟index，未定义自定义变量名时生效|
+| ~~cssMode（废弃，统一wrap布局）~~| | String| wrap| 可控制拥有子项数组的类型的项内布局方式|
+| ~~changeReSet(废弃)~~| | Boolean| `false`| 在inputsArray改变时可重置所有数据为空，但不重置视图，若需重置视图看下方说明|
+| submitReSet| | Boolean| `false`| 提交数据后是否重置数据为初始化|
 | animationType| | String| | 入场动画类型, 详见1.0.1|
 | animationDuration| | Number| | 入场动画时长系数(index+1 ， 乘以此系数为动画时长)|
 | ruleSet| | Object<String\|Array> |  | 规则或协议设置, 详见1.0.4 |
 | buttonStyle| | Object<String>| | button自定义样式, 详见1.0.5|
 | titleSet| | Object<String>|  | title(左边)设置, 详见1.0.6|
 | contentSet| | Object<String>| | content(右边)设置, 详见1.0.7|
-| titleHide| | Boolean| false| 隐藏title|
+| titleHide| | Boolean| `false`| 隐藏title|
 | inputDebounceSet| | Object| | input类型输入防抖设置, 详见1.0.8|
 | focusStyle| | Object| | 控制input或textarea类型focus或blur时的边框颜色, 详见1.0.9|
 | fontSizeScaleSet| | Object| | 控制title和content的字体大小系数, 详见1.1.0|
 | verifyStatusSet| | Object| | 控制校验状态, 详见1.1.1|
-| usingComponents| Boolean| `false`| 编译模式为自定义组件模式，则建议填此项为true(v6.1新增) |
+| usingComponents| | Boolean| `false`| 编译模式为自定义组件模式，则建议填此项为true(v6.1新增) |
 注：titleFontSize、titleFontColor、contentFontSize、changeReSet、ruleArray等属性已废弃
 
 ### 1.0.1 animationType属性说明
@@ -713,6 +714,7 @@
 | selectButton| CssStyle|  |  picker类型选择按钮样式 |
 | confirmButton| CssStyle|  |  picker类型弹出框中确定按钮样式 |
 | getcodeButton| CssStyle|  |  获取验证码按钮样式 |
+注: 除activeButton外建议最好不要设置按钮内的字体大小，避免按钮变形
 
 ### 1.0.6 titleSet属性说明
 | 值| 值类型| 默认值| 说明|
@@ -731,7 +733,7 @@
 ### 1.0.8 inputDebounceSet属性说明(5.0新增)
 | 值| 值类型| 默认值| 说明|
 |---|---|---|---|
-| openInputDebounce| Boolean |`false`|是否开启input输入防抖 |
+| openInputDebounce| Boolean |`true`|是否开启input输入防抖 |
 | delay| Number |`500`|输出延迟时间 |
 
 注：  input与textarea类型有效

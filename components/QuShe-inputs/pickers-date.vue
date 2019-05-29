@@ -70,7 +70,6 @@
 				type: Number,
 				default: 10
 			},
-			parentDays: Array,
 			confirmName: String,
 			index: Number,
 			confirmStyle: String

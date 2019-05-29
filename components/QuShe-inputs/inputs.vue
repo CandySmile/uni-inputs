@@ -101,15 +101,15 @@
 								{{inputsObj[onLoadData+index]}}
 							</view>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, index)" size="mini" 
-								:style="classObj.content + classObj.marginLeft3 + classObj.changeButton">
+								<button type="primary" @tap="showPicker(item, index)" size="mini" class="pickerBtn"
+								:style="classObj.marginLeft3 + classObj.changeButton">
 								{{item.editorName||'更改'}}
 								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" 
-							:style="classObj.content + classObj.selectButton">
+							<button type="primary" @tap="showPicker(item, index)" size="mini"  class="pickerBtn"
+							:style="classObj.selectButton">
 							{{item.chooseName||'选择日期'}}
 							</button>
 						</view>
@@ -121,15 +121,15 @@
 								{{inputsObj[onLoadData+index].label}}
 							</view>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, index)" size="mini" 
-								:style="classObj.content + classObj.marginLeft3 + classObj.changeButton">
+								<button type="primary" @tap="showPicker(item, index)" size="mini"  class="pickerBtn"
+								:style="classObj.marginLeft3 + classObj.changeButton">
 								{{item.editorName||'更改'}}
 								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" 
-							:style="classObj.content + classObj.selectButton">
+							<button type="primary" @tap="showPicker(item, index)" size="mini"  class="pickerBtn"
+							:style="classObj.selectButton">
 							{{item.chooseName||'选择城市'}}
 							</button>
 						</view>
@@ -150,15 +150,15 @@
 								</view>
 							</block>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, index)" size="mini" 
-								:style="classObj.content + classObj.marginLeft3 + classObj.changeButton">
+								<button type="primary" @tap="showPicker(item, index)" size="mini"  class="pickerBtn"
+								:style="classObj.marginLeft3 + classObj.changeButton">
 								{{item.editorName||'更改'}}
 								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" 
-							:style="classObj.content + classObj.selectButton">
+							<button type="primary" @tap="showPicker(item, index)" size="mini"  class="pickerBtn"
+							:style="classObj.selectButton">
 							{{item.chooseName||'选择'}}
 							</button>
 						</view>
@@ -182,15 +182,15 @@
 								</view>
 							</block>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, index)" size="mini" 
-								:style="classObj.content + classObj.marginLeft3 + classObj.changeButton">
+								<button type="primary" @tap="showPicker(item, index)" size="mini"  class="pickerBtn"
+								:style="classObj.marginLeft3 + classObj.changeButton">
 								{{item.editorName||'更改'}}
 								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" 
-							:style="classObj.content + classObj.selectButton">
+							<button type="primary" @tap="showPicker(item, index)" size="mini"  class="pickerBtn"
+							:style="classObj.selectButton">
 							{{item.chooseName||'选择'}}
 							</button>
 						</view>
@@ -202,15 +202,15 @@
 								{{inputsObj[onLoadData+index].label}}
 							</view>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, index)" size="mini" 
-								:style="classObj.content + classObj.marginLeft3 + classObj.changeButton">
+								<button type="primary" @tap="showPicker(item, index)" size="mini"  class="pickerBtn"
+								:style="classObj.marginLeft3 + classObj.changeButton">
 								{{item.editorName||'更改'}}
 								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, index)" size="mini" 
-							:style="classObj.content + classObj.selectButton">
+							<button type="primary" @tap="showPicker(item, index)" size="mini"  class="pickerBtn"
+							:style="classObj.selectButton">
 							{{item.chooseName||'选择街道'}}
 							</button>
 						</view>
@@ -268,7 +268,7 @@
 						<input type="text" :value="userCode" placeholder="请输入验证码" class="width100 borderBottom1pxf2f2f2" :style="classObj.content" @input="code_change($event)"/>
 					</view>
 					<view class="flex_row_e_c width55" :style="classObj.padding0_3">
-						<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="getCode()" :style="classObj.content + classObj.getcodeButton">{{startCode?codeCount + 's':'获取验证码'}}</button>
+						<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="getCode()" class="pickerBtn" :style="classObj.getcodeButton">{{startCode?codeCount + 's':'获取验证码'}}</button>
 					</view>
 				</view>
 			</view>
@@ -1318,6 +1318,9 @@
 </script>
 
 <style scoped>
+	.pickerBtn{
+		font-size: 60%;
+	}
 	.transition_point6s{
 		transition: all .6s;
 	}

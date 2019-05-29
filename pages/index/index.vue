@@ -25,6 +25,7 @@
 		<button type="primary" @tap="setfocus1()" style="margin-top: 50px;">设置textarea focus</button>
 		<button type="primary" @tap="setfocus2()" style="margin-top: 5px;">设置input focus</button>
 		<button type="primary" @tap="openTest()" style="margin-top: 5px;">打开test页面</button>
+		<button type="primary" @tap="refActiveFc()" style="margin-top: 5px;">外部获取输入</button>
 	</view>
 </template>
 
@@ -543,6 +544,10 @@
 					return i;
 					//可以不使用findIndex方法，但是必须return一个Number
 				}, true);
+			},
+			refActiveFc() {
+				console.log('触发绑定的activeFc方法');
+				this.$refs.inputs.activeFc();
 			}
 		},
 		components: {

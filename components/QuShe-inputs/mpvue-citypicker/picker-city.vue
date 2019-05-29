@@ -24,7 +24,9 @@
 	import _app from '../app.js';
 	export default {
 		data() {
-			let pickerValue = this.pickerValueDefault||[0,0,0];
+			let pickerValue = [0,0,0];
+			if(this.pickerValueDefault instanceof Array && this.pickerValueDefault.length === 3)
+				pickerValue = this.pickerValueDefault;
 			let provinceDataList = provinceData;
 			let cityDataList = cityData[pickerValue[0]];
 			let areaDataList =
@@ -45,7 +47,12 @@
 			height: Number,
 			wH: Number,
 			/* 默认值 */
-			pickerValueDefault: Array,
+			pickerValueDefault: {
+				type: Array,
+				default() {
+					return [];
+				}
+			},
 			/* 主题色 */
 			themeColor: String,
 			fontSize: {

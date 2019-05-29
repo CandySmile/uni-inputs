@@ -32,7 +32,12 @@
 			height: Number,
 			wH: Number,
 			/* 默认值 */
-			pickerValueDefault: Array,
+			pickerValueDefault: {
+				type: Array,
+				default() {
+					return [0,0,0,0];
+				}
+			},
 			/* 主题色 */
 			themeColor: String,
 			fontSize: {
