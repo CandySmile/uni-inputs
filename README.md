@@ -32,6 +32,7 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
+| v6.3 | 1、修改textarea类型的宽高设置单位，详见3.0.2 <br /> 2、修复picker-custom与picker-custom2类型初始值在某些情况下的bug |
 | v6.2 | 1、修复picker类型的按钮会变形问题（定死按钮内的文字大小为所在view的60%, 所以在修改按钮样式时不要修改文字大小，以免变形）<br />2、修复picker类型可能出现初始值报错问题 |
 | v6.1 | 1、修复非自定义组件模式校验失败不能滚动的问题(新增`usingComponents`属性),详见1.与1.1.1<br />2、更改verifyErrorCaolor属性为verifyErrorColor（上个版本没注意）<br />3、修复previewImage的App平台，在HX 1.9.5至1.9.8之间current参数不填报错的问题 |
 | v5.9、6.0 | 1、修复使用多个inputs组件时判断出错问题<br />2、新增校验状态管理verifyStatusSet属性(自定义组件模式下滚动生效),详见1.<br />3、input防抖默认更改为开启|
@@ -899,7 +900,8 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'textarea'`|
-| height| | Number| 屏幕高度*.1| textarea的高度|
+| height| | Number| .1| textarea的高度, 设备高度乘以此数值为textarea的高度|
+| width| | String| `60`| textarea的宽度, 单位是`百分比`, 是按所在view的百分比|
 | placeholder| | String| `'请输入' + this.title`| textarea的placeholder文字|
 | disabled| | Boolean| false| 是否禁用|
 | placeholder_style| | String| | 指定 placeholder 的样式|
@@ -914,7 +916,6 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | selection_start| | Number| -1| 光标起始位置，自动聚集时有效，需与selection-end搭配使用|
 | selection_end| | Number| -1| 光标结束位置，自动聚集时有效，需与selection-start搭配使用|
 | adjust_position| | Boolean| true| 详见官网textarea|
-| width| | String| `60%`| textarea的宽度，自带单位|
 | backgroundColor| | Color| `#F8F8F8`| textarea背景颜色|
 | color| | Color| `#666666`| textarea的文字颜色|
 | filterFc| | Fuction| | `自定义过滤值函数`, 详见3.0.1 input类型的filterFc, `自定义组件模式下APP、小程序不可用`|

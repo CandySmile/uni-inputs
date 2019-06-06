@@ -84,8 +84,9 @@
 						<textarea :value="inputsObj[onLoadData+index]" :placeholder="item.placeholder||'请输入' + item.title"
 						 :placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class" :style="{
 						'font-size': classObj.contentSize + 'px', 
-						'height': !item.auto_height?(item.height||wH*.1)+'px':'', 
-						'width': item.width||'60%', 'background-color': item.backgroundColor||'#F8F8F8', 
+						'height': ((item.height||.1)*wH)+'px', 
+						'width': (item.width||'60') + '%', 
+						'background-color': item.backgroundColor||'#F8F8F8', 
 						'color': item.color||'#666666', 
 						'border': '1px solid ' + (focusObj[onLoadData+index+'focus']?(item.focusBorderStyle||focusStyle.focusBorderStyle||'#999999'):(item.blurBorderStyle||focusStyle.blurBorderStyle||'#f8f8f8'))}"
 						 class="width100 border_radius_4px padding8px transition_point6s" :disabled="item.disabled" :maxlength="item.maxlength||140"
@@ -321,7 +322,7 @@
 <script>
 	import _app from './app.js';
 	import uniIcon from './uni-icon.vue';
-	import pickersDate from './pickers-date.vue';
+	import pickersDate from './picker-date.vue';
 	import pickersCity from './mpvue-citypicker/picker-city.vue';
 	import pickerCustom from './picker-custom.vue';
 	import pickerCustom2 from './picker-custom2.vue';
@@ -550,13 +551,12 @@
 									break;
 								}
 							}
-							if(data) {
-								// inputsObj[itemVariableName] = data;
+							
+							if(data)
 								_this.$set(_this.inputsObj, itemVariableName, data);
-							}else{
-								// inputsObj[itemVariableName] = '';
+							else
 								_this.$set(_this.inputsObj, itemVariableName, '');
-							}
+								
 							break;
 						case 'checkbox':
 							let value = [];
@@ -570,7 +570,6 @@
 									status.push('');
 								}
 							}
-							// inputsObj[itemVariableName] = {value, status: _app.checkbox_status(status)};
 							_this.$set(_this.inputsObj, itemVariableName, {value, status: _app.checkbox_status(status)});
 							break;
 						case 'pics':
@@ -607,11 +606,9 @@
 										data = `${Y}/${M}/${D} ${defaultDate.getHours()}:${defaultDate.getMinutes()}:${defaultDate.getSeconds()}`;
 										break;
 								}
-								// inputsObj[itemVariableName] = data;
 								_this.$set(_this.inputsObj, itemVariableName, data);
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_date.value + i] = ''; //初始化时清空记忆数据
 							}else{
-								// inputsObj[itemVariableName] = '';
 								_this.$set(_this.inputsObj, itemVariableName, '');
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_date.value + i] = ''; //初始化时清空记忆数据
 							}
@@ -633,11 +630,9 @@
 									value: defaultValue,
 									cityCode: areaDataList[defaultValue[2]].value
 								};
-								// inputsObj[itemVariableName] = data;
 								_this.$set(_this.inputsObj, itemVariableName, data);
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
 							}else{
-								// inputsObj[itemVariableName] = null;
 								_this.$set(_this.inputsObj, itemVariableName, null);
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
 							}
@@ -692,11 +687,9 @@
 										data.result.push(d[v[i]]);
 									}
 								}
-								// inputsObj[itemVariableName] = data;
 								_this.$set(_this.inputsObj, itemVariableName, data);
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_custom.value + i] = null;
 							}else{
-								// inputsObj[itemVariableName] = '';
 								_this.$set(_this.inputsObj, itemVariableName, '');
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_custom.value + i] = null;
 							}
@@ -751,21 +744,17 @@
 										data.result.push(d[v[i]]);
 									}
 								}
-								// inputsObj[itemVariableName] = data;
 								_this.$set(_this.inputsObj, itemVariableName, data);
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_custom2.value + i] = null;
 							}else{
-								// inputsObj[itemVariableName] = '';
 								_this.$set(_this.inputsObj, itemVariableName, '');
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_custom2.value + i] = null;
 							}
 							break;
 						case 'switch':
-							// inputsObj[itemVariableName] = item.defaultValue || false;
 							_this.$set(_this.inputsObj, itemVariableName, item.defaultValue || false);
 							break;
 						case 'slider':
-							// inputsObj[itemVariableName] = item.defaultValue || item.min || 0;
 							_this.$set(_this.inputsObj, itemVariableName, item.defaultValue || item.min || 0);
 							break;
 						case 'picker-provincialStreet':
@@ -788,11 +777,9 @@
 									value: defaultValue,
 									cityCode: areaDataList[defaultValue[2]].value
 								};
-								// inputsObj[itemVariableName] = data;
 								_this.$set(_this.inputsObj, itemVariableName, data);
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
 							}else{
-								// inputsObj[itemVariableName] = null;
 								_this.$set(_this.inputsObj, itemVariableName, null);
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
 							}

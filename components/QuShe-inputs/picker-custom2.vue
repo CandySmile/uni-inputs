@@ -89,16 +89,6 @@
 			let value = [];
 			if(this.pickerValueDefault instanceof Array && this.pickerValueDefault)
 				value = this.pickerValueDefault;
-			else{
-				if(this.linkage)
-					for(let i = 0; i < this.linkageNum; i++) {
-						value.push(0);
-					}
-				else
-					this.itemArray.forEach(item=>{
-						value.push(0);
-					});
-			}
 			return {
 				value,
 				classObj: {
@@ -138,7 +128,7 @@
 					data.result=[];
 					for(let i = 0; i < datas.length; i++) {
 						let d = datas[i];
-						data.result.push(d[v[i]]);
+						data.result.push(d[(v[i] || 0)]);
 					}
 				}
 				_this.$emit('getCustom', {data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_custom2.name});
