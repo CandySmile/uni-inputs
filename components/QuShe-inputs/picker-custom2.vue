@@ -131,7 +131,7 @@
 						data.result.push(d[(v[i] || 0)]);
 					}
 				}
-				_this.$emit('getCustom', {data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_custom2.name});
+				_this.$emit('getCustom', {newData: data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_custom2.name});
 			},
 			voidFc() {}
 		},

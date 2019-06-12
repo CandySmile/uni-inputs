@@ -87,7 +87,7 @@
 					value: this.pickerValue,
 					cityCode: this._getCityCode()
 				};
-				this.$emit('getCity', {data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_city.name});
+				this.$emit('getCity', {newData: data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_city.name});
 			},
 			_getLabel() {
 				let pcikerLabel =

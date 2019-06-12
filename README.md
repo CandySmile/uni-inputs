@@ -1,4 +1,4 @@
-## 可直接拖进项目运行
+## 下载示例项目 可直接拖进项目运行
 
 ## 作者想说
 ```
@@ -32,7 +32,8 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
-| v6.3 | 1、修改textarea类型的宽高设置单位，详见3.0.2 <br /> 2、修复picker-custom与picker-custom2类型初始值在某些情况下的bug |
+| v6.4 | 因为有些小伙伴有自己的特殊需求，所以更新了如下内容: <br />1、inputs新增绑定事件inputsChange, inputs内的任何类型的值变更时的回调, 并且所有类型都增加了customId属性，可以用于inputsChange回调判断, 详见1.<br />2、inputs内新增setInputsValue方法, 用于从外部设置inputs内部值的方法，可以使用ref调用，详见2.<br />3、setFocus方法略有改动，详见2.<br /> |
+| v6.3 | 1、修改textarea类型的宽高设置单位，详见3.0.2 <br /> 2、修复picker-custom与picker-custom2类型初始值在某些情况下的bug <br />3、修改了pickers-date文件名字为picker-date.vue, 覆盖的时候看下请把原先的pickers-date文件删除 |
 | v6.2 | 1、修复picker类型的按钮会变形问题（定死按钮内的文字大小为所在view的60%, 所以在修改按钮样式时不要修改文字大小，以免变形）<br />2、修复picker类型可能出现初始值报错问题 |
 | v6.1 | 1、修复非自定义组件模式校验失败不能滚动的问题(新增`usingComponents`属性),详见1.与1.1.1<br />2、更改verifyErrorCaolor属性为verifyErrorColor（上个版本没注意）<br />3、修复previewImage的App平台，在HX 1.9.5至1.9.8之间current参数不填报错的问题 |
 | v5.9、6.0 | 1、修复使用多个inputs组件时判断出错问题<br />2、新增校验状态管理verifyStatusSet属性(自定义组件模式下滚动生效),详见1.<br />3、input防抖默认更改为开启|
@@ -111,13 +112,19 @@
 	:focusStyle="focusStyle" 
 	:fontSizeScaleSet="fontSizeScaleSet"
 	:verifyStatusSet="verifyStatusSet"
-	:usingComponents="usingComponents"/>
+	:usingComponents="usingComponents"
+	@inputsChange="inputsChange($event)"/>
 
     
 
     <button type="primary" @tap="setfocus1()" style="margin-top: 50px;">设置textarea focus</button>
-    <button type="primary" @tap="setfocus2()" style="margin-top: 5px;">设置input focus</button>
-    <button type="primary" @tap="openTest()" style="margin-top: 5px;">打开test页面</button>
+		<button type="primary" @tap="setfocus2()" style="margin-top: 5px;">设置input focus</button>
+		<button type="primary" @tap="setInputsValue1()" style="margin-top: 5px;">外部指定inputs内部值示例1</button>
+		<button type="primary" @tap="setInputsValue2()" style="margin-top: 5px;">外部指定inputs内部值示例2</button>
+		<button type="primary" @tap="setInputsValue3()" style="margin-top: 5px;">外部指定inputs内部值示例3</button>
+		<button type="primary" @tap="setInputsValue4()" style="margin-top: 5px;">外部指定inputs内部值示例4</button>
+		<button type="primary" @tap="openTest()" style="margin-top: 5px;">打开test页面</button>
+		<button type="primary" @tap="refActiveFc()" style="margin-top: 5px;">外部获取输入</button>
   </view>
 </template>
 ```
@@ -639,6 +646,34 @@
 					return i;
 					//可以不使用findIndex方法，但是必须return一个Number
 				}, true);
+			},
+			setInputsValue1() {
+				this.$refs.inputs.setInputsValue(3, false);
+			},
+			setInputsValue2() {
+				this.$refs.inputs.setInputsValue('textarea', 'setInputsValue示例2所设置的值');
+			},
+			setInputsValue3() {
+				this.$refs.inputs.setInputsValue((inputsArray) => {
+					let i = inputsArray.findIndex(item => item.title === 'textarea') //findIndex方法 返回符合测试条件的第一个数组元素索引，如果没有符合条件的则返回 -1
+					return i;
+					//可以不使用findIndex方法，但是必须return一个Number
+				}, 'setInputsValue示例3所设置的值');
+			},
+			setInputsValue4() {
+				this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的值', ()=>{
+					uni.showToast({
+						title: '错误回调：找不到相应的index哦',
+						icon: 'none'
+					})
+				});
+			},
+			refActiveFc() {
+				console.log('触发绑定的activeFc方法');
+				this.$refs.inputs.activeFc();
+			},
+			inputsChange(res) {
+				console.log('pickerChange绑定事件回调:' + JSON.stringify(res));
 			}
 		},
 		components: {
@@ -675,7 +710,8 @@
 | focusStyle| | Object| | 控制input或textarea类型focus或blur时的边框颜色, 详见1.0.9|
 | fontSizeScaleSet| | Object| | 控制title和content的字体大小系数, 详见1.1.0|
 | verifyStatusSet| | Object| | 控制校验状态, 详见1.1.1|
-| usingComponents| | Boolean| `false`| 编译模式为自定义组件模式，则建议填此项为true(v6.1新增) |
+| usingComponents(v6.1新增)| | Boolean| `false`| 编译模式为自定义组件模式，则建议填此项为true |
+| @inputsChange(v6.4新增)| | Function| | inputs内某类型的值更改时的回调, 详见1.1.2 |
 注：titleFontSize、titleFontColor、contentFontSize、changeReSet、ruleArray等属性已废弃
 
 ### 1.0.1 animationType属性说明
@@ -754,7 +790,6 @@
 
 注：fontSizeScaleSet设置的字体大小优先级小于titleSet与contentSet中设置的字体大小
 
-
 ### 1.1.1 verifyStatusSet属性说明(5.9新增)
 | 值| 值类型| 默认值| 说明|
 |---|---|---|---|
@@ -765,6 +800,20 @@
 | verifyErrorColor| Color| `rgba(255,255,0,.7)`|  当该项校验函数失败时，将边框设置为此颜色 |
 | errNullColor| Color| `rgba(245,16,92,.7)`| 当该项判断为空时，将边框设置为此颜色 |
 
+### 1.1.2 @inputsChange回调说明(6.4新增)
+```
+inputs内任何类型的值变更时都会触发此回调, 该方法接收一个所变更类型的对象，该对象有如下参数:
+```
+
+| 值| 值类型| 默认值| 说明|
+|---|---|---|---|
+| type| String| |  类型 |
+| title| String| |  标题名称 |
+| customId| Any| |  自定义标识 |
+| newData| | |  变更后的值 |
+| oldData| | |  变更前的值 |
+| index| Number | | inputsArray中的下标 |
+| picsIndex| Number | | 若为pic类型，则返回所在项的二维数组下标(第几张图片) |
 
 ---
 
@@ -776,9 +825,10 @@
 | setFocus| 设置指定input、textarea类型的focus值| 见下方示例|
 | picker_hideFc| 关闭所有弹出的picker| |
 | inputs_reSet| 重置inputs为初始化| |
+| setInputsValue(6.4新增)| 设置inputs内部的值, 暂不支持pics类型赋值| |
 
 ## 2.0.1 setFocus示例
-#### 传入参数（Number | Function）, focus值(Boolean)
+#### 传入参数:（Number | String | Function）, focus值(Boolean), 错误回调(Function)
 ```javascript
 //setFocus示例1
 this.$refs.inputs.setFocus(2, true);
@@ -795,6 +845,37 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 }, true);
 ```
 
+## 2.0.2 setInputsValue示例(暂不支持pic类型赋值)
+#### 传入参数:（Number | String | Function）, 值(Any), 错误回调(Function)
+```javascript
+//setInputsValue示例1
+this.$refs.inputs.setInputsValue(3, false);
+```
+
+```javascript
+//setInputsValue示例2
+this.$refs.inputs.setInputsValue('textarea', 'setInputsValue示例2所设置的值');
+```
+
+```javascript
+//setInputsValue示例3
+this.$refs.inputs.setInputsValue((inputsArray) => {
+	let i = inputsArray.findIndex(item => item.title === 'textarea') //findIndex方法 返回符合测试条件的第一个数组元素索引，如果没有符合条件的则返回 -1
+	return i;
+	//可以不使用findIndex方法，但是必须return一个Number
+}, 'setInputsValue示例3所设置的值');
+```
+
+
+```javascript
+//setInputsValue示例4
+this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的值', ()=>{
+	uni.showToast({
+	  title: '错误回调：找不到相应的index哦',
+	  icon: 'none'
+	})
+});
+```
 
 # 3. inputsArray详解
 ## `inputsArray项内公共属性`
@@ -810,6 +891,7 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | segmentationTitle| | String| | 分割大标题|
 | border_bottom| | String| | 下边框，例 `'1px solid #F2F2F2'`|
 | border_top| | String| | 上边框，例 `'1px solid #F2F2F2'`|
+| customId| |Any| | 自定义标识, 会在@inputsChange回调中返回 |
 
 ##  目前共十一种类型
 
@@ -842,7 +924,7 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | verifyType| | String| | `内置正则校验`, 可取值见下方, 优先级大于自定义的verifyFc, 弥补自定义组件模式不能使用verifyFc的缺陷 |
 | focusBorderStyle| | Color| `#999999`| input或textarea类型focus时的边框颜色, 优先级大于focusStyle |
 | blurBorderStyle| |Color| `#f8f8f8`| input或textarea类型blur时的边框颜色, 优先级大于focusStyle |
-| customId| |all| | phone属性为true时可填写该属性，用来控制发送验证码发法的属性赋值走向 |
+| customId| |Any| | phone属性为true时可填写该属性，用来控制发送验证码发法的属性赋值走向 |
 | filterType| | String| | `内置过滤函数`, 可取值见下方, 优先级大于自定义的verifyFc, 弥补自定义组件模式不能使用filterFc的缺陷 |
 注：最好看源码对照官网属性
 
@@ -936,7 +1018,7 @@ this.$refs.inputs.setFocus((inputsArray)=>{ //可以接收一个参数也可以�
 | title| | String| | 该项图片的标题|
 | ~~cssMode（废弃，统一wrap布局）~~| | String| `wrap`| 项内布局方式|
 | clearColor| | Color| `#f5105c`| 清除按钮颜色|
-| customId| |all| | 用来控制上传文件发法的属性赋值走向,在app.js文件中的UpLoadFile方法内判断此属性 |
+| customId| |Any| | 用来控制上传文件发法的属性赋值走向,在app.js文件中的UpLoadFile方法内判断此属性 |
 
 #### 3.0.3.0.1 pics的itemArray属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|

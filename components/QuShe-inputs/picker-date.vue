@@ -134,7 +134,7 @@
 					(`${Y[dateValue[0]]}/${dateValue[1]+1}/${dateValue[2]+1}`) : (_this.mode == _app.picker_date_obj.time) ?
 					(`${dateValue[0]}:${dateValue[1]}:${dateValue[2]}`) :
 					(`${Y[dateValue[0]]}/${dateValue[1]+1}/${dateValue[2]+1} ${dateValue[3]}:${dateValue[4]}:${dateValue[5]}`);
-				_this.$emit('getDate',{data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_date.name});
+				_this.$emit('getDate',{newData: data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_date.name});
 			},
 			voidFc() {}
 		},

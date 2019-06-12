@@ -85,7 +85,11 @@ const filterTypeObj = {	// 内置过滤函数，可根据需求自行添加拓�
 const interfaces = {
 	upLoadImg: '', // 服务器地址
 };
+
+const inputsChangeEventName = 'inputsChange';
+
 const _app = {
+	inputsChangeEventName, // inputs内所有类型变更时的emit事件名称
 	picker_date_obj: {
 		dateTime,
 		date,

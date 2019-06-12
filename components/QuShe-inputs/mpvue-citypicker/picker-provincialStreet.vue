@@ -101,7 +101,7 @@
 					value: this.pickerValue,
 					cityCode: this._getCityCode()
 				};
-				this.$emit('getProvincialStreet', {data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_provincialStreet.name});
+				this.$emit('getProvincialStreet', {newData: data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_provincialStreet.name});
 			},
 			_getLabel() {
 				let pcikerLabel =

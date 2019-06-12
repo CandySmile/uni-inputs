@@ -73,8 +73,8 @@
 						<checkbox-group @change="checkbox_change($event, index)" class="width100 wrap" :class="[classObj.contentLayout]">
 							<label class="fontColor666666 flex_row_none_c box-sizing-border-box" :style="classObj.content + classObj.padding1 + classObj.marginRight2"
 							 v-for="(checkboxItem, checkboxIndex) in item.itemArray" :key="checkboxIndex">
-								<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index]&&inputsObj[onLoadData+index].status&&inputsObj[onLoadData+index].status[checkboxIndex]" :disabled="checkboxItem.disabled"
-								 :color="checkboxItem.color||item.color" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
+								<checkbox :value="checkboxItem.value" :checked="inputsObj[onLoadData+index]&&inputsObj[onLoadData+index].status&&inputsObj[onLoadData+index].status[checkboxIndex]"
+								 :disabled="checkboxItem.disabled" :color="checkboxItem.color||item.color" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
 								<view class="flex_row_none_c">{{checkboxItem.name}}</view>
 							</label>
 						</checkbox-group>
@@ -853,8 +853,8 @@
 				this.$emit('chaildOpenEvent', value);
 			},
 			checkbox_change({detail: {value}}, index) { //checkbox赋值方法
-				let _this = this;
-				let checkboxArray = _this.inputsArray[index].itemArray;
+				let checkboxArray = this.inputsArray[index].itemArray;
+				let oldData = this.inputsObj[this.onLoadData + index];
 				let newArray = [];
 				let oldArray = [];
 				if(checkboxArray.length>0&&value.length>0) {
@@ -868,7 +868,9 @@
 							newArray[num] = item;
 					});
 				}
-				_this.$set(_this.inputsObj, _this.onLoadData + index, {value, status: _app.checkbox_status(newArray)})
+				let newData = {value, status: _app.checkbox_status(newArray)};
+				this.$set(this.inputsObj, this.onLoadData + index, newData);
+				this._emitInputsChangeEvent({newData, oldData, index});
 			},
 			inputs_change({detail: {value}}, index, filterFc, isInput) { // 用户输入时，根据index赋值
 				//console.log(e.detail.value);
@@ -902,12 +904,15 @@
 					if(d[index].filterType&&_app.filterTypeObj[d[index].filterType]&&typeof(_app.filterTypeObj[d[index].filterType])=='function') {
 						this.input_filter_change(value, index, _app.filterTypeObj[d[index].filterType]);
 					}else{
+						let oldData = this.inputsObj[this.onLoadData + index];
 						this.$set(this.inputsObj, this.onLoadData + index, value);
+						this._emitInputsChangeEvent({newData: value, oldData, index});
 					}
 				}
 			},
 			input_filter_change(value, index, filterFc) {
 				let val = filterFc(value);
+				let oldData = this.inputsObj[this.onLoadData + index];
 				if(val != value) {
 					new Promise((reslove,reject)=>{
 						this.$delete(this.inputsObj, this.onLoadData + index);
@@ -915,34 +920,38 @@
 					})
 					.then(()=>{
 						this.$set(this.inputsObj, this.onLoadData + index, val);
+						this._emitInputsChangeEvent({newData: val, oldData, index});
 					})
 				}else{
 					this.$set(this.inputsObj, this.onLoadData + index, val);
+					this._emitInputsChangeEvent({newData: val, oldData, index});
 				}
 			},
 			picker_change(res) { //picker类型选择后赋值 
+				res.oldData = this.inputsObj[this.onLoadData + res.index];
 				console.log('pickerValue：' + JSON.stringify(res));
-				this.inputsObj[this.onLoadData + res.index] = res.data;
+				this.inputsObj[this.onLoadData + res.index] = res.newData;
 				switch (res.type){		// 该项picker的value记忆
 					case _app.pickerChoosedType.pickerChoosedType_date.name:
-						this.pickerObj[_app.pickerChoosedType.pickerChoosedType_date.value+res.index] = res.data;
+						this.pickerObj[_app.pickerChoosedType.pickerChoosedType_date.value+res.index] = res.newData;
 						break;
 					case _app.pickerChoosedType.pickerChoosedType_city.name:
-						this.pickerObj[_app.pickerChoosedType.pickerChoosedType_city.value+res.index] = res.data.value;
+						this.pickerObj[_app.pickerChoosedType.pickerChoosedType_city.value+res.index] = res.newData.value;
 						break;
 					case _app.pickerChoosedType.pickerChoosedType_custom.name:
-						this.pickerObj[_app.pickerChoosedType.pickerChoosedType_custom.value+res.index] = res.data.value;
+						this.pickerObj[_app.pickerChoosedType.pickerChoosedType_custom.value+res.index] = res.newData.value;
 						break;
 					case _app.pickerChoosedType.pickerChoosedType_custom2.name:
-						this.pickerObj[_app.pickerChoosedType.pickerChoosedType_custom2.value+res.index] = res.data.value;
+						this.pickerObj[_app.pickerChoosedType.pickerChoosedType_custom2.value+res.index] = res.newData.value;
 						break;
 					case _app.pickerChoosedType.pickerChoosedType_provincialStreet.name:
-						this.pickerObj[_app.pickerChoosedType.pickerChoosedType_provincialStreet.value+res.index] = res.data.value;
+						this.pickerObj[_app.pickerChoosedType.pickerChoosedType_provincialStreet.value+res.index] = res.newData.value;
 						break;
 					default:
 						break;
 				}
 				this.picker_hideFc();
+				this._emitInputsChangeEvent(res);
 			},
 			inputTap(type, index) { //input点击事件
 				switch (type){
@@ -1178,15 +1187,20 @@
 			},
 			chooseImg(index, picsIndex) { //选择图片
 				if(this.picsObj[this.onLoadData + index + this.onLoadData + picsIndex]) return;
+				let oldData = this.picsObj[this.onLoadData + index + this.onLoadData + picsIndex];
 				uni.chooseImage({
 					success: res => {
 						// console.log(res.tempFilePaths[0]);
-						this.$set(this.picsObj, this.onLoadData + index + this.onLoadData + picsIndex, res.tempFilePaths[0]);
+						let newData = res.tempFilePaths[0];
+						this.$set(this.picsObj, this.onLoadData + index + this.onLoadData + picsIndex, newData);
+						this._emitInputsChangeEvent({newData, oldData, index, picsIndex});
 					}
 				})
 			},
 			clearPic(index, picsIndex) { //清除图片
+				let oldData = this.picsObj[this.onLoadData + index + this.onLoadData + picsIndex];
 				this.picsObj[this.onLoadData + index + this.onLoadData + picsIndex] = '';
+				this._emitInputsChangeEvent({newData: '', oldData, index, picsIndex});
 			},
 			showImg(imgPath) { //大图预览选中的图片
 				_app.previewImage(imgPath);
@@ -1209,9 +1223,12 @@
 				let o = {};
 				this.$set(this, 'focusObj', o);
 			},
-			setFocus(param, val) {
+			setFocus(param, val, fcb) {
 				let i;
 				switch (typeof(param)){
+					case 'string':
+						i = this.inputsArray.findIndex(item=>item.title === param);
+						break;
 					case 'number':
 						i = param;
 						break;
@@ -1220,18 +1237,22 @@
 						break;
 					default:
 						console.log('setFocus方法传入的参数不正确');
+						if(fcb&&typeof(fcb)==='function') fcb();
 						return;
 						break;
 				}
 				
-				if(typeof(i)=='number'&&i>=0) this.$set(this.focusObj, this.onLoadData + i + 'focus', val); else console.log('setFocus方法参数找不到或错误')
+				if(typeof(i)=='number'&&i>=0) 
+					this.$set(this.focusObj, this.onLoadData + i + 'focus', val); 
+				else 
+					if(fcb&&typeof(fcb)==='function') fcb();
 			},
-			change_verifyStatus(index, statu, index2) { //0:none, 1:error, 2:warning
+			change_verifyStatus(index, status, index2) { //0:none, 1:error, 2:warning
 				let verifyStatusSet = this.verifyStatusSet;
 				if(!verifyStatusSet.openVerifyStatus) return;
 				let c = '';
 				let ifnotSuccess = false;
-				switch (statu){
+				switch (status){
 					case 0: c = 'rgba(0,0,0,0)'; break;
 					case 1: c = verifyStatusSet.verifyErrorColor||'rgba(255,255,0,.7)'; ifnotSuccess = true; break;
 					case 2: c = verifyStatusSet.errNullColor||'rgba(245,16,92,.7)'; ifnotSuccess = true; break;
@@ -1299,6 +1320,38 @@
 				}).catch((err)=>{
 					console.log(err);
 				})
+			},
+			setInputsValue(param, val, fcb) {// 能够筛选出index的title或者function或者number， 值， 错误回调
+				let index;
+				switch (typeof(param)){
+					case 'string':
+						index = this.inputsArray.findIndex(item=>item.title === param);
+						break;
+					case 'function':
+						index = param(this.inputsArray);
+						break;
+					case 'number':
+						index = param;
+						break;
+					default:
+						console.log('setInputsValue方法中不支持的类型');
+						if(fcb&&typeof(fcb)==='function') fcb();
+						break;
+				}
+				if(typeof(index)==='number'&&index >= 0)
+					this.$set(this.inputsObj, this.onLoadData + index, val);
+				else
+					if(fcb&&typeof(fcb)==='function') fcb();
+			},
+			_emitInputsChangeEvent(obj) {	//绑定的inputsChange回调
+				let { index } = obj;
+				obj = {
+					...obj,
+					type: (obj.type?obj.type:this.inputsArray[index].type)||'input',
+					title: this.inputsArray[index].title,
+					customId: this.inputsArray[index].customId
+				}
+				this.$emit(_app.inputsChangeEventName, obj)
 			}
 		}
 	}
