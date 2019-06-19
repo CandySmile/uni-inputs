@@ -60,7 +60,7 @@
 				default: 10
 			},
 			confirmName: String,
-			index: Number,
+			index: String,
 			confirmStyle: String
 		},
 		methods: {

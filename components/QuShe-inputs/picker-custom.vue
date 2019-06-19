@@ -9,7 +9,7 @@
 					<view class="flex_row_c_c" v-for="(item,index) in itemArray" :key="index">{{item[steps.steps_1_value]}}</view>
 				</picker-view-column>
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray[value[0]][steps.steps_2_item]" :key="index">{{item[steps.steps_2_value]||item}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemArray[value[0]||0][steps.steps_2_item]" :key="index">{{item[steps.steps_2_value]||item}}</view>
 				</picker-view-column>
 			</block>
 			<block v-else-if="linkageNum==3">
@@ -17,10 +17,10 @@
 					<view class="flex_row_c_c" v-for="(item,index) in itemArray" :key="index">{{item[steps.steps_1_value]}}</view>
 				</picker-view-column>
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray[value[0]][steps.steps_2_item]" :key="index">{{item[steps.steps_2_value]}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemArray[value[0]||0][steps.steps_2_item]" :key="index">{{item[steps.steps_2_value]}}</view>
 				</picker-view-column>
 				<picker-view-column>
-					<view class="flex_row_c_c" v-for="(item,index) in itemArray[value[0]][steps.steps_2_item][value[1]][steps.steps_3_item]" :key="index">{{item[steps.steps_3_value]||item}}</view>
+					<view class="flex_row_c_c" v-for="(item,index) in itemArray[value[0]||0][steps.steps_2_item][value[1]||0][steps.steps_3_item]" :key="index">{{item[steps.steps_3_value]||item}}</view>
 				</picker-view-column>
 			</block>
 		</block>
@@ -58,7 +58,7 @@
 				default: 10
 			},
 			confirmName: String,
-			index: Number,
+			index: String,
 			indicatorStyle: String,
 			height: Number,
 			wH: Number,
@@ -93,6 +93,9 @@
 				let data = {result:{}, value:v};
 				let steps = _this.steps;
 				if(_this.linkage) {
+					for(let i = 0; i < _this.linkageNum; i++) {
+						if(!v[i]) v[i] = 0;
+					}
 					if(_this.linkageNum == 2) {		//二级联动
 						data.result.steps1 = datas[v[0]]
 						data.result.steps2 = datas[v[0]][steps.steps_2_item][v[1]];
