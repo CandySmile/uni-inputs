@@ -81,10 +81,6 @@ const filterTypeObj = { // 内置过滤函数，可根据需求自行添加拓�
 	}
 };
 
-const interfaces = {
-	upLoadImg: 'http://47.110.255.237/a/ck/interface/uploadPic', // 服务器地址
-};
-
 const eventNames = {
 	inputsChange: 'inputsChange'
 };
@@ -101,6 +97,10 @@ const setValueType = {
 };
 const filterParamsArrayType = {
 	setInputsValueFc: 'setInputsValueFc'
+};
+
+const interfaces = {
+	upLoadImg: '', // 服务器地址
 };
 
 const _app = {
@@ -143,11 +143,8 @@ const _app = {
 				break;
 			default: //若无判断需求可直接写在这里
 				url = interfaces.upLoadImg;
-				formData = {
-					shopId: '',
-					userId: ''
-				};
-				name = 'test';
+				formData = {};
+				name = '';
 				break;
 		}
 		if (!url) {
