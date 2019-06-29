@@ -22,6 +22,8 @@
 3.0.9 城市选择
 3.1.2 省市区乡镇街道
 3.1.0、3.1.1 picker可联动自定义
+3.1.4 editor(官方示例)(v6.9新增)
+3.1.5 infinitePics 无限上传图片(v6.9新增)
 等类型的快速开发，自动判断、自动取值，只要你填写好每项的类型数据，就可以很方便的开发啦！
 甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
 ```
@@ -32,7 +34,7 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
-| v6.5`大更新` | 1、新增`固定变量名模式`, 所谓固定变量名模式就是inputsArray中的每一项都携带一个唯一的自定义变量名属性--`variableName`, 在此模式下，当inputsArray长度动态改变时将不会对已有值的项初始化, 详见4.0.1, 示例详见示例项目中的动态增删inputsArray示例<br /><br />2、更新示例项目为详细示例 <br /><br />3、inputs的字体大小更改为根据屏幕宽度而定,默认字体大小更改为屏幕宽度*.028<br /><br />4、inputsArray中新增公共属性hide, 用于隐藏<br /><br />5、inputs新增otherSet属性，目前验证码设置、必填标识设置，详见1.  <br /><br />6、优化inputs初始渲染效果<br /><br />7、优化部分ref调用方法中的传参方式<br /><br />8、ruleSet新增部分属性, 详见1.0.4|
+| v6.8、6.9|  1、新增editor类型-官方示例, 详见3.1.4,在下没用过editor，只是搬了官方的示例过来，若有什么建议可以提哦~, ref中相应增加了外部设置editor内容的方法 <br />2、新增infinitePics类型-无限上传图片(支持一次性选择多张图片，加强大图预览),详见3.1.5 <br />3、废弃verifyStatusSet中的inputsId属性，直接从inputs传入, 详见1.<br />4、input新增customTap属性与customTapIcon属性，用于自定义input图标点击事件（例如扫码）， 详见3.0.1  |
 |    ……    |    详细历次更新说明请移步至文档底部       |
 
 
@@ -71,6 +73,7 @@
 | usingComponents(v6.1新增)| | Boolean| `false`| 编译模式为自定义组件模式，则建议填此项为true |
 | @inputsChange(v6.4新增)| | Function| | inputs内某类型的值更改时的回调, 详见1.1.2 |
 | otherSet(v6.5新增)| | Object| | 其他设置, 详见1.1.3 |
+| inputsId(v6.8新增)| | String| | inputs的id属性值 |
 注：titleFontSize、titleFontColor、contentFontSize、changeReSet、ruleArray等属性已废弃
 
 ### 1.0.1 animationType属性说明
@@ -155,7 +158,7 @@
 | 值| 值类型| 默认值| 说明|
 |---|---|---|---|
 | openVerifyStatus| Boolean| |  是否开启校验管理 |
-| inputsId| String| |  引入的inputs组件的id属性值 (自定义组件模式下，若需开启滚动则APP、小程序必填) |
+| ~~inputsId~~直接从inputs传入| String| |  引入的inputs组件的id属性值 (自定义组件模式下，若需开启滚动则APP、小程序必填) |
 | openScroll| Boolean| |  校验失败时是否滚动至校验失败位置，`APP、wx小程序在自定义组件模式下，建议设置1.中的usingComponents为true, 否则会多一次执行` |
 | openChangeBorderColor| Boolean| |  校验失败时是否改变边框颜色 |
 | verifyErrorColor| Color| `rgba(255,255,0,.7)`|  当该项校验函数失败时，将边框设置为此颜色 |
@@ -314,6 +317,8 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 | blurBorderStyle| |Color| `#f8f8f8`| input或textarea类型blur时的边框颜色, 优先级大于focusStyle |
 | customId| |Any| | phone属性为true时可填写该属性，用来控制发送验证码发法的属性赋值走向 |
 | filterType| | String| | `内置过滤函数`, 可取值见下方, 优先级大于自定义的verifyFc, 弥补自定义组件模式不能使用filterFc的缺陷 |
+| customTap(v6.9新增)| | Boolean| false| 自定义图标点击事件, 由app.js中的inputCustomTapFc方法控制，并由inputCustomTapCatchFc控制异常|
+| customTapIcon(v6.9新增)| | String| | 自定义图标点击事件的图标名称，目前使用uni-icon的字体图标，有需要的自行修改|
 注：最好看源码对照官网属性
 
 #### 3.0.1.0.1 filterFc示例  3.8更新
@@ -980,6 +985,26 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 
 注：text类型在取值时不会判断该项，但是会占一个位子
 
+### 3.1.4 editor 官方editor组件  `支持度随官方editor` （v6.9新增）
+
+| 属性名| 是否必填| 值类型| 默认值| 说明|
+|------|----|----|----|-------|
+| type| 是| String| | 传固定值 `type: 'editor'`|
+| title| | String| | editor类型不会展示title但是仍需传入|
+| defaultValue| | |  | 初始内容|
+| defaultValueType| | String| delta| 初始值类型html或delta|
+
+注：editor类型是唯一的，只能有一个, 并且只在APP、微信小程序中的自定义组件模式下有效，需传入usingComponents属性为true
+
+### 3.1.5 infinitePics 无限上传图片（v6.9新增）
+
+| 属性名| 是否必填| 值类型| 默认值| 说明|
+|------|----|----|----|-------|
+| type| 是| String| | 传固定值 `type: 'infinitePics'`|
+| max| | Number| 无限| 图片数量的限制数值|
+
+注：支持多选择，加强大图预览
+
 ---
 
 # 4.其他
@@ -1597,7 +1622,9 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 
 | 版本号 | 更新说明 |
 |--------|:----------|
-| v6.5`大更新` | 1、新增`固定变量名模式`, 所谓固定变量名模式就是inputsArray中的每一项都携带一个唯一的自定义变量名属性--`variableName`, 在此模式下，当inputsArray长度动态改变时将不会对已有值的项初始化<br /><br />2、inputs的字体大小更改为根据屏幕宽度而定,默认字体大小更改为屏幕宽度*.028<br /><br />3、inputsArray中新增公共属性hide, 用于隐藏<br /><br />4、inputs新增otherSet属性，目前有ruleErr、securityCodePlaceholder、getCodeSet等属性  |
+| v6.7|  修复inputTap点击事件    |
+| v6.6|  咳咳，下载过6.5的就不用下载了，只是发现上传图片的测试地址没删就再上传一遍    |
+| v6.5`大更新` | 1、新增`固定变量名模式`, 所谓固定变量名模式就是inputsArray中的每一项都携带一个唯一的自定义变量名属性--`variableName`, 在此模式下，当inputsArray长度动态改变时将不会对已有值的项初始化, 详见4.0.1, 示例详见示例项目中的动态增删inputsArray示例<br /><br />2、更新示例项目为详细示例 <br /><br />3、inputs的字体大小更改为根据屏幕宽度而定,默认字体大小更改为屏幕宽度*.028<br /><br />4、inputsArray中新增公共属性hide, 用于隐藏<br /><br />5、inputs新增otherSet属性，目前验证码设置、必填标识设置，详见1.  <br /><br />6、优化inputs初始渲染效果<br /><br />7、优化部分ref调用方法中的传参方式<br /><br />8、ruleSet新增部分属性, 详见1.0.4|
 | v6.4 | 因为有些小伙伴有自己的特殊需求，所以更新了如下内容: <br />1、inputs新增绑定事件inputsChange, inputs内的任何类型的值变更时的回调, 并且所有类型都增加了customId属性，可以用于inputsChange回调判断, 详见1.<br />2、inputs内新增setInputsValue方法, 用于从外部设置inputs内部值的方法，可以使用ref调用，详见2.<br />3、setFocus方法略有改动，详见2.<br /> |
 | v6.3 | 1、修改textarea类型的宽高设置单位，详见3.0.2 <br /> 2、修复picker-custom与picker-custom2类型初始值在某些情况下的bug <br />3、修改了pickers-date文件名字为picker-date.vue, 覆盖的时候看下请把原先的pickers-date文件删除 |
 | v6.2 | 1、修复picker类型的按钮会变形问题（定死按钮内的文字大小为所在view的60%, 所以在修改按钮样式时不要修改文字大小，以免变形）<br />2、修复picker类型可能出现初始值报错问题 |

@@ -8,6 +8,8 @@
 		ifCode
 		@chaildOpenEvent="openWin" 
 		@activeFc="activeFc" 
+		@inputTap="inputTap"
+		usingComponents
 		:onLoadData="onLoadData"/>
 	</view>
 </template>
@@ -110,7 +112,10 @@
 						ignore: true, //是否可忽略该值(判断时此项值可以为空)
 						defaultValue: "今天也要加油鸭~",
 						tapClear: true, //input一键清除功能
-						password: true, //input密码类型
+						// password: true, //input密码类型
+						customTap: true,
+						customTapIcon: 'scan',
+						customId: 'scan',
 						icon: "search", //input左边图标
 						iconColor: "#c0ebd7", //input图标颜色
 						filterFc: function(value) { //input值过滤函数
@@ -483,6 +488,9 @@
 					title: "获取输入成功"
 				})
 				console.log(JSON.stringify(res));
+			},
+			inputTap(res){
+				console.log('input点击事件: ' + JSON.stringify(res));
 			}
 		}
 	}

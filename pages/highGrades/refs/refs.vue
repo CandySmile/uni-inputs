@@ -22,6 +22,10 @@
 					{
 						name: 'ref从外部触发inputs内部activeFc方法',
 						path: '/pages/highGrades/refsitems/refActiveFc/refActiveFc'
+					},
+					{
+						name: 'ref从外部设置editor内容的方法',
+						path: '/pages/highGrades/refsitems/editorSetContent/editorSetContent'
 					}
 				]
 			}

@@ -3,6 +3,7 @@
 		<textView :content="content" />
 		<inputs 
 		id="inputs" 
+		inputsId="inputs"
 		:inputsArray="inputsArray" 
 		activeName="获取输入" 
 		@activeFc="activeFc"  
@@ -20,7 +21,6 @@
 				content: 'inputs可以开启校验状态管理, 若启用则需在inputs组件上设置id并传入verifyStatusSet中的inputsId属性, 传入verifyStatusSet控制校验状态管理, 传入focusStyle控制状态颜色, 若为自定义组件模式建议传入usingComponents属性为true\r\n请尝试点击获取输入按钮',
 				usingComponents: true,
 				verifyStatusSet: {
-					inputsId: 'inputs', // inputs组件的id属性值
 					openVerifyStatus: true,
 					openScroll: true,
 					openChangeBorderColor: true,

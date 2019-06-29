@@ -1,3 +1,15 @@
+.Flex1{
+	flex: 1;
+}
+
+.Flex4{
+	flex: 4;
+}
+
+.Flex5{
+	flex: 5;
+}
+
 .pickerBtn {
 	font-size: 60%;
 }

@@ -33,6 +33,10 @@
 						path: '/pages/expands/inputDebounce/inputDebounce'
 					}, 
 					{
+						name: '设置input自定义点击事件(6.9新增)',
+						path: '/pages/expands/customInputsTap/customInputsTap'
+					}, 
+					{
 						name: 'otherSet参数',
 						path: '/pages/expands/otherSet/otherSet'
 					}

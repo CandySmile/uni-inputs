@@ -138,6 +138,30 @@
             	"navigationBarTitleText": "inputs-初始赋值"
 			}
         }
+        ,{
+            "path" : "pages/basics/editor/editor",
+            "style" : {
+            	"navigationBarTitleText": "inputs-editor"
+			}
+        }
+        ,{
+            "path" : "pages/basics/infinitePics/infinitePics",
+            "style" : {
+            	"navigationBarTitleText": "inputs-无限上传图片示例"
+			}
+        }
+        ,{
+            "path" : "pages/highGrades/refsitems/editorSetContent/editorSetContent",
+            "style" : {
+            	"navigationBarTitleText": "inputs-外部设置editor内容"
+			}
+        }
+        ,{
+            "path" : "pages/expands/customInputsTap/customInputsTap",
+            "style" : {
+            	"navigationBarTitleText": "inputs-自定义input图标点击事件"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

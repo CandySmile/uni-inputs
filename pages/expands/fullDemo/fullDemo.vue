@@ -2,6 +2,7 @@
 	<view>
 		<inputs 
 		id="inputs" 
+		inputsId="inputs"
 		ref="inputs" 
 		:inputsArray="inputsArray" 
 		activeName="获取输入" 
@@ -41,7 +42,6 @@
 			return {
 				usingComponents: true,
 				verifyStatusSet: {
-					inputsId: 'inputs', // inputs组件的id属性值
 					openVerifyStatus: true,
 					openScroll: true,
 					openChangeBorderColor: true,

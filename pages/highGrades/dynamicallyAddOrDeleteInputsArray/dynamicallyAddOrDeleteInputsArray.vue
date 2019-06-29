@@ -3,6 +3,7 @@
 		<textView :content="content" />
 		<inputs 
 		id="inputs" 
+		inputsId="inputs"
 		:inputsArray="inputsArray" 
 		activeName="获取输入" 
 		@activeFc="activeFc" 
@@ -24,6 +25,8 @@
 			<button type="primary" @tap="add('picker-custom')" class="btn">加一个picker-custom</button>
 			<button type="primary" @tap="add('picker-custom2')" class="btn">加一个picker-custom2</button>
 			<button type="primary" @tap="add('picker-provincialStreet')" class="btn">加一个picker-provincialStreet</button>
+			<button type="primary" @tap="add('editor')" class="btn">加一个editor</button>
+			<button type="primary" @tap="add('infinitePics')" class="btn">加一个infinitePics</button>
 			<button type="warn" @tap="del()" class="btn">删除一个</button>
 			<button type="primary" @tap="change()" class="btn">改成一个</button>
 		</uni-drawer>
@@ -49,7 +52,6 @@
 					openVerifyStatus: true,
 					openChangeBorderColor: true,
 					openScroll: true,
-					inputsId: 'inputs'
 				},
 				inputsArray: [{
 					"segmentationTitle": "上传图片",

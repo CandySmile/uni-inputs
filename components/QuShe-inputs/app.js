@@ -1,3 +1,139 @@
+const interfaces = {
+	upLoadImg: '', // 服务器地址(上传图片)
+};
+
+const inputCustomTapFc = function(customId) { //inputTap custom类型触发的函数, 必须return一个Promise对象, 可以resolve数据给相应的input赋值
+	return new Promise((resolve, reject) => {
+		switch (customId) {
+			case '自定义id':
+				break;
+			default:
+				uni.scanCode({	//示例, 扫码后赋值
+					success: function(res) {
+						console.log('条码类型：' + res.scanType);
+						console.log('条码内容：' + res.result);
+						resolve(res.result);
+					}
+				});
+				break;
+		}
+	})
+}
+
+const inputCustomTapCatchFc = function(customId, e) { // inputTap custom类型触发的函数异常时触发的函数, 必须return一个Promise对象, 可以resolve数据给相应的input赋值
+	return new Promise((resolve, reject) => {
+		switch (customId) {
+			case '自定义id':
+				break;
+			default:
+
+				break;
+		}
+	})
+}
+
+const UpLoadFile = function(customId, filePath) { // 上传文件方法: (自定义上传标识, 文件路径)
+	let _this = this;
+	let url = '';
+	let formData = {};
+	let name = '';
+	switch (customId) { //判断该项pics类型自带的UpLoadFileType, 根据此值来确定不同的url、formData、name
+		case 'UpLoadImage_1': //自定义的标识
+			url = '';
+			formData = {};
+			name = '';
+			break;
+		default: //若无判断需求可直接写在这里
+			url = interfaces.upLoadImg;
+			formData = {};
+			name = '';
+			break;
+	}
+	if (!url) {
+		_this.showToast('上传文件的url不能为空');
+		return new Promise((rs, rj) => {
+			rj('上传文件的url不能为空');
+		});
+	}
+	if (!filePath) {
+		_this.showToast('上传文件的filePath不能为空');
+		return new Promise((rs, rj) => {
+			rj('上传文件的filePath不能为空');
+		});
+	}
+	return new Promise((reslove, reject) => {
+		_this.showLoading('上传文件中');
+		uni.uploadFile({
+			url,
+			formData,
+			name,
+			filePath,
+			success(res) {
+				console.log('进入UpLoadFile方法的success回调')
+				_this.hideLoading();
+				reslove(res)
+			},
+			fail(err) {
+				console.log('进入UpLoadFile方法的fail回调')
+				console.log(JSON.stringify(err))
+				_this.hideLoading();
+				reject();
+			}
+		})
+	})
+}
+
+const pics_splice = function(vals, val) { // 拼接图片上传返回后的数据, vals是拼接后的数据， val是新添项
+	if (typeof(vals) !== 'string') // 第一次传进来是一个数组
+		vals = val || '|'; // 可更改分隔符
+	else
+		vals += val ? '|' + val : '|';
+	return vals; // 必须return vals
+}
+
+
+const filterTypeObj = { // 内置过滤函数，可根据需求自行添加拓展
+	twoDecimalPlaces(value) { // 必须接受一个参数
+		value = value.replace(/[^\d.]/g, ""); //清除“数字”和“.”以外的字符
+		value = value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
+		value = value.replace(/^(\-)*(\d+)\.(\d).*$/, '$1$2.$3'); //只能输入1个小数 
+		if (value == '') value = null;
+		if (value !== '0' && value !== '0.') value = parseFloat(value);
+		return value; // 必须return
+	}
+};
+
+const sendSMS = function(customId, phone) { // 发送验证码方法, 需返回生成的验证码
+	let code = ''; // 生成验证码
+	switch (customId) { // 判断自定义标识
+		case '1':
+			code = '';
+			break;
+		default: //若无判断需求可直接写在这里
+			code = '123456';
+			break;
+	}
+	//发送验证码
+	this.showToast(`发送验证码给${phone}成功,请注意查收`);
+	return code; // 必须return生成的验证码
+}
+
+
+
+
+
+
+/*
+ *	一下代码尽量不要动他
+ */
+/*
+ *	一下代码尽量不要动他
+ */
+/*
+ *	一下代码尽量不要动他
+ */
+
+
 const dateTime = 'picker-dateTime';
 const date = 'picker-date';
 const time = 'picker-time';
@@ -70,19 +206,10 @@ const verifyTypeObj = {
 		name: '数字'
 	}
 };
-const filterTypeObj = { // 内置过滤函数，可根据需求自行添加拓展
-	twoDecimalPlaces(value) { // 必须接受一个参数
-		value = value.replace(/[^\d.]/g, ""); //清除“数字”和“.”以外的字符
-		value = value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
-		value = value.replace(/^(\-)*(\d+)\.(\d).*$/, '$1$2.$3'); //只能输入1个小数 
-		if (value == '') value = null;
-		if (value !== '0' && value !== '0.') value = parseFloat(value);
-		return value; // 必须return
-	}
-};
 
 const eventNames = {
-	inputsChange: 'inputsChange'
+	inputsChange: 'inputsChange',
+	inputTap: 'inputTap'
 };
 
 const setValueType = {
@@ -99,10 +226,6 @@ const filterParamsArrayType = {
 	setInputsValueFc: 'setInputsValueFc'
 };
 
-const interfaces = {
-	upLoadImg: '', // 服务器地址
-};
-
 const _app = {
 	eventNames, // inputs内所有类型变更时的emit事件名称
 	picker_date_obj: {
@@ -115,6 +238,8 @@ const _app = {
 	filterParamsArrayType,
 	verifyTypeObj, // 内置正则验证
 	filterTypeObj, // 内置过滤函数
+	inputCustomTapFc,
+	inputCustomTapCatchFc,
 	showToast(msg) {
 		uni.showToast({
 			title: msg,
@@ -130,84 +255,15 @@ const _app = {
 	hideLoading() {
 		uni.hideLoading();
 	},
-	UpLoadFile(customId, filePath) { // 自定义上传标识, 文件路径
-		let _this = this;
-		let url = '';
-		let formData = {};
-		let name = '';
-		switch (customId) { //判断该项pics类型自带的UpLoadFileType, 根据此值来确定不同的url、formData、name
-			case 'UpLoadImage_1': //自定义的标识
-				url = '';
-				formData = {};
-				name = '';
-				break;
-			default: //若无判断需求可直接写在这里
-				url = interfaces.upLoadImg;
-				formData = {};
-				name = '';
-				break;
-		}
-		if (!url) {
-			_this.showToast('上传文件的url不能为空');
-			return new Promise((rs, rj) => {
-				rj('上传文件的url不能为空');
-			});
-		}
-		if (!filePath) {
-			_this.showToast('上传文件的filePath不能为空');
-			return new Promise((rs, rj) => {
-				rj('上传文件的filePath不能为空');
-			});
-		}
-		return new Promise((reslove, reject) => {
-			_this.showLoading('上传文件中');
-			uni.uploadFile({
-				url,
-				formData,
-				name,
-				filePath,
-				success(res) {
-					console.log('进入UpLoadFile方法的success回调')
-					_this.hideLoading();
-					reslove(res)
-				},
-				fail(err) {
-					console.log('进入UpLoadFile方法的fail回调')
-					console.log(JSON.stringify(err))
-					_this.hideLoading();
-					reject();
-				}
-			})
-		})
-	},
-	//拼接上传图片返回的数据
-	pics_splice(vals, val) { // vals是拼接后的数据， val是新添项
-		if (typeof(vals) !== 'string') // 第一次传进来是一个数组
-			vals = val || '|'; // 可更改分隔符
-		else
-			vals += val ? '|' + val : '|';
-		return vals; // 必须return vals
-	},
-	sendSMS(customId, phone) {
-		let code = ''; // 生成验证码
-		switch (customId) { // 判断自定义标识
-			case '1':
-				code = '';
-				break;
-			default: //若无判断需求可直接写在这里
-				code = '123456';
-				break;
-		}
-		//发送验证码
-		this.showToast(`发送验证码给${phone}成功,请注意查收`);
-		return code; // 必须return生成的验证码
-	},
-	previewImage(imgPath) {
-		if (typeof(imgPath) != 'array')
+	UpLoadFile,
+	pics_splice,
+	sendSMS,
+	previewImage(imgPath, currentIndex) {
+		if (!(imgPath instanceof Array))
 			imgPath = [imgPath];
 		uni.previewImage({
 			urls: imgPath,
-			current: 0
+			current: currentIndex||0
 		})
 	},
 	countDays(Y, M, val, mode) {
@@ -241,28 +297,28 @@ const _app = {
 		return verifyTypeObj[name].reg.test(val);
 	},
 	isNumber(param) {
-		return typeof(param)==='number';
+		return typeof(param) === 'number';
 	},
 	filterParams(params, type) {
-		if(params.length===0)
+		if (params.length === 0)
 			return false;
-		if(params.length > 1) {
+		if (params.length > 1) {
 			let arr = getParamsArray(type);
 			let o = {};
-			Object.keys(params).forEach((item, index)=>{
+			Object.keys(params).forEach((item, index) => {
 				o[arr[index]] = params[index];
 			})
 			return o;
-		}else{
+		} else {
 			return params[0];
 		}
 	}
 }
 export default _app;
 
-function getParamsArray (type) {
+function getParamsArray(type) {
 	let arr;
-	switch (type){
+	switch (type) {
 		case filterParamsArrayType.setInputsValueFc:
 			arr = ['param', 'value', 'fail', 'isVariableName'];
 			break;

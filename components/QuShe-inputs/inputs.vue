@@ -13,21 +13,21 @@
 			'padding-top':item.border_top?wH*.015+'px':'none',
 			'border-top': item.border_top||'none'}">
 				<!-- title -->
-				<view class="width20 marginRight5 flex_row_e_c" :style="classObj.titleColor + classObj.titleFontSize" v-if="!titleHide">
+				<view class="width20 marginRight5 flex_row_e_c" :style="classObj.titleColor + classObj.titleFontSize" v-if="!titleHide&&item.type!=='editor'">
 					<view class="width100 word_wrap" :class="classObj.titleLayout">
 						<view class="fontColorF1505C" v-if="item.type!='pics'&&!item.ignore&&item.title&&(otherSet.requiredFieldsSet?!otherSet.requiredFieldsSet.hideRequiredFields:true)">{{otherSet.requiredFieldsSet?otherSet.requiredFieldsSet.requiredFieldsFlag||'*':'*'}}</view>{{item.title?item.title:''}}
 					</view>
 				</view>
-				<view :class="[classObj.contentsWidth, classObj.contentsLayout]">
+				<view :class="[(item.type==='editor'?'width100':classObj.contentsWidth), classObj.contentsLayout]">
 					<!-- pics -->
 					<view v-if="item.type&&item.type=='pics'" :style="classObj.padding1_0 + classObj.contentWidth">
 						<view class="width100 wrap" :class="[classObj.contentLayout]">
 							<view class="flex_column_c_c border_radius_4px transition_border_point6s" v-for="(picsItem, picsIndex) in item.itemArray"
 							 :key="picsIndex" :style="classObj.paddingPoint5 + 'border: 1px solid ' + (verifyStatusObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]||'rgba(0,0,0,0)') + ';'">
-								<view class="flex_row_c_c border1pxf2f2f2 position_relative border_radius_4px bacnground_color_f8f8f8" :style="classObj.picsBox"
+								<view class="flex_row_c_c border1pxf2f2f2 position_relative border_radius_4px backgrounColor_f8f8f8" :style="classObj.picsBox"
 								 @tap="chooseImg(item.variableName||index, picsIndex)">
-									<image :src="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]" class="border_radius_4px box_shadow_2px_2px_5px_ADADAD"
-									 mode="aspectFill" :style="classObj.picsBox" v-if="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]"
+									<image :src="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]"
+									 class="border_radius_4px box_shadow_2px_2px_5px_ADADAD" mode="aspectFill" :style="classObj.picsBox" v-if="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]"
 									 @tap="showImg(picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)])">
 									</image>
 									<view v-else>
@@ -44,27 +44,49 @@
 							</view>
 						</view>
 					</view>
+					<!-- infinitePics -->
+					<view v-else-if="item.type&&item.type=='infinitePics'" :style="classObj.padding1_0 + classObj.contentWidth">
+						<view class="width100 wrap" :class="[classObj.contentLayout]">
+							<view class="flex_column_c_c border_radius_4px transition_border_point6s" v-for="(picsItem, picsIndex) in infinitePicsObj[infinitePicsName + (item.variableName||index)]"
+							 :key="picsIndex" :style="classObj.paddingPoint5">
+								<view class="flex_row_c_c border1pxf2f2f2 position_relative border_radius_4px backgrounColor_f8f8f8" :style="classObj.picsBox">
+									<image :src="picsItem.path" class="border_radius_4px box_shadow_2px_2px_5px_ADADAD" mode="aspectFill" :style="classObj.picsBox"
+									 @tap="infinitePicsShowImg(item.variableName||index, picsIndex)">
+									</image>
+									<view class="picsClear" @tap.stop.prevent="clearPic(item.variableName||index, picsIndex, true)">
+										<uni-icon type="clear" :color="item.clearColor||'#f5105c'" :pxSize="classObj.size4wW" />
+									</view>
+								</view>
+							</view>
+							<view class="flex_column_c_c border_radius_4px transition_border_point6s" :style="classObj.paddingPoint5" v-if="item.max?(infinitePicsObj[infinitePicsName + (item.variableName||index)]?infinitePicsObj[infinitePicsName + (item.variableName||index)].length>=item.max?false:true:true):true">
+								<view class="flex_row_c_c border1pxf2f2f2 position_relative border_radius_4px backgrounColor_f8f8f8 box_shadow_2px_2px_5px_ADADAD"
+								 :style="classObj.picsBox" @tap="chooseImg(item.variableName||index, index, true)">
+									<uni-icon type="image" :pxSize="classObj.size6wW" color="#999999" />
+								</view>
+							</view>
+						</view>
+					</view>
 					<!-- switch -->
 					<view :class="[classObj.contentLayout]" :style="classObj.contentWidth" v-else-if="item.type&&item.type=='switch'">
 						<view class="position_relative">
-							<switch :checked="inputsObj[item.variableName||(onLoadData+index)]" :disabled="item.disabled" :type="item.mode||'switch'" :color="item.color"
-							 @change="inputs_change($event, item.variableName||index)" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
+							<switch :checked="inputsObj[item.variableName||(onLoadData+index)]" :disabled="item.disabled" :type="item.mode||'switch'"
+							 :color="item.color" @change="inputs_change($event, item.variableName||index)" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
 						</view>
 					</view>
 					<!-- slider -->
 					<view :style="classObj.contentWidth" v-else-if="item.type&&item.type=='slider'">
 						<slider @change="inputs_change($event, item.variableName||index)" :min="item.min||0" :max="item.max||100" :step="item.step||1"
-						 :disabled="item.disabled" :value="inputsObj[item.variableName||(onLoadData+index)]" :color="item.color" :selected-color="item.selected_color"
-						 :activeColor="item.activeColor" :backgroundColor="item.backgroundColor" :block-size="item.block_size"
-						 :block-color="item.block_color" :show-value="item.show_value" />
+						 :disabled="item.disabled" :value="inputsObj[item.variableName||(onLoadData+index)]" :color="item.color"
+						 :selected-color="item.selected_color" :activeColor="item.activeColor" :backgroundColor="item.backgroundColor"
+						 :block-size="item.block_size" :block-color="item.block_color" :show-value="item.show_value" />
 					</view>
 					<!-- radio -->
 					<view :style="classObj.contentWidth" v-else-if="item.type&&item.type=='radio'">
 						<radio-group @change="inputs_change($event, item.variableName||index)" class="width100 wrap" :class="[classObj.contentLayout]">
 							<label class="fontColor666666 flex_row_none_c" :style="classObj.contentFontSize + classObj.padding1 + classObj.marginRight2"
 							 v-for="(radioItem, radioIndex) in item.itemArray" :key="radioIndex">
-								<radio :value="radioItem.value" :checked="inputsObj[item.variableName||(onLoadData+index)]==radioItem.value" :disabled="radioItem.disabled"
-								 :color="radioItem.color||item.color" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
+								<radio :value="radioItem.value" :checked="inputsObj[item.variableName||(onLoadData+index)]==radioItem.value"
+								 :disabled="radioItem.disabled" :color="radioItem.color||item.color" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
 								<view class="flex_row_none_c">{{radioItem.name}}</view>
 							</label>
 						</radio-group>
@@ -83,18 +105,20 @@
 					<!-- textarea -->
 					<view :class="[classObj.contentLayout]" :style="classObj.contentWidth" v-else-if="item.type&&item.type=='textarea'">
 						<textarea :value="inputsObj[item.variableName||(onLoadData+index)]" :placeholder="item.placeholder||'请输入' + item.title"
-						 :placeholder-style="('font-size:' + classObj.contentSize + 'px;') + item.placeholder_style" :placeholder-class="item.placeholder_class" :style="{
+						 :placeholder-style="('font-size:' + classObj.contentSize + 'px;') + item.placeholder_style" :placeholder-class="item.placeholder_class"
+						 :style="{
 						'font-size': classObj.contentSize + 'px', 
 						'height': ((item.height||.1)*wH)+'px', 
 						'width': (item.width||'60') + '%', 
 						'background-color': item.backgroundColor||'#F8F8F8', 
 						'color': item.color||'#666666', 
-						'border': '1px solid ' + (focusObj[(item.variableName||(onLoadData+index))+'focus']?(item.focusBorderStyle||focusStyle.focusBorderStyle||'#999999'):(item.blurBorderStyle||focusStyle.blurBorderStyle||'#f8f8f8'))}"
+						'border': '1px solid ' + (focusObj[(item.variableName||(onLoadData+index))]?(item.focusBorderStyle||focusStyle.focusBorderStyle||'#999999'):(item.blurBorderStyle||focusStyle.blurBorderStyle||'#f8f8f8'))}"
 						 class="width100 border_radius_4px padding8px transition_point6s" :disabled="item.disabled" :maxlength="item.maxlength||140"
-						 :focus="focusObj[(item.variableName||(onLoadData+index))+'focus']" :auto-height="item.auto_height" :fixed="item.fixed" :cursor-spacing="item.cursor_spacing"
-						 :cursor="item.cursor" :show-confirm-bar="item.show_confirm_bar" :selection-start="item.selection_start"
-						 :selection-end="item.selection_end" :adjust-position="item.adjust_position" @input="inputs_change($event, item.variableName||index, item.filterFc, true)"
-						 @focus="focusChange(item.variableName||index)" @blur="blurChange(item.variableName||index)" />
+						 :focus="focusObj[(item.variableName||(onLoadData+index))]" :auto-height="item.auto_height" :fixed="item.fixed"
+						 :cursor-spacing="item.cursor_spacing" :cursor="item.cursor" :show-confirm-bar="item.show_confirm_bar"
+						 :selection-start="item.selection_start" :selection-end="item.selection_end" :adjust-position="item.adjust_position"
+						 @input="inputs_change($event, item.variableName||index, item.filterFc, true)" @focus="focusChange(item.variableName||index)"
+						 @blur="blurChange(item.variableName||index)" />
 						</view>
 					<!-- picker-date -->
 					<view :class="[classObj.contentLayout]" :style="classObj.padding0_3 + classObj.contentWidth" v-else-if="item.type&&item.type=='picker-date'">
@@ -229,29 +253,108 @@
 							</view>
 						</view>
 					</view>
+					<!-- editor -->
+					<view class="width100" :style="classObj.padding2_3" v-else-if="item.type&&item.type=='editor'">
+						<!-- #ifdef APP-PLUS || MP-WEIXIN -->
+						<block v-if="usingComponents">
+							<view class='toolbar' @tap="format">
+								<view :class="formats.bold ? 'ql-active' : ''" class="editor_iconfont icon-zitijiacu" data-name="bold"></view>
+								<view :class="formats.italic ? 'ql-active' : ''" class="editor_iconfont icon-zitixieti" data-name="italic"></view>
+								<view :class="formats.underline ? 'ql-active' : ''" class="editor_iconfont icon-zitixiahuaxian" data-name="underline"></view>
+								<view :class="formats.strike ? 'ql-active' : ''" class="editor_iconfont icon-zitishanchuxian" data-name="strike"></view>
+								<view :class="formats.align === 'left' ? 'ql-active' : ''" class="editor_iconfont icon-zuoduiqi" data-name="align"
+								 data-value="left"></view>
+								<view :class="formats.align === 'center' ? 'ql-active' : ''" class="editor_iconfont icon-juzhongduiqi" data-name="align"
+								 data-value="center"></view>
+								<view :class="formats.align === 'right' ? 'ql-active' : ''" class="editor_iconfont icon-youduiqi" data-name="align"
+								 data-value="right"></view>
+								<view :class="formats.align === 'justify' ? 'ql-active' : ''" class="editor_iconfont icon-zuoyouduiqi" data-name="align"
+								 data-value="justify"></view>
+								<view :class="formats.lineHeight ? 'ql-active' : ''" class="editor_iconfont icon-line-height" data-name="lineHeight"
+								 data-value="2"></view>
+								<view :class="formats.letterSpacing ? 'ql-active' : ''" class="editor_iconfont icon-Character-Spacing" data-name="letterSpacing"
+								 data-value="2em"></view>
+								<view :class="formats.marginTop ? 'ql-active' : ''" class="editor_iconfont icon-722bianjiqi_duanqianju" data-name="marginTop"
+								 data-value="20px"></view>
+								<view :class="formats.micon-previewarginBottom ? 'ql-active' : ''" class="editor_iconfont icon-723bianjiqi_duanhouju"
+								 data-name="marginBottom" data-value="20px"></view>
+								<view class="editor_iconfont icon-clearedformat" @tap="removeFormat"></view>
+								<view :class="formats.fontFamily ? 'ql-active' : ''" class="editor_iconfont icon-font" data-name="fontFamily" data-value="Pacifico"></view>
+								<view :class="formats.fontSize === '24px' ? 'ql-active' : ''" class="editor_iconfont icon-fontsize" data-name="fontSize"
+								 data-value="24px"></view>
+				
+								<view :class="formats.color === '#0000ff' ? 'ql-active' : ''" class="editor_iconfont icon-text_color" data-name="color"
+								 data-value="#0000ff"></view>
+								<view :class="formats.backgroundColor === '#00ff00' ? 'ql-active' : ''" class="editor_iconfont icon-fontbgcolor"
+								 data-name="backgroundColor" data-value="#00ff00"></view>
+				
+								<view class="editor_iconfont icon-date" @tap="insertDate"></view>
+								<view class="editor_iconfont icon--checklist" data-name="list" data-value="check"></view>
+								<view :class="formats.list === 'ordered' ? 'ql-active' : ''" class="editor_iconfont icon-youxupailie" data-name="list"
+								 data-value="ordered"></view>
+								<view :class="formats.list === 'bullet' ? 'ql-active' : ''" class="editor_iconfont icon-wuxupailie" data-name="list"
+								 data-value="bullet"></view>
+								<view class="editor_iconfont icon-undo" @tap="editorUndo"></view>
+								<view class="editor_iconfont icon-redo" @tap="editorUndo"></view>
+				
+								<view class="editor_iconfont icon-outdent" data-name="indent" data-value="-1"></view>
+								<view class="editor_iconfont icon-indent" data-name="indent" data-value="+1"></view>
+								<view class="editor_iconfont icon-fengexian" @tap="insertDivider"></view>
+								<view class="editor_iconfont icon-charutupian" @tap="insertImage"></view>
+								<view :class="formats.header === 1 ? 'ql-active' : ''" class="editor_iconfont icon-format-header-1" data-name="header"
+								 :data-value="1"></view>
+								<view :class="formats.script === 'sub' ? 'ql-active' : ''" class="editor_iconfont icon-zitixiabiao" data-name="script"
+								 data-value="sub"></view>
+								<view :class="formats.script === 'super' ? 'ql-active' : ''" class="editor_iconfont icon-zitishangbiao" data-name="script"
+								 data-value="super"></view>
+								<view class="editor_iconfont icon-shanchu" @tap="editorClear"></view>
+								<view :class="formats.direction === 'rtl' ? 'ql-active' : ''" class="editor_iconfont icon-direction-rtl" data-name="direction"
+								 data-value="rtl"></view>
+							</view>
+							
+							<editor 
+							id="editor" 
+							class="ql-container border1pxf2f2f2" 
+							:style="'height:' + (item.height||.3)*wH + 'px;min-height:' + wH*.3 + 'px;'"
+							:placeholder="item.placeholder||'开始输入...'" 
+							:showImgSize="item.showImgSize" 
+							:showImgToolbar="item.showImgToolbar" 
+							:showImgResize="item.showImgResize"
+							@statuschange="onStatusChange" 
+							:read-only="readOnly" 
+							@ready="onEditorReady(item.variableName||index)">
+							</editor>
+						</block>
+						<!-- #endif -->
+					</view>
 					<!-- input -->
-					<view class="flex_row_none_c transition_point6s" :style="classObj.contentWidth + 'border-bottom: 1px solid ' + (focusObj[(item.variableName||(onLoadData+index))+'focus']?(item.focusBorderStyle||focusStyle.focusBorderStyle||'#999999'):(item.blurBorderStyle||focusStyle.blurBorderStyle||'#f2f2f2')) + ';'" v-else>
-						<view :class="item.tapClear&&item.password?'width70':item.tapClear||item.password?'width85':'width100'" class="flex_row_none_c">
-							<view class="width15" v-if="item.icon">
+					<view class="flex_row_none_c transition_point6s" :style="classObj.contentWidth + 'border-bottom: 1px solid ' + (focusObj[(item.variableName||(onLoadData+index))]?(item.focusBorderStyle||focusStyle.focusBorderStyle||'#999999'):(item.blurBorderStyle||focusStyle.blurBorderStyle||'#f2f2f2')) + ';'" v-else>
+						<view class="flex_row_none_c Flex5">
+							<view class="Flex1" v-if="item.icon">
 								<view class="flex_row_c_c width100">
 									<uni-icon :type="item.icon" :pxSize="classObj.iconSize" :color="item.iconColor||'#999999'"></uni-icon>
 								</view>
 							</view>
 							<input :type="item.inputType||'text'" :value="inputsObj[(item.variableName||(onLoadData+index))]" @input="inputs_change($event, item.variableName||index, item.filterFc, item.filterType, true)" :placeholder="item.placeholder||'请输入' + item.title"
 							 :password="passwordObj[(item.variableName||(onLoadData+index))+'password']" :placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class"
-							 :maxlength="item.maxlength||140" :cursor-spacing="item.cursor_spacing" :focus="focusObj[(item.variableName||(onLoadData+index))+'focus']"
+							 :maxlength="item.maxlength||140" :cursor-spacing="item.cursor_spacing" :focus="focusObj[(item.variableName||(onLoadData+index))]"
 							 :confirm-type="item.confirm_type" :confirm-hold="item.confirm_hold" :selection-start="item.selection_start" :selection-end="item.selection_end"
-							 :cursor="item.cursor" :adjust-position="item.adjust_position" :class="item.icon?'width85':'width100'" :disabled="item.disabled" 
-							 :style="classObj.contentFontSize" class="fontColor666666" @focus="focusChange(item.variableName||index)" @blur="blurChange(item.variableName||index)"/>
+							 :cursor="item.cursor" :adjust-position="item.adjust_position" :disabled="item.disabled" 
+							 :style="classObj.contentFontSize" class="fontColor666666 Flex5" @focus="focusChange(item.variableName||index)" @blur="blurChange(item.variableName||index)"/>
 						</view>
-						<view class="width15" v-if="item.password">
-							<view class="flex_row_c_c width100" @tap.prevent.stop="inputTap('passwordSwitch', item.variableName||index)">
+						<view class="Flex1" v-if="item.password">
+							<view class="flex_row_c_c width100" @tap.prevent.stop="inputTap('passwordSwitch', item.variableName||index, item.customId)">
 								<uni-icon type="eye" :pxSize="classObj.iconSize" :color="passwordObj[(item.variableName||(onLoadData+index))+'password']?'#999999':item.iconColor||'#33cc33'"></uni-icon>
 							</view>
 						</view>
-						<view class="width15" v-if="item.tapClear">
-							<view class="flex_row_c_c width100" v-if="inputsObj[(item.variableName||(onLoadData+index))]!=''" @tap.prevent.stop="inputTap('clear', item.variableName||index)">
+						<view class="Flex1" v-if="item.tapClear">
+							<view class="flex_row_c_c width100" v-if="inputsObj[(item.variableName||(onLoadData+index))]!=''" @tap.prevent.stop="inputTap('clear', item.variableName||index, item.customId)">
 								<uni-icon type="clear" :pxSize="classObj.iconSize" color="#999999"></uni-icon>
+							</view>
+						</view>
+						<view class="Flex1" v-if="item.customTap">
+							<view class="flex_row_c_c width100" @tap.prevent.stop="inputTap('custom', item.variableName||index, item.customId)">
+								<uni-icon :type="item.customTapIcon" :pxSize="classObj.iconSize" color="#999999"></uni-icon>
 							</view>
 						</view>
 					</view>
@@ -446,11 +549,10 @@
 						openVerifyStatus: false,
 						openScroll: false,
 						openChangeBorderColor: false,
-						inputsId: '',
 						errNullColor: 'rgba(245,16,92,.7)',
 						verifyErrorColor: 'rgba(255,255,0,.7)'
 					};
-				}
+				} 
 			},
 			usingComponents: {
 				type: Boolean,
@@ -461,6 +563,10 @@
 				default() {
 					return {};
 				}
+			},
+			inputsId: {
+				type: String,
+				default: ''
 			}
 		},
 		data() {
@@ -528,7 +634,11 @@
 					size6wW: wW*.06,
 					size4wW: wW*.04
 					
-				}
+				},
+				formats: {},
+				editorLoadedFontFace: false,
+				infinitePicsObj: {},
+				infinitePicsName: 'infinitePics'
 			};
 		},
 		watch: {
@@ -557,7 +667,7 @@
 				for (let i = 0; i < data.length; i++) { //循环inputsArray，对 相应类型相应初始化默认值
 					let item = data[i];
 					let itemVariableName = item.variableName || (_this.onLoadData + i);
-					if(_this.inputsObj[itemVariableName]!==undefined&&_this.inputsObj[itemVariableName]!==null&&fixedVariableNamePattern&&item.type!=='pics') {	//固定变量名模式下有值的项跳过初始化
+					if(_this.inputsObj[itemVariableName]!==undefined&&_this.inputsObj[itemVariableName]!==null&&fixedVariableNamePattern&&item.type!=='pics'&&item.type!=='infinitePics') {	//固定变量名模式下有值的项跳过初始化
 						continue;
 					}
 					if(item.phone)
@@ -802,6 +912,30 @@
 							break;
 						case 'text':
 							break;
+						case 'editor':
+							// #ifdef APP-PLUS || MP-WEIXIN
+							if(this.usingComponents&&!this.editorLoadedFontFace) {
+								console.log('editor 初始化')
+								uni.loadFontFace({
+									family: 'Pacifico',
+									source: 'url("https://sungd.github.io/Pacifico.ttf")'
+								})
+								this.editorLoadedFontFace = true;
+								if(item.defaultValue) {
+									if(this.editorCtx) {
+										this.setEditorContent(item.defaultValue, item.defaultValueType);
+									}else{
+										this.editorDefault = {defaultValue: item.defaultValue, defaultValueType: item.defaultValueType};
+									}
+								}
+							}
+							// #endif
+							break;
+						case 'infinitePics':
+							if(fixedVariableNamePattern) continue;
+							const vbName = _this.infinitePicsName + (item.variableName||i);
+							_this.$set(_this.infinitePicsObj, vbName, []);
+							break;
 						default:
 							if(item.defaultValue) {
 								_this.$set(_this.inputsObj, itemVariableName, item.defaultValue);
@@ -812,7 +946,7 @@
 								_this.$set(_this.passwordObj, itemVariableName+'password', item.password);
 							}
 							if(item.focus) {
-								_this.$set(_this.focusObj, itemVariableName+'focus', item.focus);
+								_this.$set(_this.focusObj, itemVariableName, item.focus);
 							}
 							break;
 					}
@@ -942,7 +1076,6 @@
 						else
 							vbName = index;
 						let oldData = this.inputsObj[vbName];
-						console.log('vbName:' + vbName);
 						this.$set(this.inputsObj, vbName, value);
 						this._emitEvent(_app.eventNames.inputsChange, {newData: value, oldData, index});
 					}
@@ -1000,9 +1133,9 @@
 				this.picker_hideFc();
 				this._emitEvent(_app.eventNames.inputsChange, res);
 			},
-			inputTap(type, index) { //input点击事件
+			inputTap(type, index, customId) { //input点击事件
 				let vbName;
-				if(_app.regTest('Int', res.index))
+				if(_app.regTest('Int', index))
 					vbName = this.onLoadData + index;
 				else
 					vbName = index;
@@ -1014,9 +1147,25 @@
 					case 'clear':	//一键清除
 						this.$set(this.inputsObj, vbName, '');
 						break;
+					case 'custom':
+						this.inputCustomTapFc(index, customId, vbName);
+						break;
 					default:
 						_app.showToast('inputTap类型错误');
 						break;
+				}
+				this._emitEvent(_app.eventNames.inputTap, {type, index, customId});
+			},
+			async inputCustomTapFc(index, customId, vbName) {
+				try{
+					const data = await _app.inputCustomTapFc(customId);
+					if(data!==undefined&&data!==null)
+						this.$set(this.inputsObj, vbName, data);
+				}catch(e){
+					//TODO handle the exception
+					const data = await _app.inputCustomTapCatchFc(customId, e);
+					if(data!==undefined&&data!==null)
+						this.$set(this.inputsObj, vbName, data);
 				}
 			},
 			code_change({detail: {value}}) { //验证码防抖输入
@@ -1101,12 +1250,13 @@
 				}, 1000)
 				_this.startCode = true;
 			},
-			activeFc() { // 主功能按钮方法
+			async activeFc() { // 主功能按钮方法
 				let _this = this;
 				let d = _this.inputsArray;
 				let inputsDataObj = {};
 				// 先判断 inputs 的值是否为空, 后判断该值是否忽略
 				let ifUsePics = []; //记录使用图片类型的index
+				let ifInfinitePics = [];
 				for (let i = 0; i < d.length; i++) {
 					let onLoadData = _this.onLoadData + i;
 					let variableName = d[i].variableName || onLoadData;
@@ -1144,6 +1294,21 @@
 								}
 							}
 							break;
+						case 'infinitePics':
+							const vbName = this.infinitePicsName + (d[i].variableName || i);
+							const infiniteItem = this.infinitePicsObj[vbName];
+							if(!infiniteItem||infiniteItem.length===0) {
+								if(d[i].ignore || (d[i].hide&&d[i].ignore!==false)) {
+									ifInfinitePics.push({infiniteItem, index: i});
+								}else{
+									_this.change_verifyStatus(i, 2);
+									_app.showToast(d[i].nullErr || (d[i].title + '不能为空'));
+									return;
+								}
+							}else{
+								ifInfinitePics.push({infiniteItem, index: i});
+							}
+							break;
 						case 'switch':
 							inputsDataObj[variableName] = _this.inputsObj[variableName]?true:false;
 							break;
@@ -1161,6 +1326,20 @@
 							_this.change_verifyStatus(i, 0);
 							inputsDataObj[variableName] = _this.inputsObj[variableName];
 							break;
+							case 'editor':
+								// #ifdef APP-PLUS || MP-WEIXIN
+								try{
+									inputsDataObj[variableName] = await this.getEditorContent();
+								}catch(e){
+									//TODO handle the exception
+									console.log('editor取值异常:' + JSON.stringify(e));
+									inputsDataObj[variableName] = {};
+								}
+								// #endif
+								// #ifndef APP-PLUS || MP-WEIXIN
+									inputsDataObj[variableName] = {};
+								// #endif
+								break;
 						default:
 							if (!_this.inputsObj[variableName]) {
 								if (d[i].ignore || (d[i].hide&&d[i].ignore!==false)) {
@@ -1223,7 +1402,7 @@
 					}
 				}
 				// 如果用了图片类型， 则上传并返回数据
-				let pic_promise = [];
+				const pic_promise = [];
 				if(ifUsePics.length > 0) {
 					for (let i = 0; i < ifUsePics.length; i++) {
 						let index = ifUsePics[i];
@@ -1258,13 +1437,44 @@
 						}
 					}
 				}
-				Promise.all(pic_promise).then(res => { // Promise返回一个图片的数组, 根据res.index1 给 inputsDataObj[_this.onLoadData + res[i].index1] 赋值
-					if (res.length > 0)
-						for (let i = 0; i < res.length; i++) { // 注: 此处根据自己的需求拼接数据   (在下返回数据后的拼接是以 ‘|’ 分隔)
-							let onLoadData = _this.onLoadData + res[i].index1;
-							let variableName = d[res[i].index1].variableName || onLoadData; // 自定义变量名或默认变量名
-							inputsDataObj[variableName] = _app.pics_splice(inputsDataObj[variableName], res[i].data);
+				// 无限上传图片类型
+				const infinitePic_promise = [];
+				if(ifInfinitePics.length > 0) {
+					for(let i = 0; i < ifInfinitePics.length; i++) {
+						const item = ifInfinitePics[i];
+						const index = item.index;
+						if(item.infiniteItem) {
+							const infiniteItem = item.infiniteItem;
+							for(let j = 0; j < infiniteItem.length; j++) {
+								if(infiniteItem[j].path) {
+									infinitePic_promise.push(new Promise(function(reslove, reject) {
+										// push Promise 上传图片到服务器并返回图片在服务器的地址并拼接的方法
+										_app.UpLoadFile(d[index].customId, infiniteItem[j].path).then((res)=>{
+											reslove({
+												index1: index,
+												index2: j,
+												data: res.data
+											})
+										}).catch((err)=>{
+											reject(err||(''));
+										});
+									}));
+								}else{
+									console.log('not find infiniteItem path');
+								}
+							}
+						}else{
+							console.log('not find infiniteItem');
 						}
+					}
+				}
+				const picArr = pic_promise.concat(infinitePic_promise);
+				Promise.all(picArr).then(res => { // Promise返回一个图片的数组, 根据res.index1 给 inputsDataObj[_this.onLoadData + res[i].index1] 赋值
+					for (let i = 0; i < res.length; i++) { // 注: 此处根据自己的需求拼接数据   (在下返回数据后的拼接是以 ‘|’ 分隔)
+						const onLoadData = _this.onLoadData + res[i].index1;
+						const variableName = d[res[i].index1].variableName || onLoadData; // 自定义变量名或默认变量名
+						inputsDataObj[variableName] = _app.pics_splice(inputsDataObj[variableName], res[i].data);
+					}
 					_this.$emit('activeFc', inputsDataObj); // 把用户输入数据对象输出给父级
 					_this.inputs_reSet(); //提交后重置
 				}).catch((err)=>{
@@ -1280,35 +1490,78 @@
 				//若submit为true，重置表单为初始化
 				if(this.submitReSet) this.init();
 			},
-			chooseImg(index, picsIndex) { //选择图片
+			chooseImg(index, picsIndex, infinite) { //选择图片
 				let vbName;
-				if(_app.regTest('Int', index))
-					vbName = this.onLoadData + index + this.onLoadData + picsIndex;
-				else
-					vbName = index + picsIndex;
-				if(this.picsObj[vbName]) return;
-				let oldData = this.picsObj[vbName];
+				let oldData;
+				if(infinite) {
+					vbName = this.infinitePicsName + index;
+				}else {
+					if(_app.regTest('Int', index)) {
+						vbName = this.onLoadData + index + this.onLoadData + picsIndex;
+					}else{
+						vbName = index + picsIndex;
+					}
+					if(this.picsObj[vbName]) return;
+					oldData = this.picsObj[vbName];
+				}
 				uni.chooseImage({
 					success: res => {
-						// console.log(res.tempFilePaths[0]);
-						let newData = res.tempFilePaths[0];
-						this.$set(this.picsObj, vbName, newData);
-						this._emitEvent(_app.eventNames.inputsChange, {newData, oldData, index, picsIndex});
+						if(infinite) {
+							const infinitePicsObj = {...this.infinitePicsObj};
+							if(!infinitePicsObj[vbName])
+								infinitePicsObj[vbName] = [];
+							const tempFilePaths = res.tempFilePaths;
+							const inputsArrayItem = this.inputsArray[picsIndex];
+							const oldInfiniteLength = this.infinitePicsObj[vbName]?this.infinitePicsObj[vbName].length:0;
+							tempFilePaths.forEach((item, pathIndex)=>{
+								if(inputsArrayItem.max) {
+									if((oldInfiniteLength + (pathIndex + 1)) <= inputsArrayItem.max) {
+										infinitePicsObj[vbName].push({path: item});
+									}
+								}else{
+									infinitePicsObj[vbName].push({path: item});
+								}
+							})
+							this.$set(this.infinitePicsObj, vbName, infinitePicsObj[vbName]);
+						}else{
+							const newData = res.tempFilePaths[0];
+							this.$set(this.picsObj, vbName, newData);
+							this._emitEvent(_app.eventNames.inputsChange, {newData, oldData, index, picsIndex});
+						}
 					}
 				})
 			},
-			clearPic(index, picsIndex) { //清除图片
-				let vbName;
-				if(_app.regTest('Int', index))
+			clearPic(index, picsIndex, infinite) { //清除图片
+			let vbName;
+			let oldData;
+			if(infinite) {
+				vbName = this.infinitePicsName + index;
+				const infinitePicsObj = {...this.infinitePicsObj};
+				infinitePicsObj[vbName].splice(picsIndex, 1);
+				this.$set(this.infinitePicsObj, vbName, infinitePicsObj[vbName]);
+			}else {
+				if(_app.regTest('Int', index)) {
 					vbName = this.onLoadData + index + this.onLoadData + picsIndex;
-				else
+				}else{
 					vbName = index + picsIndex;
-				let oldData = this.picsObj[vbName];
+				}
+				oldData = this.picsObj[vbName];
 				this.picsObj[vbName] = '';
 				this._emitEvent(_app.eventNames.inputsChange, {newData: '', oldData, index, picsIndex});
+			}
 			},
 			showImg(imgPath) { //大图预览选中的图片
 				_app.previewImage(imgPath);
+			},
+			infinitePicsShowImg(index, currentIndex) {
+				const vbName = this.infinitePicsName + index;
+				const infiniteItem = this.infinitePicsObj[vbName];
+				const imgArr = [];
+				infiniteItem.forEach(item=>{
+					if(item.path)
+						imgArr.push(item.path)
+				})
+				_app.previewImage(imgArr, currentIndex);
 			},
 			picker_hideFc() { //picker类型全部隐藏
 				this.pickerDateShow = false;
@@ -1326,7 +1579,7 @@
 				else
 					vbName = this.onLoadData + index;
 				let o = {};
-				o[vbName + 'focus'] = true;
+				o[vbName] = true;
 				this.$set(this, 'focusObj', o);
 			},
 			blurChange(index) {
@@ -1367,8 +1620,8 @@
 					// #endif
 					// #ifndef H5
 					if(this.usingComponents) {
-						if(!verifyStatusSet.inputsId) { console.log('找不到inputsId, 请在verifyStatusSet中传此参数'); return; }
-						view = uni.createSelectorQuery().select(`#${verifyStatusSet.inputsId} >>> #Id_${inputId}`);
+						if(!this.inputsId) { console.log('找不到inputsId, 请在inputs中传此参数'); return; }
+						view = uni.createSelectorQuery().select(`#${this.inputsId} >>> #Id_${inputId}`);
 					}else {
 						view = uni.createSelectorQuery().select(`#Id_${inputId}`);
 					}
@@ -1401,8 +1654,8 @@
 				if(this.usingComponents) {
 					view = uni.createSelectorQuery().select(`#Id_${inputId}`);
 				}else{
-					if(!verifyStatusSet.inputsId) { console.log('找不到inputsId, 请在verifyStatusSet中传此参数'); return; }
-					view = uni.createSelectorQuery().select(`#${verifyStatusSet.inputsId} >>> #Id_${inputId}`);
+					if(!this.inputsId) { console.log('找不到inputsId, 请在inputs中传此参数'); return; }
+					view = uni.createSelectorQuery().select(`#${this.inputsId} >>> #Id_${inputId}`);
 				}
 				let p1 = new Promise((rs, rj)=>{ view.fields({ rect: true }, data => { if(data) rs(data); else rj('重试滚动失败, 获取节点信息失败'); }).exec(); })
 				let p2 = new Promise((rs, rj)=>{ uni.createSelectorQuery().selectViewport().scrollOffset(res => {  if(res) rs(res); else rj('获取滚动条位置信息失败'); }).exec(); })
@@ -1526,34 +1779,38 @@
 											break;
 										case 'picker-city':
 											pickerValue = _app.pickerChoosedType.pickerChoosedType_city.value + vbName;
-											console.log('去除变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
+											console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
 											console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
 											this.$delete(this.inputsObj, vbName);
 											this.$delete(this.pickerObj, pickerValue);
 											break;
 										case 'picker-custom':
 											pickerValue = _app.pickerChoosedType.pickerChoosedType_custom.value + vbName;
-											console.log('去除变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
+											console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
 											console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
 											this.$delete(this.inputsObj, vbName);
 											this.$delete(this.pickerObj, pickerValue);
 											break;
 										case 'picker-custom2':
 											pickerValue = _app.pickerChoosedType.pickerChoosedType_custom2.value + vbName;
-											console.log('去除变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
+											console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
 											console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
 											this.$delete(this.inputsObj, vbName);
 											this.$delete(this.pickerObj, pickerValue);
 											break;
 										case 'picker-provincialStreet':
 											pickerValue = _app.pickerChoosedType.pickerChoosedType_provincialStreet.value + vbName;
-											console.log('去除变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
+											console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
 											console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
 											this.$delete(this.inputsObj, vbName);
 											this.$delete(this.pickerObj, pickerValue);
 											break;
+										case 'infinitePics':
+											console.log('去除infinitePicsObj变量:' + vbName + ', 值为:' + this.infinitePicsObj[this.infinitePicsName + vbName]);
+											this.$delete(this.infinitePicsObj, this.infinitePicsName + vbName);
+											break;
 										default:
-											console.log('去除变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
+											console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
 											this.$delete(this.inputsObj, vbName);
 											break;
 									}
@@ -1565,11 +1822,150 @@
 					}
 					this.init(true);
 				}
+			},
+			// #ifdef APP-PLUS || MP-WEIXIN
+			readOnlyChange() {
+				console.log('editor readOnly');
+				this.readOnly = !this.readOnly
+			},
+			onEditorReady() {
+				console.log('editor onEditorReady');
+				if(this.inputsId)
+					uni.createSelectorQuery().select(`#${this.inputsId} >>> #editor`).context((res) => {
+						this.editorCtx = res.context
+						if(this.editorDefault) {
+							const editorDefault = this.editorDefault;
+							this.setEditorContent(editorDefault.defaultValue, editorDefault.defaultValueType);
+						}
+					}).exec()
+				else
+					console.log('找不到inputsId, 请在inputs中传入')
+			},
+			setEditorContent(val, valType) {
+				let obj = {};
+				obj[valType||'delta'] = val;
+				this.editorCtx.setContents({
+					...obj,
+					success(res) {
+						console.log('设置editor内容成功:' + JSON.stringify(res));
+					},
+					fail(err) {
+						console.log('设置editor内容失败:' + JSON.stringify(err));
+					}
+				})
+			},
+			getEditorContent() {
+				return new Promise((rs, rj)=>{
+					if(this.editorCtx) {
+						this.editorCtx.getContents({
+							success(res) {
+								rs(res);
+							},
+							fail(err) {
+								rj(err);
+							}
+						})
+					}else{
+						rs('')
+					}
+				})
+			},
+			editorUndo() {
+				this.editorCtx.undo()
+			},
+			editorRedo() {
+				this.editorCtx.redo()
+			},
+			format(e) {
+				let {
+					name,
+					value
+				} = e.target.dataset
+				if (!name) return
+				// console.log('format', name, value)
+				this.editorCtx.format(name, value)
+			
+			},
+			onStatusChange(e) {
+				const formats = e.detail
+				this.formats = formats
+			},
+			insertDivider() {
+				this.editorCtx.insertDivider({
+					success: function() {
+						console.log('insert divider success')
+					}
+				})
+			},
+			editorClear() {
+				this.editorCtx.clear({
+					success: function(res) {
+						console.log("clear success")
+					}
+				})
+			},
+			removeFormat() {
+				this.editorCtx.removeFormat()
+			},
+			insertDate() {
+				const date = new Date()
+				const formatDate = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
+				this.editorCtx.insertText({
+					text: formatDate
+				})
+			},
+			insertImage() {
+				uni.chooseImage({
+					count: 1,
+					success: (res) => {
+						this.editorCtx.insertImage({
+							src: res.tempFilePaths[0],
+							alt: '图像',
+							success: function() {
+								console.log('insert image success')
+							}
+						})
+					}
+				})
 			}
+			// #endif
 		}
 	}
 </script>
 
 <style scoped>
 	@import './inputs.css';
+	/* #ifdef APP-PLUS || MP-WEIXIN */
+	@import "./editor-icon.css";
+	.editor_iconfont {
+		display: inline-block;
+		padding: 8px 8px;
+		width: 24px;
+		height: 24px;
+		cursor: pointer;
+		font-size: 20px;
+	}
+	
+	.toolbar {
+		width: 100%;
+		box-sizing: border-box;
+		border-bottom: 0;
+		font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+	}
+	
+	
+	.ql-container {
+		box-sizing: border-box;
+		padding: 12px 15px;
+		width: 100%;
+		background: #fff;
+		margin-top: 20px;
+		font-size: 16px;
+		line-height: 1.5;
+	}
+	
+	.ql-active {
+		color: #06c;
+	}
+	/* #endif */
 </style>

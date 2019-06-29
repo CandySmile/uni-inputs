@@ -25,12 +25,20 @@
 						path: '/pages/basics/loadPics/loadPics'
 					},
 					{
+						name: '无限上传图片类型 (6.9新增)',
+						path: '/pages/basics/infinitePics/infinitePics'
+					},
+					{
 						name: 'picker类型',
 						path: '/pages/basics/pickers/pickers'
 					},
 					{
 						name: '展示信息类型',
 						path: '/pages/basics/showInformation/showInformation'
+					},
+					{
+						name: 'editor类型 (6.9新增)',
+						path: '/pages/basics/editor/editor'
 					},
 					{
 						style: 'margin-top: 8vw;',
