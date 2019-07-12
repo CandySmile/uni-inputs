@@ -34,7 +34,7 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
-| v6.8、6.9|  1、新增editor类型-官方示例, 详见3.1.4,在下没用过editor，只是搬了官方的示例过来，若有什么建议可以提哦~, ref中相应增加了外部设置editor内容的方法 <br />2、新增infinitePics类型-无限上传图片(支持一次性选择多张图片，加强大图预览),详见3.1.5 <br />3、废弃verifyStatusSet中的inputsId属性，直接从inputs传入, 详见1.<br />4、input新增customTap属性与customTapIcon属性，用于自定义input图标点击事件（例如扫码）， 详见3.0.1  |
+| v7.0|  1、优化上传图片功能-- 新增 域名替换机制：（上传图片时会判断是否是网络图片(后端获取的图片)，若是会replace此路径替换域名, 域名在app.js的interface中的baseUrl设置, 然后不执行上传功能直接resolve替换后的路径）具体位于app.js中的UpLoadFile方法, 不需要则可删除<br />2、修复 固定变量名模式下 替换inputsArray后 初始值不生效的问题 <br />3、更改默认字体大小系数为.029<br />4、otherSet属性新增 segmentationTitleSet属性，用于设置segmentationTitle的字体大小系数与样式, 详见1.1.3 <br />5、buttonStyle属性新增 changeButtonSizeScale、selectButtonSizeScale、getcodeButtonSizeScale属性, 目前用于修改 更改picker按钮、验证码按钮文字大小为屏幕宽度乘以.03, 详见 1.0.5<br />6、修复res调用的setFocus方法无效问题<br />7、优化picker-date类型返回值中若小于10则前面加零
 |    ……    |    详细历次更新说明请移步至文档底部       |
 
 
@@ -115,7 +115,9 @@
 | selectButton| CssStyle|  |  picker类型选择按钮样式 |
 | confirmButton| CssStyle|  |  picker类型弹出框中确定按钮样式 |
 | getcodeButton| CssStyle|  |  获取验证码按钮样式 |
-注: 除activeButton外建议最好不要设置按钮内的字体大小，避免按钮变形
+| changeButtonSizeScale(v7.0新增)| Number| .03 |  picker类型的更改按钮文字大小系数 |
+| selectButtonSizeScale(v7.0新增)| Number| .03 |  picker类型的选择按钮文字大小系数 |
+| getcodeButtonSizeScale(v7.0新增)| Number| .03 |  验证码按钮的字体大小系数 |
 
 ### 1.0.6 titleSet属性说明
 | 值| 值类型| 默认值| 说明|
@@ -149,8 +151,8 @@
 | 值| 值类型| 默认值| 说明|
 |---|---|---|---|
 | allScale| Number| |  title与content的`字体大小系数`(屏幕~~高度~~宽度乘以此系数) |
-| titleScale| Number| ~~.018~~ `.028`|  title的`字体大小系数`(屏幕~~高度~~宽度乘以此系数),优先级大于allScale |
-| contentScale| Number| ~~.017~~ `.028`|  content的`字体大小系数`(屏幕~~高度~~宽度乘以此系数),优先级大于allScale |
+| titleScale| Number|  `.029`|  title的`字体大小系数`(屏幕~~高度~~宽度乘以此系数),优先级大于allScale |
+| contentScale| Number|  `.029`|  content的`字体大小系数`(屏幕~~高度~~宽度乘以此系数),优先级大于allScale |
 
 注：fontSizeScaleSet设置的字体大小优先级小于titleSet与contentSet中设置的字体大小
 
@@ -185,6 +187,7 @@ inputs内任何类型的值变更时都会触发此回调, 该方法接收一个
 |---|---|---|---|
 | requiredFieldsSet| Object |  | 必填标识设置, 详见1.1.3.0.1  |
 | getCodeSet| Object|   | 验证码设置, 详见1.1.3.0.2 |
+| segmentationTitleSet(v7.0新增)| Object|   | 大标题设置, 详见1.1.3.0.3 |
 
 #### 1.1.3.0.1 requiredFieldsSet属性说明
 
@@ -202,6 +205,12 @@ inputs内任何类型的值变更时都会触发此回调, 该方法接收一个
 | phoneNum| String|  | 需获取验证码的手机号, 优先于input所设置的手机号 |
 | customId| Any|  | 自定义标识，用于app.js文件中获取验证码方法中的判断 |
 
+#### 1.1.3.0.3 getCodeSet属性说明
+
+| 值| 值类型| 默认值| 说明|
+|---|---|---|---|
+| segmentationTitleFontSizeScale(v7.0新增)| Number|  .038 | 设置segmentationTitle的字体大小系数 |
+| segmentationTitleStyle(v7.0新增)| CssStyle|   | 设置segmentationTitle的样式 |
 
 ---
 
@@ -214,6 +223,7 @@ inputs内任何类型的值变更时都会触发此回调, 该方法接收一个
 | picker_hideFc| 关闭所有弹出的picker| |
 | inputs_reSet| 重置inputs为初始化| |
 | setInputsValue(6.4新增)| 设置inputs内部的值, 暂不支持pics类型赋值| |
+| setEditorContent(6.8新增)| 设置editor的值| 顺序传参: (值, 值类型), 值类型若不为delta，则按html处理|
 
 ## 2.0.1 setFocus示例
 #### 传入参数:（Number | String | Function）, focus值(Boolean), 错误回调(Function)
@@ -420,7 +430,7 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 | nullErr| | String| `this.title + '不能为空'`| 为空时提示|
 | ignore| | Boolean| `false`| 可以为空， 不判断是否为空,默认为必填，必填则在title前面有 * 标识|
 | defaultValue| | String| | 该项pics的初始化默认图片路径(本地图片路径)|
-注：若启用此项，则需完善app.js中的UpLoadFile上传图片至服务器方法，并且完善pics_splice拼接返回的图片路径方法
+注：若启用此项，则需完善app.js中的UpLoadFile上传图片至服务器方法，并且完善pics_splice拼接返回的图片路径方法<br />v7.0新增 域名替换机制 ,  若所上传的图片路径字符串开头4位是http， 则被认为是从后端获取的图片，此时会将此路径替换域名字符串为空后resolve出来
 
 ---
 ### 3.0.4 radio(单选)
@@ -994,7 +1004,7 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 | defaultValue| | |  | 初始内容|
 | defaultValueType| | String| delta| 初始值类型html或delta|
 
-注：editor类型是唯一的，只能有一个, 并且只在APP、微信小程序中的自定义组件模式下有效，需传入usingComponents属性为true
+注：editor类型是唯一的，只能有一个, 并且只在APP、微信小程序中的自定义组件模式下有效，需传入usingComponents属性为true, editor不支持动态增删
 
 ### 3.1.5 infinitePics 无限上传图片（v6.9新增）
 
@@ -1015,6 +1025,7 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
   经测试，在自定义组件模式下，inputsArray使用unshift、splice等会改变长度的方法时，switch能够监听到inputsArray的长度改变，而模板模式不能监听到长度的改变，只有对inputsArray重新赋值才能监听到长度的改变
   而若switch能监听到inputsArray长度改变时，可以去除一些无用的数据,故若使用模板模式编译则对inputsArray长度变化时，建议对inputsArray重新赋值
   示例见示例项目中的动态增删inputsArray示例
+  `editor不支持动态增删`
 ```
 
 
@@ -1622,6 +1633,7 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 
 | 版本号 | 更新说明 |
 |--------|:----------|
+| v6.8、6.9|  1、新增editor类型-官方示例, 详见3.1.4,在下没用过editor，只是搬了官方的示例过来，若有什么建议可以提哦~, ref中相应增加了外部设置editor内容的方法 <br />2、新增infinitePics类型-无限上传图片(支持一次性选择多张图片，加强大图预览),详见3.1.5 <br />3、废弃verifyStatusSet中的inputsId属性，直接从inputs传入, 详见1.<br />4、input新增customTap属性与customTapIcon属性，用于自定义input图标点击事件（例如扫码）， 详见3.0.1  |
 | v6.7|  修复inputTap点击事件    |
 | v6.6|  咳咳，下载过6.5的就不用下载了，只是发现上传图片的测试地址没删就再上传一遍    |
 | v6.5`大更新` | 1、新增`固定变量名模式`, 所谓固定变量名模式就是inputsArray中的每一项都携带一个唯一的自定义变量名属性--`variableName`, 在此模式下，当inputsArray长度动态改变时将不会对已有值的项初始化, 详见4.0.1, 示例详见示例项目中的动态增删inputsArray示例<br /><br />2、更新示例项目为详细示例 <br /><br />3、inputs的字体大小更改为根据屏幕宽度而定,默认字体大小更改为屏幕宽度*.028<br /><br />4、inputsArray中新增公共属性hide, 用于隐藏<br /><br />5、inputs新增otherSet属性，目前验证码设置、必填标识设置，详见1.  <br /><br />6、优化inputs初始渲染效果<br /><br />7、优化部分ref调用方法中的传参方式<br /><br />8、ruleSet新增部分属性, 详见1.0.4|

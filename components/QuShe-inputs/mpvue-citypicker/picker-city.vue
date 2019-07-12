@@ -1,7 +1,7 @@
 <template>
 	<view class="width100 refadIn" @touchmove.prevent.stop="voidFc">
 		<picker-view class="fontColor666666 width100 bg_white border_radius_10px over_hidden box_shadow padding05px box-sizing-border-box" 
-		:indicator-style="indicatorStyle||'height: '+wH*.048+'px;'" :style="classObj.picker" 
+		:indicator-style="indicatorStyle||('height: '+wH*.048+'px;')" :style="classObj.picker" 
 		:value="pickerValue.length>0?pickerValue:pickerValueDefault" @change="pickerChange">
 				<picker-view-column>
 					<view class="flex_row_c_c" v-for="(item,index) in provinceDataList" :key="index">{{item.label}}</view>

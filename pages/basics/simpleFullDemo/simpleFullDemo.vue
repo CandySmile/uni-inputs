@@ -153,7 +153,9 @@
 					},
 					{
 						type: "picker-date",
-						title: "date"
+						title: "date",
+						defaultValue:'2019/7/12 20:11:05',
+						onceShowDefaultValue: true //初始化时显示初始值
 					},
 					{
 						type: "picker-city",

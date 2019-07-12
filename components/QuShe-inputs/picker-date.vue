@@ -9,44 +9,44 @@
 				</picker-view-column>
 				<picker-view-column>
 					<!-- #ifndef H5 -->
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 12" :key="picker_index">{{picker_item+1}}月</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 12" :key="picker_index">{{(picker_item+1)<10?('0' + (picker_item+1)):(picker_item+1)}}月</view>
 					<!-- #endif -->
 					<!-- #ifdef H5 -->
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 12" :key="picker_index">{{picker_item}}月</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 12" :key="picker_index">{{picker_item<10?('0' + picker_item):picker_item}}月</view>
 					<!-- #endif -->
 				</picker-view-column>
 				<picker-view-column>
 					<!-- #ifndef H5 -->
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in days" :key="picker_index">{{picker_item+1}}日</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in days" :key="picker_index">{{(picker_item+1)<10?('0' + (picker_item+1)):(picker_item+1)}}日</view>
 					<!-- #endif -->
 					<!-- #ifdef H5 -->
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in days" :key="picker_index">{{picker_item}}日</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in days" :key="picker_index">{{picker_item<10?('0' + picker_item):picker_item}}日</view>
 					<!-- #endif -->
 				</picker-view-column>
 			</block>
 			<block v-if="mode!==picker_date_obj.date">
 				<picker-view-column>
 					<!-- #ifndef H5 -->
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 24" :key="picker_index">{{picker_item}}时</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 24" :key="picker_index">{{picker_item<10?('0' + picker_item):picker_item}}时</view>
 					<!-- #endif -->
 					<!-- #ifdef H5 -->
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 24" :key="picker_index">{{picker_item-1}}时</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 24" :key="picker_index">{{(picker_item-1)<10?('0' + (picker_item-1)):(picker_item-1)}}时</view>
 					<!-- #endif -->
 				</picker-view-column>
 				<picker-view-column>
 					<!-- #ifndef H5 -->
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 60" :key="picker_index">{{picker_item}}分</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 60" :key="picker_index">{{picker_item<10?('0' + picker_item):picker_item}}分</view>
 					<!-- #endif -->
 					<!-- #ifdef H5 -->
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 60" :key="picker_index">{{picker_item-1}}分</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 60" :key="picker_index">{{(picker_item-1)<10?('0' + (picker_item-1)):(picker_item-1)}}分</view>
 					<!-- #endif -->
 				</picker-view-column>
 				<picker-view-column>
 					<!-- #ifndef H5 -->
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 60" :key="picker_index">{{picker_item}}秒</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 60" :key="picker_index">{{picker_item<10?('0' + picker_item):picker_item}}秒</view>
 					<!-- #endif -->
 					<!-- #ifdef H5 -->
-					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 60" :key="picker_index">{{picker_item-1}}秒</view>
+					<view class="flex_row_c_c" v-for="(picker_item,picker_index) in 60" :key="picker_index">{{(picker_item-1)<10?('0' + (picker_item-1)):(picker_item-1)}}秒</view>
 					<!-- #endif -->
 				</picker-view-column>
 			</block>
@@ -76,8 +76,10 @@
 		},
 		data() {
 			let defaultDate;
-			if(this.defaultDate) defaultDate = new Date(this.defaultDate); else defaultDate = new Date();
-			let years = _app.countYears(this.startYear||new Date().getFullYear() - 5, this.endYear||new Date().getFullYear() + 5);
+			if (this.defaultDate) defaultDate = new Date(this.defaultDate);
+			else defaultDate = new Date();
+			let years = _app.countYears(this.startYear || new Date().getFullYear() - 5, this.endYear || new Date().getFullYear() +
+				5);
 			let endYear = years[years.length - 1];
 			let defaultYear = defaultDate.getFullYear(),
 				defaultMonth = defaultDate.getMonth(),
@@ -86,21 +88,21 @@
 				defaultMinute = defaultDate.getMinutes(),
 				defaultSecond = defaultDate.getSeconds();
 			let compareY = defaultYear > endYear;
-			let year = compareY? endYear:defaultYear;
-			let month = compareY? 11:defaultMonth;
+			let year = compareY ? endYear : defaultYear;
+			let month = compareY ? 11 : defaultMonth;
 			let days = _app.countDays(year, month, false, this.mode).days;
 			let dateVlue = [];
 			if (this.mode != _app.picker_date_obj.time) {
-				if(compareY)
-					dateVlue.push(years.length-1);
+				if (compareY)
+					dateVlue.push(years.length - 1);
 				else
 					for (let i = 0; i < years.length; i++) {
 						if (year == years[i]) {
 							dateVlue.push(i);
 						}
 					}
-				dateVlue.push(compareY?11:month);
-				dateVlue.push(compareY?days:defaultDay - 1);
+				dateVlue.push(compareY ? 11 : month);
+				dateVlue.push(compareY ? days : defaultDay - 1);
 			}
 			if (this.mode != _app.picker_date_obj.date) {
 				dateVlue.push(defaultHour);
@@ -113,8 +115,8 @@
 				dateVlue,
 				picker_date_obj: _app.picker_date_obj,
 				classObj: {
-					picker: 'height:' + (this.height||this.wH*.2) + 'px;font-size:' + this.fontSize+'px;',
-					marginTop5: 'margin-top:' + this.wH*.05 + 'px;'
+					picker: 'height:' + (this.height || this.wH * .2) + 'px;font-size:' + this.fontSize + 'px;',
+					marginTop5: 'margin-top:' + this.wH * .05 + 'px;'
 				}
 			}
 		},
@@ -130,11 +132,37 @@
 				let _this = this;
 				const dateValue = _this.dateVlue;
 				let Y = _this.years;
-				let data = ( _this.mode == _app.picker_date_obj.date) ?
-					(`${Y[dateValue[0]]}/${dateValue[1]+1}/${dateValue[2]+1}`) : (_this.mode == _app.picker_date_obj.time) ?
-					(`${dateValue[0]}:${dateValue[1]}:${dateValue[2]}`) :
-					(`${Y[dateValue[0]]}/${dateValue[1]+1}/${dateValue[2]+1} ${dateValue[3]}:${dateValue[4]}:${dateValue[5]}`);
-				_this.$emit('getDate',{newData: data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_date.name});
+				let year, month, day, h, m, s;
+				let data;
+				switch (_this.mode) {
+					case _app.picker_date_obj.date:
+						year = Y[dateValue[0]];
+						month = dateValue[1] + 1;
+						day = dateValue[2] + 1;
+						data = `${year}/${month<10?('0' + month):month}/${day<10?('0' + day):day}`
+						break;
+					case _app.picker_date_obj.time:
+						h = dateValue[0];
+						m = dateValue[1];
+						s = dateValue[2];
+						data = `${h}/${m}/${s}`
+						break;
+					default:
+						year = Y[dateValue[0]];
+						month = dateValue[1] + 1;
+						day = dateValue[2] + 1;
+						h = dateValue[3];
+						m = dateValue[4];
+						s = dateValue[5];
+						data =
+							`${year}/${month<10?('0' + month):month}/${day<10?('0' + day):day} ${h<10?('0' + h):h}:${m<10?('0' + m):m}:${s<10?('0' + s):s}`
+						break;
+				}
+				_this.$emit('getDate', {
+					newData: data,
+					index: _this.index,
+					type: _app.pickerChoosedType.pickerChoosedType_date.name
+				});
 			},
 			voidFc() {}
 		},

@@ -1,7 +1,7 @@
 <template>
 	<view class="width100 refadIn" @touchmove.prevent.stop="voidFc">
 		<picker-view class="fontColor666666 width100 bg_white border_radius_10px over_hidden box_shadow padding05px box-sizing-border-box"
-		 :indicator-style="indicatorStyle||'height: '+wH*.048+'px;'" :value="value" @change="bindPickerViewChange($event)"
+		 :indicator-style="indicatorStyle||('height: '+wH*.048+'px;')" :value="value" @change="bindPickerViewChange($event)"
 		 :style="classObj.picker">
 		 <block v-if="linkage">
 			<block v-if="linkageNum==2">

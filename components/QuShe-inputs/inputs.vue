@@ -127,14 +127,14 @@
 								{{inputsObj[item.variableName||(onLoadData+index)]}}
 							</view>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini" class="pickerBtn"
+								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
 								:style="classObj.marginLeft3 + classObj.changeButton">
 								{{item.editorName||'更改'}}
 								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"  class="pickerBtn"
+							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
 							:style="classObj.selectButton">
 							{{item.chooseName||'选择日期'}}
 							</button>
@@ -147,14 +147,14 @@
 								{{inputsObj[item.variableName||(onLoadData+index)].label}}
 							</view>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"  class="pickerBtn"
+								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
 								:style="classObj.marginLeft3 + classObj.changeButton">
 								{{item.editorName||'更改'}}
 								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"  class="pickerBtn"
+							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
 							:style="classObj.selectButton">
 							{{item.chooseName||'选择城市'}}
 							</button>
@@ -176,14 +176,14 @@
 								</view>
 							</block>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"  class="pickerBtn"
+								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
 								:style="classObj.marginLeft3 + classObj.changeButton">
 								{{item.editorName||'更改'}}
 								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"  class="pickerBtn"
+							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
 							:style="classObj.selectButton">
 							{{item.chooseName||'选择'}}
 							</button>
@@ -208,14 +208,14 @@
 								</view>
 							</block>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"  class="pickerBtn"
+								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
 								:style="classObj.marginLeft3 + classObj.changeButton">
 								{{item.editorName||'更改'}}
 								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"  class="pickerBtn"
+							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
 							:style="classObj.selectButton">
 							{{item.chooseName||'选择'}}
 							</button>
@@ -228,14 +228,14 @@
 								{{inputsObj[item.variableName||(onLoadData+index)].label}}
 							</view>
 							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"  class="pickerBtn"
+								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
 								:style="classObj.marginLeft3 + classObj.changeButton">
 								{{item.editorName||'更改'}}
 								</button>
 							</view>
 						</view>
 						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"  class="pickerBtn"
+							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini" 
 							:style="classObj.selectButton">
 							{{item.chooseName||'选择街道'}}
 							</button>
@@ -373,7 +373,7 @@
 						<input type="text" :value="userCode" :placeholder="otherSet.getCodeSet?otherSet.getCodeSet.securityCodePlaceholder||'请输入验证码':'请输入验证码'" class="width100 borderBottom1pxf2f2f2" :style="classObj.contentFontSize" @input="code_change($event)"/>
 					</view>
 					<view class="flex_row_e_c width55" :style="classObj.padding0_3">
-						<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="getCode()" class="pickerBtn" :style="classObj.getcodeButton">{{startCode?codeCount + 's':'获取验证码'}}</button>
+						<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="getCode()" :style="classObj.getcodeButton">{{startCode?codeCount + 's':'获取验证码'}}</button>
 					</view>
 				</view>
 			</view>
@@ -575,8 +575,8 @@
 			const wH = systemData.screenHeight;
 			const wW = systemData.screenWidth;
 			const f = this.fontSizeScaleSet;
-			const scale_one = f.titleScale||f.allScale||.028; //title(左边)字体大小系数
-			const scale_two = f.contentScale||f.allScale||.028; //contentFontSize(右边)字体大小系数
+			const scale_one = f.titleScale||f.allScale||.029; //title(左边)字体大小系数
+			const scale_two = f.contentScale||f.allScale||.029; //contentFontSize(右边)字体大小系数
 			return {
 				onReady: false,
 				code: '', //本地验证码
@@ -600,7 +600,7 @@
 				focusObj:{}, //input、textarea视图暂存
 				verifyStatusObj: {}, //校验边框颜色
 				classObj: { //拼接页面需用的样式
-					segmentationTitle: 'font-size:' + wH*.024 + 'px;padding:' + wH*.015+'px '+ wW*.03+'px;',
+					segmentationTitle: 'font-size:' + (wW*((this.otherSet.segmentationTitleSet?this.otherSet.segmentationTitleSet.segmentationTitleFontSizeScale||false:false)||.038)) + 'px;padding:' + wH*.015+'px '+ wW*.03+'px;' + (this.otherSet.segmentationTitleSet?this.otherSet.segmentationTitleSet.segmentationTitleStyle||'':''),
 					titleFontSize: 'font-size:' + (this.titleSet.size||wW*scale_one) + 'px;',
 					titleColor: 'color:' + (this.titleSet.color||'#666666') + ';',
 					contentFontSize: 'font-size:' + (this.contentSet.size||wW*scale_two) + 'px;',
@@ -627,10 +627,10 @@
 					animationDuration1: 'animation-duration:' + (this.inputsArray.length+1)*(this.animationDuration||.2) + 's;',
 					animationDuration2: 'animation-duration:' + (this.ifRule||this.ifCode?this.inputsArray.length+2:this.inputsArray.length+1)*(this.animationDuration||.2) + 's;',
 					activeButton: this.buttonStyle.activeButton||'',
-					changeButton: this.buttonStyle.changeButton||'',
-					selectButton: this.buttonStyle.selectButton||'',
+					changeButton: 'font-size: ' + wW*(this.buttonStyle.changeButtonSizeScale||.03) + 'px;' + this.buttonStyle.changeButton||'',
+					selectButton: 'font-size: ' + wW*(this.buttonStyle.selectButtonSizeScale||.03) + 'px;' + this.buttonStyle.selectButton||'',
 					confirmButton: this.buttonStyle.confirmButton||'',
-					getcodeButton: this.buttonStyle.getcodeButton||'',
+					getcodeButton: 'font-size: ' + wW*(this.buttonStyle.getcodeButtonSizeScale||.03) + 'px;' + this.buttonStyle.getcodeButton||'',
 					size6wW: wW*.06,
 					size4wW: wW*.04
 					
@@ -667,11 +667,11 @@
 				for (let i = 0; i < data.length; i++) { //循环inputsArray，对 相应类型相应初始化默认值
 					let item = data[i];
 					let itemVariableName = item.variableName || (_this.onLoadData + i);
-					if(_this.inputsObj[itemVariableName]!==undefined&&_this.inputsObj[itemVariableName]!==null&&fixedVariableNamePattern&&item.type!=='pics'&&item.type!=='infinitePics') {	//固定变量名模式下有值的项跳过初始化
-						continue;
-					}
 					if(item.phone)
 						if(!_this.phoneIndex) _this.phoneIndex = item.variableName || i;
+					if((item.defaultValue==null||item.defaultValue==undefined)&&_this.inputsObj[itemVariableName]!==undefined&&_this.inputsObj[itemVariableName]!==null&&fixedVariableNamePattern&&item.type!=='pics'&&item.type!=='infinitePics') {	//固定变量名模式下有值的项跳过初始化
+						continue;
+					}
 					switch (item.type) {
 						case 'radio':
 							let data;
@@ -710,7 +710,7 @@
 								else
 									picVbNmae = itemVariableName + _this.onLoadData + j;
 								if(fixedVariableNamePattern) {	//固定变量名模式下有值的项跳过初始化
-									if(_this.picsObj[picVbNmae]) { 
+									if(!item.itemArray[j].defaultValue&&_this.picsObj[picVbNmae]) { 
 										continue;
 									}
 								}
@@ -735,15 +735,18 @@
 									M = defaultDate.getMonth()+1;
 									D = defaultDate.getDate();
 								}
+								let h,m,s;
 								switch (item.mode){
 									case 'picker-date':
-										data = `${Y}/${M}/${D}`;
+										data = `${Y}/${M<10?('0'+M):M}/${D<10?('0'+D):D}`;
 										break;
 									case 'picker-time':
-										data = `${defaultDate.getHours()}:${defaultDate.getMinutes()}:${defaultDate.getSeconds()}`;
+										h = defaultDate.getHours(), m = defaultDate.getMinutes(), s = defaultDate.getSeconds();
+										data = `${h<10?('0'+h):h}:${m<10?('0'+m):m}:${s<10?('0'+s):s}`;
 										break;
 									default:
-										data = `${Y}/${M}/${D} ${defaultDate.getHours()}:${defaultDate.getMinutes()}:${defaultDate.getSeconds()}`;
+										h = defaultDate.getHours(), m = defaultDate.getMinutes(), s = defaultDate.getSeconds();
+										data = `${Y}/${M<10?('0'+M):M}/${D<10?('0'+D):D} ${h<10?('0'+h):h}:${m<10?('0'+m):m}:${s<10?('0'+s):s}`;
 										break;
 								}
 								_this.$set(_this.inputsObj, itemVariableName, data);
@@ -1040,7 +1043,7 @@
 			},
 			inputs_change({detail: {value}}, index, filterFc, filterType, isInput) { // 用户输入时，根据index赋值
 				//console.log(e.detail.value);
-				console.log(index);
+				// console.log(index);
 				if(this.inputDebounceSet.openInputDebounce&&isInput) {
 					if(inputDebounce[debounceName+index]) clearTimeout(inputDebounce[debounceName+index]);
 					if(inputDebounce[debounceTimeName+index]&&new Date().getTime()-inputDebounce[debounceTimeName+index]<(this.inputDebounceSet.delay||500)) {
@@ -1823,6 +1826,8 @@
 					this.init(true);
 				}
 			},
+			
+			// editor
 			// #ifdef APP-PLUS || MP-WEIXIN
 			readOnlyChange() {
 				console.log('editor readOnly');
@@ -1842,33 +1847,37 @@
 					console.log('找不到inputsId, 请在inputs中传入')
 			},
 			setEditorContent(val, valType) {
-				let obj = {};
-				obj[valType||'delta'] = val;
-				this.editorCtx.setContents({
-					...obj,
-					success(res) {
-						console.log('设置editor内容成功:' + JSON.stringify(res));
-					},
-					fail(err) {
-						console.log('设置editor内容失败:' + JSON.stringify(err));
-					}
-				})
+				if(this.usingComponents) {
+					let obj = {};
+					obj[valType||'delta'] = val;
+					this.editorCtx.setContents({
+						...obj,
+						success(res) {
+							console.log('设置editor内容成功:' + JSON.stringify(res));
+						},
+						fail(err) {
+							console.log('设置editor内容失败:' + JSON.stringify(err));
+						}
+					})
+				}
 			},
 			getEditorContent() {
-				return new Promise((rs, rj)=>{
-					if(this.editorCtx) {
-						this.editorCtx.getContents({
-							success(res) {
-								rs(res);
-							},
-							fail(err) {
-								rj(err);
-							}
-						})
-					}else{
-						rs('')
-					}
-				})
+				if(this.usingComponents) {
+					return new Promise((rs, rj)=>{
+						if(this.editorCtx) {
+							this.editorCtx.getContents({
+								success(res) {
+									rs(res);
+								},
+								fail(err) {
+									rj(err);
+								}
+							})
+						}else{
+							rs('')
+						}
+					})
+				}
 			},
 			editorUndo() {
 				this.editorCtx.undo()

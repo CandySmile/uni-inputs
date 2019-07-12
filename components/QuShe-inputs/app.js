@@ -1,4 +1,5 @@
 const interfaces = {
+	baseUrl: '',
 	upLoadImg: '', // 服务器地址(上传图片)
 };
 
@@ -33,6 +34,10 @@ const inputCustomTapCatchFc = function(customId, e) { // inputTap custom类型�
 }
 
 const UpLoadFile = function(customId, filePath) { // 上传文件方法: (自定义上传标识, 文件路径)
+	if(filePath.substring(0, 4)==='http') {	//域名替换机制: 判断是否是从后端获取的图片路径, 若是 替换域名字符串为空后resolve. 也可以根据customId动态控制, 不需要则删除此代码
+		const replacePath = filePath.replace(interfaces.baseUrl, '');
+		return Promise.resolve({data: replacePath});
+	}
 	let _this = this;
 	let url = '';
 	let formData = {};
@@ -84,10 +89,11 @@ const UpLoadFile = function(customId, filePath) { // 上传文件方法: (自定
 }
 
 const pics_splice = function(vals, val) { // 拼接图片上传返回后的数据, vals是拼接后的数据， val是新添项
-	if (typeof(vals) !== 'string') // 第一次传进来是一个数组
+	if (typeof(vals) !== 'string') { // 第一次传进来是一个数组
 		vals = val || '|'; // 可更改分隔符
-	else
-		vals += val ? '|' + val : '|';
+		return vals;
+	}
+	vals += val ? '|' + val : '|';
 	return vals; // 必须return vals
 }
 
@@ -97,9 +103,7 @@ const filterTypeObj = { // 内置过滤函数，可根据需求自行添加拓�
 		value = value.replace(/[^\d.]/g, ""); //清除“数字”和“.”以外的字符
 		value = value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
 		value = value.replace(/^(\-)*(\d+)\.(\d).*$/, '$1$2.$3'); //只能输入1个小数 
-		if (value == '') value = null;
-		if (value !== '0' && value !== '0.') value = parseFloat(value);
-		return value; // 必须return
+		return value;	// 必须return value
 	}
 };
 
@@ -219,7 +223,7 @@ const setValueType = {
 	},
 	focusObj: {
 		name: 'focusObj',
-		itemName: 'focus'
+		itemName: ''
 	}
 };
 const filterParamsArrayType = {
