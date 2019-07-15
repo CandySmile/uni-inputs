@@ -647,7 +647,10 @@
 			}
 		},
 		created() {
-			this.init(false, true); //初始化
+			this.init({
+				fixedVariableNamePattern: false, 
+				launch: true
+			}); //初始化
 			// #ifdef H5
 			this.onReady = true;
 			// #endif
@@ -658,19 +661,27 @@
 		},
 		// #endif
 		methods: {
-			init(fixedVariableNamePattern, launch) { // 初始化默认数据 param{是否是固定变量名模式初始化, 是否是首次初始化}
+			init(
+				initSet = {}
+			) { // 初始化默认数据 param{是否是固定变量名模式初始化, 是否是首次初始化}
+				let { fixedVariableNamePattern, launch, interSectionArr } = initSet;
 				let _this = this;
 				console.log(`初始化inputs${launch?'':fixedVariableNamePattern?'-固定变量名模式':'-非固定变量名模式'}`);
-				let data = _this.inputsArray;
+				const inputsArray = _this.inputsArray;
 				_this.$set(_this, 'verifyStatusObj', {});
 				if(_this.phoneIndex!=='') _this.phoneIndex = '';
-				for (let i = 0; i < data.length; i++) { //循环inputsArray，对 相应类型相应初始化默认值
-					let item = data[i];
+				for (let i = 0; i < inputsArray.length; i++) { //循环inputsArray，对 相应类型相应初始化默认值
+					let item = inputsArray[i];
 					let itemVariableName = item.variableName || (_this.onLoadData + i);
 					if(item.phone)
 						if(!_this.phoneIndex) _this.phoneIndex = item.variableName || i;
-					if((item.defaultValue==null||item.defaultValue==undefined)&&_this.inputsObj[itemVariableName]!==undefined&&_this.inputsObj[itemVariableName]!==null&&fixedVariableNamePattern&&item.type!=='pics'&&item.type!=='infinitePics') {	//固定变量名模式下有值的项跳过初始化
-						continue;
+					if(fixedVariableNamePattern&&!launch) {
+						if(interSectionArr.length > 0) {
+							if(interSectionArr.includes(itemVariableName)) {
+								console.log('跳过此次初始化');
+								continue;
+							}
+						}
 					}
 					switch (item.type) {
 						case 'radio':
@@ -709,11 +720,6 @@
 									picVbNmae = itemVariableName + j;
 								else
 									picVbNmae = itemVariableName + _this.onLoadData + j;
-								if(fixedVariableNamePattern) {	//固定变量名模式下有值的项跳过初始化
-									if(!item.itemArray[j].defaultValue&&_this.picsObj[picVbNmae]) { 
-										continue;
-									}
-								}
 								if (item.itemArray[j].defaultValue) {
 									_this.$set(_this.picsObj, picVbNmae, item.itemArray[j].defaultValue);
 								}else{
@@ -935,9 +941,16 @@
 							// #endif
 							break;
 						case 'infinitePics':
-							if(fixedVariableNamePattern) continue;
 							const vbName = _this.infinitePicsName + (item.variableName||i);
-							_this.$set(_this.infinitePicsObj, vbName, []);
+							if(item.defaultValue) {
+								const defaultValue = [];
+								for(let p = 0; p < item.defaultValue.length; p++) {
+									defaultValue.push({path: item.defaultValue[p]});
+								}
+								_this.$set(_this.infinitePicsObj, vbName, defaultValue);
+							}else{
+								_this.$set(_this.infinitePicsObj, vbName, []);
+							}
 							break;
 						default:
 							if(item.defaultValue) {
@@ -1753,77 +1766,85 @@
 					this.init();
 				}else{
 					console.log('检查结果-符合固定变量名模式，执行初始化函数时跳过已有值的项');
-					if(nSet.size < oSet.size) {	//新数组长度小于旧数组长度，去除多余无用变量
-						console.log('新数组长度小于旧数组长度，准备去除多余无用变量')
-						let oArr = Array.from(oSet);
-						for (let i = 0; i < oArr.length; i++) {
-							if(!nSet.has(oArr[i])) {
-								let vbName = oArr[i];
-								console.log('发现多余项:' + vbName);
-								if(vbName) {
-									let obj = o.find(item=>item.variableName===vbName);
-									let pickerValue;
-									switch (obj.type){
-										case 'pics':
-											if(obj.itemArray) {
-												for(let i = 0; i < obj.itemArray.length; i++) {
-													let picVbName = vbName + i;
-													console.log('去除picsObj变量:' + picVbName + ', 值为:' + this.picsObj[picVbName]);
-													this.$delete(this.picsObj, picVbName);
-												}
-											}
-											break;
-										case 'picker-date':
-											pickerValue = _app.pickerChoosedType.pickerChoosedType_date.value + vbName;
-											console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
-											console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
-											this.$delete(this.inputsObj, vbName);
-											this.$delete(this.pickerObj, pickerValue);
-											break;
-										case 'picker-city':
-											pickerValue = _app.pickerChoosedType.pickerChoosedType_city.value + vbName;
-											console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
-											console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
-											this.$delete(this.inputsObj, vbName);
-											this.$delete(this.pickerObj, pickerValue);
-											break;
-										case 'picker-custom':
-											pickerValue = _app.pickerChoosedType.pickerChoosedType_custom.value + vbName;
-											console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
-											console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
-											this.$delete(this.inputsObj, vbName);
-											this.$delete(this.pickerObj, pickerValue);
-											break;
-										case 'picker-custom2':
-											pickerValue = _app.pickerChoosedType.pickerChoosedType_custom2.value + vbName;
-											console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
-											console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
-											this.$delete(this.inputsObj, vbName);
-											this.$delete(this.pickerObj, pickerValue);
-											break;
-										case 'picker-provincialStreet':
-											pickerValue = _app.pickerChoosedType.pickerChoosedType_provincialStreet.value + vbName;
-											console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
-											console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
-											this.$delete(this.inputsObj, vbName);
-											this.$delete(this.pickerObj, pickerValue);
-											break;
-										case 'infinitePics':
-											console.log('去除infinitePicsObj变量:' + vbName + ', 值为:' + this.infinitePicsObj[this.infinitePicsName + vbName]);
-											this.$delete(this.infinitePicsObj, this.infinitePicsName + vbName);
-											break;
-										default:
-											console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
-											this.$delete(this.inputsObj, vbName);
-											break;
+					const interSectionArr  = []; // 交集 用于跳过初始化
+					let oArr = Array.from(oSet);
+					const differenceArr  = []; // 差集 用于删除多余数据
+					for(let i = 0; i < oArr.length; i++) {
+						if(nSet.has(oArr[i])) {
+							// console.log('交集:' + oArr[i]);
+							interSectionArr.push(oArr[i]);
+						} else {
+							// console.log('差集:' + oArr[i]);
+							differenceArr.push(oArr[i]);
+						}
+					}
+					for (let i = 0; i < differenceArr.length; i++) {
+							let vbName = differenceArr[i];
+							console.log('发现多余项:' + vbName);
+						if(vbName) {
+							let obj = o.find(item=>item.variableName===vbName);
+							let pickerValue;
+							switch (obj.type){
+								case 'pics':
+									if(obj.itemArray) {
+										for(let i = 0; i < obj.itemArray.length; i++) {
+											let picVbName = vbName + i;
+											console.log('去除picsObj变量:' + picVbName + ', 值为:' + this.picsObj[picVbName]);
+											this.$delete(this.picsObj, picVbName);
+										}
 									}
-								}
+									break;
+								case 'picker-date':
+									pickerValue = _app.pickerChoosedType.pickerChoosedType_date.value + vbName;
+									console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
+									console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
+									this.$delete(this.inputsObj, vbName);
+									this.$delete(this.pickerObj, pickerValue);
+									break;
+								case 'picker-city':
+									pickerValue = _app.pickerChoosedType.pickerChoosedType_city.value + vbName;
+									console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
+									console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
+									this.$delete(this.inputsObj, vbName);
+									this.$delete(this.pickerObj, pickerValue);
+									break;
+								case 'picker-custom':
+									pickerValue = _app.pickerChoosedType.pickerChoosedType_custom.value + vbName;
+									console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
+									console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
+									this.$delete(this.inputsObj, vbName);
+									this.$delete(this.pickerObj, pickerValue);
+									break;
+								case 'picker-custom2':
+									pickerValue = _app.pickerChoosedType.pickerChoosedType_custom2.value + vbName;
+									console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
+									console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
+									this.$delete(this.inputsObj, vbName);
+									this.$delete(this.pickerObj, pickerValue);
+									break;
+								case 'picker-provincialStreet':
+									pickerValue = _app.pickerChoosedType.pickerChoosedType_provincialStreet.value + vbName;
+									console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
+									console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
+									this.$delete(this.inputsObj, vbName);
+									this.$delete(this.pickerObj, pickerValue);
+									break;
+								case 'infinitePics':
+									console.log('去除infinitePicsObj变量:' + vbName + ', 值为:' + this.infinitePicsObj[this.infinitePicsName + vbName]);
+									this.$delete(this.infinitePicsObj, this.infinitePicsName + vbName);
+									break;
+								default:
+									console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
+									this.$delete(this.inputsObj, vbName);
+									break;
 							}
 						}
-					}else{
-						console.log('长度没有变化, 若确定改变了inputsArray的长度，请检查是否在模板模式下使用了unshift、splice等方法，建议模板模式下对inputsArray重新赋值');
 					}
-					this.init(true);
+					this.init({
+						fixedVariableNamePattern: true, 
+						launch: false, 
+						interSectionArr
+					});
 				}
 			},
 			

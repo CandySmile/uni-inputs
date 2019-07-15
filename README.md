@@ -34,7 +34,7 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
-| v7.0|  1、优化上传图片功能-- 新增 域名替换机制：（上传图片时会判断是否是网络图片(后端获取的图片)，若是会replace此路径替换域名, 域名在app.js的interface中的baseUrl设置, 然后不执行上传功能直接resolve替换后的路径）具体位于app.js中的UpLoadFile方法, 不需要则可删除<br />2、修复 固定变量名模式下 替换inputsArray后 初始值不生效的问题 <br />3、更改默认字体大小系数为.029<br />4、otherSet属性新增 segmentationTitleSet属性，用于设置segmentationTitle的字体大小系数与样式, 详见1.1.3 <br />5、buttonStyle属性新增 changeButtonSizeScale、selectButtonSizeScale、getcodeButtonSizeScale属性, 目前用于修改 更改picker按钮、验证码按钮文字大小为屏幕宽度乘以.03, 详见 1.0.5<br />6、修复res调用的setFocus方法无效问题<br />7、优化picker-date类型返回值中若小于10则前面加零
+| v7.1 | 1、再次修复固定变量名模式下初始化问题(emmm...这次一定好啊啊啊啊)<br />2、infinitePics支持默认值, 详见3.1.5 |
 |    ……    |    详细历次更新说明请移步至文档底部       |
 
 
@@ -1012,6 +1012,7 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'infinitePics'`|
 | max| | Number| 无限| 图片数量的限制数值|
+| defaultValue |    |Array|    |初始默认图片数组, 数组中每项为图片地址|
 
 注：支持多选择，加强大图预览
 
@@ -1633,6 +1634,7 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 
 | 版本号 | 更新说明 |
 |--------|:----------|
+| v7.0 | 1、优化上传图片功能-- 新增 域名替换机制：（上传图片时会判断是否是网络图片(后端获取的图片)，若是会replace此路径替换域名, 域名在app.js的interface中的baseUrl设置, 然后不执行上传功能直接resolve替换后的路径）具体位于app.js中的UpLoadFile方法, 不需要则可删除<br />2、修复 固定变量名模式下 替换inputsArray后 初始值不生效的问题 <br />3、更改默认字体大小系数为.029<br />4、otherSet属性新增 segmentationTitleSet属性，用于设置segmentationTitle的字体大小系数与样式, 详见1.1.3 <br />5、buttonStyle属性新增 changeButtonSizeScale、selectButtonSizeScale、getcodeButtonSizeScale属性, 目前用于修改 更改picker按钮、验证码按钮文字大小, 详见 1.0.5<br />6、修复ref调用的setFocus方法无效问题<br />7、优化picker-date类型返回值中若小于10则前面加零 |
 | v6.8、6.9|  1、新增editor类型-官方示例, 详见3.1.4,在下没用过editor，只是搬了官方的示例过来，若有什么建议可以提哦~, ref中相应增加了外部设置editor内容的方法 <br />2、新增infinitePics类型-无限上传图片(支持一次性选择多张图片，加强大图预览),详见3.1.5 <br />3、废弃verifyStatusSet中的inputsId属性，直接从inputs传入, 详见1.<br />4、input新增customTap属性与customTapIcon属性，用于自定义input图标点击事件（例如扫码）， 详见3.0.1  |
 | v6.7|  修复inputTap点击事件    |
 | v6.6|  咳咳，下载过6.5的就不用下载了，只是发现上传图片的测试地址没删就再上传一遍    |
