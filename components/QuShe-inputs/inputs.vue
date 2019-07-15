@@ -638,7 +638,9 @@
 				formats: {},
 				editorLoadedFontFace: false,
 				infinitePicsObj: {},
-				infinitePicsName: 'infinitePics'
+				infinitePicsName: 'infinitePics',
+				initedSet: new Set(),
+				fixedVariableNamePattern: false
 			};
 		},
 		watch: {
@@ -675,13 +677,15 @@
 					let itemVariableName = item.variableName || (_this.onLoadData + i);
 					if(item.phone)
 						if(!_this.phoneIndex) _this.phoneIndex = item.variableName || i;
-					if(fixedVariableNamePattern&&!launch) {
-						if(interSectionArr.length > 0) {
-							if(interSectionArr.includes(itemVariableName)) {
-								console.log('跳过此次初始化');
-								continue;
-							}
+					if(fixedVariableNamePattern) {
+						if(!_this.fixedVariableNamePattern)
+							_this.fixedVariableNamePattern = true;
+						if(_this.initedSet.has(itemVariableName)) {
+							continue;
 						}
+					}else{
+						if(_this.fixedVariableNamePattern)
+							_this.fixedVariableNamePattern = false;
 					}
 					switch (item.type) {
 						case 'radio':
@@ -693,11 +697,12 @@
 								}
 							}
 							
-							if(data)
+							if(data) {
+								if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
 								_this.$set(_this.inputsObj, itemVariableName, data);
-							else
+							}else {
 								_this.$set(_this.inputsObj, itemVariableName, '');
-								
+							}	
 							break;
 						case 'checkbox':
 							let value = [];
@@ -711,6 +716,9 @@
 									status.push('');
 								}
 							}
+							if(value.length > 0){ 
+								if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
+							}
 							_this.$set(_this.inputsObj, itemVariableName, {value, status: _app.checkbox_status(status)});
 							break;
 						case 'pics':
@@ -721,6 +729,7 @@
 								else
 									picVbNmae = itemVariableName + _this.onLoadData + j;
 								if (item.itemArray[j].defaultValue) {
+									if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
 									_this.$set(_this.picsObj, picVbNmae, item.itemArray[j].defaultValue);
 								}else{
 									_this.$set(_this.picsObj, picVbNmae, '');
@@ -755,6 +764,7 @@
 										data = `${Y}/${M<10?('0'+M):M}/${D<10?('0'+D):D} ${h<10?('0'+h):h}:${m<10?('0'+m):m}:${s<10?('0'+s):s}`;
 										break;
 								}
+								if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
 								_this.$set(_this.inputsObj, itemVariableName, data);
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_date.value + i] = ''; //初始化时清空记忆数据
 							}else{
@@ -779,6 +789,7 @@
 									value: defaultValue,
 									cityCode: areaDataList[defaultValue[2]].value
 								};
+								if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
 								_this.$set(_this.inputsObj, itemVariableName, data);
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
 							}else{
@@ -829,6 +840,7 @@
 										data.result.push(d[v[i]||0]);
 									}
 								}
+								if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
 								_this.$set(_this.inputsObj, itemVariableName, data);
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_custom.value + i] = null;
 							}else{
@@ -879,6 +891,7 @@
 										data.result.push(d[v[i]||0]);
 									}
 								}
+								if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
 								_this.$set(_this.inputsObj, itemVariableName, data);
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_custom2.value + i] = null;
 							}else{
@@ -887,9 +900,11 @@
 							}
 							break;
 						case 'switch':
+							if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
 							_this.$set(_this.inputsObj, itemVariableName, item.defaultValue || false);
 							break;
 						case 'slider':
+							if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
 							_this.$set(_this.inputsObj, itemVariableName, item.defaultValue || item.min || 0);
 							break;
 						case 'picker-provincialStreet':
@@ -912,6 +927,7 @@
 									value: defaultValue,
 									cityCode: areaDataList[defaultValue[2]].value
 								};
+								if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
 								_this.$set(_this.inputsObj, itemVariableName, data);
 								_this.pickerObj[_app.pickerChoosedType.pickerChoosedType_city.value + i] = null; //初始化时清空记忆数据
 							}else{
@@ -931,6 +947,7 @@
 								})
 								this.editorLoadedFontFace = true;
 								if(item.defaultValue) {
+									if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
 									if(this.editorCtx) {
 										this.setEditorContent(item.defaultValue, item.defaultValueType);
 									}else{
@@ -947,6 +964,7 @@
 								for(let p = 0; p < item.defaultValue.length; p++) {
 									defaultValue.push({path: item.defaultValue[p]});
 								}
+								if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
 								_this.$set(_this.infinitePicsObj, vbName, defaultValue);
 							}else{
 								_this.$set(_this.infinitePicsObj, vbName, []);
@@ -954,6 +972,7 @@
 							break;
 						default:
 							if(item.defaultValue) {
+								if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
 								_this.$set(_this.inputsObj, itemVariableName, item.defaultValue);
 							}else{
 								_this.$set(_this.inputsObj, itemVariableName, '');
@@ -965,6 +984,16 @@
 								_this.$set(_this.focusObj, itemVariableName, item.focus);
 							}
 							break;
+					}
+				}
+			},
+			initedSetChange(	// 对于用户手动更改或者init时初始化的变量进行记录
+				obj = {}
+			) {
+				const { vbName } = obj;
+				if(this.fixedVariableNamePattern) {
+					if(!this.initedSet.has(vbName)) {
+						this.initedSet.add(vbName);
 					}
 				}
 			},
@@ -1051,6 +1080,7 @@
 					});
 				}
 				let newData = {value, status: _app.checkbox_status(newArray)};
+				this.initedSetChange({vbName});
 				this.$set(this.inputsObj, vbName, newData);
 				this._emitEvent(_app.eventNames.inputsChange, {newData, oldData, index});
 			},
@@ -1092,6 +1122,7 @@
 						else
 							vbName = index;
 						let oldData = this.inputsObj[vbName];
+						this.initedSetChange({vbName});
 						this.$set(this.inputsObj, vbName, value);
 						this._emitEvent(_app.eventNames.inputsChange, {newData: value, oldData, index});
 					}
@@ -1105,6 +1136,7 @@
 				else
 					vbName = index;
 				let oldData = this.inputsObj[vbName];
+				this.initedSetChange({vbName});
 				if(val != value) {
 					new Promise((reslove,reject)=>{
 						this.$delete(this.inputsObj, vbName);
@@ -1124,6 +1156,7 @@
 				if(_app.regTest('Int', res.index))
 					vbName = this.onLoadData + res.index;
 					
+				this.initedSetChange({vbName});
 				res.oldData = this.inputsObj[vbName];
 				console.log('pickerValue：' + JSON.stringify(res));
 				this.inputsObj[vbName] = res.newData;
@@ -1161,6 +1194,7 @@
 						this.$set(this.passwordObj, vn, !this.passwordObj[vn]);
 						break;
 					case 'clear':	//一键清除
+						this.initedSetChange({vbName});
 						this.$set(this.inputsObj, vbName, '');
 						break;
 					case 'custom':
@@ -1175,8 +1209,10 @@
 			async inputCustomTapFc(index, customId, vbName) {
 				try{
 					const data = await _app.inputCustomTapFc(customId);
-					if(data!==undefined&&data!==null)
+					if(data!==undefined&&data!==null) {
+						this.initedSetChange({vbName});
 						this.$set(this.inputsObj, vbName, data);
+					}
 				}catch(e){
 					//TODO handle the exception
 					const data = await _app.inputCustomTapCatchFc(customId, e);
@@ -1522,6 +1558,7 @@
 				}
 				uni.chooseImage({
 					success: res => {
+						this.initedSetChange({vbName: index});
 						if(infinite) {
 							const infinitePicsObj = {...this.infinitePicsObj};
 							if(!infinitePicsObj[vbName])
@@ -1548,23 +1585,24 @@
 				})
 			},
 			clearPic(index, picsIndex, infinite) { //清除图片
-			let vbName;
-			let oldData;
-			if(infinite) {
-				vbName = this.infinitePicsName + index;
-				const infinitePicsObj = {...this.infinitePicsObj};
-				infinitePicsObj[vbName].splice(picsIndex, 1);
-				this.$set(this.infinitePicsObj, vbName, infinitePicsObj[vbName]);
-			}else {
-				if(_app.regTest('Int', index)) {
-					vbName = this.onLoadData + index + this.onLoadData + picsIndex;
-				}else{
-					vbName = index + picsIndex;
+				this.initedSetChange({vbName: index});
+				let vbName;
+				let oldData;
+				if(infinite) {
+					vbName = this.infinitePicsName + index;
+					const infinitePicsObj = {...this.infinitePicsObj};
+					infinitePicsObj[vbName].splice(picsIndex, 1);
+					this.$set(this.infinitePicsObj, vbName, infinitePicsObj[vbName]);
+				}else {
+					if(_app.regTest('Int', index)) {
+						vbName = this.onLoadData + index + this.onLoadData + picsIndex;
+					}else{
+						vbName = index + picsIndex;
+					}
+					oldData = this.picsObj[vbName];
+					this.picsObj[vbName] = '';
+					this._emitEvent(_app.eventNames.inputsChange, {newData: '', oldData, index, picsIndex});
 				}
-				oldData = this.picsObj[vbName];
-				this.picsObj[vbName] = '';
-				this._emitEvent(_app.eventNames.inputsChange, {newData: '', oldData, index, picsIndex});
-			}
 			},
 			showImg(imgPath) { //大图预览选中的图片
 				_app.previewImage(imgPath);
@@ -1716,6 +1754,7 @@
 				if((isNumber?i<0:i==='')) {
 					if(fail&&typeof(fail)==='function') fail(isNumber?'下标小于零':'匹配标识不能为空');
 				}else {
+					this.initedSetChange({vbName: i});
 					this.$set(this[obj.name], (isNumber?(this.onLoadData + i):i) + obj.itemName, value); 
 				}
 			},
@@ -1766,15 +1805,10 @@
 					this.init();
 				}else{
 					console.log('检查结果-符合固定变量名模式，执行初始化函数时跳过已有值的项');
-					const interSectionArr  = []; // 交集 用于跳过初始化
 					let oArr = Array.from(oSet);
 					const differenceArr  = []; // 差集 用于删除多余数据
 					for(let i = 0; i < oArr.length; i++) {
-						if(nSet.has(oArr[i])) {
-							// console.log('交集:' + oArr[i]);
-							interSectionArr.push(oArr[i]);
-						} else {
-							// console.log('差集:' + oArr[i]);
+						if(!nSet.has(oArr[i])) {
 							differenceArr.push(oArr[i]);
 						}
 					}
@@ -1782,7 +1816,8 @@
 							let vbName = differenceArr[i];
 							console.log('发现多余项:' + vbName);
 						if(vbName) {
-							let obj = o.find(item=>item.variableName===vbName);
+							if(this.initedSet.has(vbName)) this.initedSet.delete(vbName);
+							const obj = o.find(item=>item.variableName===vbName);
 							let pickerValue;
 							switch (obj.type){
 								case 'pics':
@@ -1841,9 +1876,7 @@
 						}
 					}
 					this.init({
-						fixedVariableNamePattern: true, 
-						launch: false, 
-						interSectionArr
+						fixedVariableNamePattern: true
 					});
 				}
 			},
