@@ -25,6 +25,10 @@
 					{
 						name: '动态增删inputsArray示例',
 						path: '/pages/highGrades/dynamicallyAddOrDeleteInputsArray/dynamicallyAddOrDeleteInputsArray'
+					},
+					{
+						name: 'picker-custom与picker-custom2逐级获取示例',
+						path: '/pages/highGrades/pickerAsync/pickerAsync'
 					}
 				]
 			}

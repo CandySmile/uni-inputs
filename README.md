@@ -34,8 +34,7 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
-| v7.2 | 1、再一次修复固定变量名模式下初始化问题(啊，， 好失败啊，，) ， 这个问题是这样的，对于用户手动修改值后或者在初始化时有默认值的项将被判定为已初始化，下次初始化时不会改变原有的值, 而未判定为已初始化的值，在下次初始化时还是有机会初始化|
-| v7.1 | 1、再次修复固定变量名模式下初始化问题(emmm...这次一定好啊啊啊啊)<br />2、infinitePics支持默认值, 详见3.1.5 |
+| v7.3 | 1、picker-custom与picker-custom2新增逐级获取功能, 需要在app.js中配置getSendData与getAsyncDataFc两个方法<br />2、修复picker-date下mode为picker-time的问题, 并且picker-time支持初始化<br />3、修复app.js中的手机号正则判断(在下遇到了198的手机号，然后判断不通过……修改为必须以1开头的11位数字)<br />4、修复可能出现input输入报错问题(需要部分苹果机型的小伙伴测试一下) |
 |    ……    |    详细历次更新说明请移步至文档底部       |
 
 
@@ -206,7 +205,7 @@ inputs内任何类型的值变更时都会触发此回调, 该方法接收一个
 | phoneNum| String|  | 需获取验证码的手机号, 优先于input所设置的手机号 |
 | customId| Any|  | 自定义标识，用于app.js文件中获取验证码方法中的判断 |
 
-#### 1.1.3.0.3 getCodeSet属性说明
+#### 1.1.3.0.3 segmentationTitleSet属性说明(v7.0新增)
 
 | 值| 值类型| 默认值| 说明|
 |---|---|---|---|
@@ -563,6 +562,8 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 | editorName| | String| 更改| 更改按钮命名|
 | confirmName| | String| 确定| 弹出时,确定选择按钮命名|
 | onceShowDefaultValue| | Boolean| false| 初始化时是否显示初始值|
+| async(7.3新增)| | Boolean| false| 是否逐级获取, 详见示例项目-高级-逐级获取示例|
+| customId| | String\|Object| | 自定义标识|
 
 #### 3.1.0.0.1 picker-custom的steps属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
@@ -818,6 +819,8 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 | editorName| | String| 更改| 更改按钮命名|
 | confirmName| | String| 确定| 弹出时,确定选择按钮命名|
 | onceShowDefaultValue| | Boolean| `false`| 初始化时是否显示初始值|
+| async(7.3新增)| | Boolean| false| 是否逐级获取, 详见示例项目-高级-逐级获取示例|
+| customId| | String\|Object| | 自定义标识|
 
 #### 3.1.1.0.1 picker-custom2的steps属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
@@ -1635,6 +1638,8 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 
 | 版本号 | 更新说明 |
 |--------|:----------|
+| v7.2 | 1、再一次修复固定变量名模式下初始化问题(啊，， 好失败啊，，) ， 这个问题是这样的，对于用户手动修改值后或者在初始化时有默认值的项将被判定为已初始化，下次初始化时不会改变原有的值, 而未判定为已初始化的值，在下次初始化时还是有机会初始化|
+| v7.1 | 1、再次修复固定变量名模式下初始化问题(emmm...这次一定好啊啊啊啊)<br />2、infinitePics支持默认值, 详见3.1.5 |
 | v7.0 | 1、优化上传图片功能-- 新增 域名替换机制：（上传图片时会判断是否是网络图片(后端获取的图片)，若是会replace此路径替换域名, 域名在app.js的interface中的baseUrl设置, 然后不执行上传功能直接resolve替换后的路径）具体位于app.js中的UpLoadFile方法, 不需要则可删除<br />2、修复 固定变量名模式下 替换inputsArray后 初始值不生效的问题 <br />3、更改默认字体大小系数为.029<br />4、otherSet属性新增 segmentationTitleSet属性，用于设置segmentationTitle的字体大小系数与样式, 详见1.1.3 <br />5、buttonStyle属性新增 changeButtonSizeScale、selectButtonSizeScale、getcodeButtonSizeScale属性, 目前用于修改 更改picker按钮、验证码按钮文字大小, 详见 1.0.5<br />6、修复ref调用的setFocus方法无效问题<br />7、优化picker-date类型返回值中若小于10则前面加零 |
 | v6.8、6.9|  1、新增editor类型-官方示例, 详见3.1.4,在下没用过editor，只是搬了官方的示例过来，若有什么建议可以提哦~, ref中相应增加了外部设置editor内容的方法 <br />2、新增infinitePics类型-无限上传图片(支持一次性选择多张图片，加强大图预览),详见3.1.5 <br />3、废弃verifyStatusSet中的inputsId属性，直接从inputs传入, 详见1.<br />4、input新增customTap属性与customTapIcon属性，用于自定义input图标点击事件（例如扫码）， 详见3.0.1  |
 | v6.7|  修复inputTap点击事件    |

@@ -45,7 +45,10 @@
 				default: 10
 			},
 			confirmName: String,
-			index: String,
+			index: {
+				type: [String, Number],
+				default: ''
+			},
 			confirmStyle: String
 		},
 		data() {

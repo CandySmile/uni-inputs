@@ -404,15 +404,19 @@
 		</view>
 		<!-- picker自定义 -->
 		<view class="flex_row_c_c picker_view" v-else-if="pickerCustomShow">
-			<picker-custom class="width100" :itemArray="P_data.itemArray" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
+			<picker-custom class="width100" :itemArray="P_data.itemArray" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" 
+			:steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
 			:fontSize="classObj.contentSize" @getCustom="picker_change($event)" 
-			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="classObj.confirmButton"/>
+			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" 
+			:confirmStyle="classObj.confirmButton" :async="P_data.async" :customId="P_data.customId"/>
 		</view>
 		<!-- picker自定义2 -->
 		<view class="flex_row_c_c picker_view" v-else-if="pickerCustom2Show">
-			<picker-custom2 class="width100" :itemArray="P_data.itemArray" :itemObject="P_data.itemObject" :linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
+			<picker-custom2 class="width100" :itemArray="P_data.itemArray" :itemObject="P_data.itemObject" 
+			:linkage="P_data.linkage" :linkageNum="P_data.linkageNum" :steps="P_data.steps" :indicatorStyle="P_data.indicatorStyle" :height="P_data.height" :wH="wH" 
 			:fontSize="classObj.contentSize" @getCustom="picker_change($event)" 
-			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" :confirmStyle="classObj.confirmButton"/>
+			:pickerValueDefault="P_data.defaultValue" :confirmName="P_data.confirmName" :index="P_data.index" 
+			:confirmStyle="classObj.confirmButton" :async="P_data.async" :customId="P_data.customId"/>
 		</view>
 		<!-- 省市区街道四级联动 -->
 		<view class="flex_row_c_c picker_view" v-else-if="pickerProvincialStreetShow">
@@ -666,7 +670,7 @@
 			init(
 				initSet = {}
 			) { // 初始化默认数据 param{是否是固定变量名模式初始化, 是否是首次初始化}
-				let { fixedVariableNamePattern, launch, interSectionArr } = initSet;
+				let { fixedVariableNamePattern, launch } = initSet;
 				let _this = this;
 				console.log(`初始化inputs${launch?'':fixedVariableNamePattern?'-固定变量名模式':'-非固定变量名模式'}`);
 				const inputsArray = _this.inputsArray;
@@ -738,30 +742,46 @@
 							break;
 						case 'picker-date':
 							if(item.onceShowDefaultValue) {
+								let data = '',Y, M, D, defaultEndY = new Date().getFullYear() + 5, h, m, s;
 								let defaultDate;
-								if(item.defaultValue) defaultDate = new Date(item.defaultValue); else defaultDate = new Date();
-								let data = '',Y, M,D,defaultEndY = new Date().getFullYear() + 5;
-								if(defaultDate.getFullYear() > (item.endYear||defaultEndY)) {
-									Y = item.endYear || defaultEndY;
-									M = 12;
-									D = _app.countDays(Y,M-1).days.pop();
-								}else {
-									Y = defaultDate.getFullYear();
-									M = defaultDate.getMonth()+1;
-									D = defaultDate.getDate();
+								if(item.mode!==_app.picker_date_obj.time) {
+									if(item.defaultValue) defaultDate = new Date(item.defaultValue); else defaultDate = new Date();
+									if(defaultDate.getFullYear() > (item.endYear||defaultEndY)) {
+										Y = item.endYear || defaultEndY;
+										M = 12;
+										D = _app.countDays(Y,M-1).days.pop();
+									}else {
+										Y = defaultDate.getFullYear();
+										M = defaultDate.getMonth()+1;
+										D = defaultDate.getDate();
+									}
+									M = _app.formatNum(M);
+									D = _app.formatNum(D);
 								}
-								let h,m,s;
 								switch (item.mode){
-									case 'picker-date':
-										data = `${Y}/${M<10?('0'+M):M}/${D<10?('0'+D):D}`;
+									case _app.picker_date_obj.date:
+										data = `${Y}/${M}/${D}`;
 										break;
-									case 'picker-time':
-										h = defaultDate.getHours(), m = defaultDate.getMinutes(), s = defaultDate.getSeconds();
-										data = `${h<10?('0'+h):h}:${m<10?('0'+m):m}:${s<10?('0'+s):s}`;
+									case _app.picker_date_obj.time:
+									console.log('defaultValue:' + item.defaultValue);
+										if(item.defaultValue) {
+											const arr = item.defaultValue.split(":");
+											h = _app.formatNum(parseInt(arr[0]));
+											m = _app.formatNum(parseInt(arr[1]));
+											s = _app.formatNum(parseInt(arr[2]));
+										}else{
+											let defaultDate = new Date();
+											h = _app.formatNum(defaultDate.getHours());
+											m = _app.formatNum(defaultDate.getMinutes());
+											s = _app.formatNum(defaultDate.getSeconds());
+										}
+										data = `${h}:${m}:${s}`;
 										break;
 									default:
-										h = defaultDate.getHours(), m = defaultDate.getMinutes(), s = defaultDate.getSeconds();
-										data = `${Y}/${M<10?('0'+M):M}/${D<10?('0'+D):D} ${h<10?('0'+h):h}:${m<10?('0'+m):m}:${s<10?('0'+s):s}`;
+										h = _app.formatNum(defaultDate.getHours());
+										m = _app.formatNum(defaultDate.getMinutes());
+										s = _app.formatNum(defaultDate.getSeconds());
+										data = `${Y}/${M}/${D} ${h}:${m}:${s}`;
 										break;
 								}
 								if(fixedVariableNamePattern) _this.initedSet.add(itemVariableName);
@@ -798,7 +818,7 @@
 							}
 							break;
 						case 'picker-custom':
-							if(item.onceShowDefaultValue) {
+							if(item.onceShowDefaultValue&&!item.async) {
 								let datas = item.itemArray;
 								let v = [];
 								if(item.defaultValue)
@@ -849,7 +869,7 @@
 							}
 							break;
 						case 'picker-custom2':
-							if(item.onceShowDefaultValue) {
+							if(item.onceShowDefaultValue&&!item.async) {
 								let datas = item.linkage?item.itemObject:item.itemArray;
 								let v = [];
 								if(item.defaultValue)
@@ -1767,9 +1787,9 @@
 							itemObj = this.inputsArray[index];
 						else
 							itemObj = this.inputsArray.find(item=>item.variableName===index);
+						obj.type = obj.type||itemObj.type||'input';
 						obj = {
 							...obj,
-							type: (obj.type?obj.type:itemObj.type)||'input',
 							title: itemObj.title,
 							customId: itemObj.customId
 						}

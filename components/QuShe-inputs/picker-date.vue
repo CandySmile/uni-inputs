@@ -1,7 +1,7 @@
 <template>
 	<view class="width100 refadIn" @touchmove.prevent.stop="voidFc">
 		<picker-view class="fontColor666666 width100 bg_white border_radius_10px over_hidden box_shadow padding05px box-sizing-border-box"
-		 :indicator-style="indicatorStyle||('height: '+wH*.048+'px;width: 100%;')" :value="dateVlue" @change="bindPickerViewChange($event)"
+		 :indicator-style="indicatorStyle||('height: '+wH*.048+'px;width: 100%;')" :value="dateValue" @change="bindPickerViewChange($event)"
 		 :style="classObj.picker">
 			<block v-if="mode!==picker_date_obj.time">
 				<picker-view-column>
@@ -71,48 +71,63 @@
 				default: 10
 			},
 			confirmName: String,
-			index: String,
+			index: {
+				type: [String, Number],
+				default: ''
+			},
 			confirmStyle: String
 		},
 		data() {
-			let defaultDate;
+			let dateValue = [], years = [], days = [];
+			let defaultDate, defaultHour, defaultMinute, defaultSecond;
+			if (this.mode !== _app.picker_date_obj.time) {
 			if (this.defaultDate) defaultDate = new Date(this.defaultDate);
 			else defaultDate = new Date();
-			let years = _app.countYears(this.startYear || new Date().getFullYear() - 5, this.endYear || new Date().getFullYear() +
+			years = _app.countYears(this.startYear || new Date().getFullYear() - 5, this.endYear || new Date().getFullYear() +
 				5);
 			let endYear = years[years.length - 1];
 			let defaultYear = defaultDate.getFullYear(),
 				defaultMonth = defaultDate.getMonth(),
-				defaultDay = defaultDate.getDate(),
-				defaultHour = defaultDate.getHours(),
-				defaultMinute = defaultDate.getMinutes(),
-				defaultSecond = defaultDate.getSeconds();
+				defaultDay = defaultDate.getDate();
+			defaultHour = defaultDate.getHours(),
+			defaultMinute = defaultDate.getMinutes(),
+			defaultSecond = defaultDate.getSeconds();
 			let compareY = defaultYear > endYear;
 			let year = compareY ? endYear : defaultYear;
 			let month = compareY ? 11 : defaultMonth;
-			let days = _app.countDays(year, month, false, this.mode).days;
-			let dateVlue = [];
-			if (this.mode != _app.picker_date_obj.time) {
+			days = _app.countDays(year, month, false, this.mode).days;
 				if (compareY)
-					dateVlue.push(years.length - 1);
+					dateValue.push(years.length - 1);
 				else
 					for (let i = 0; i < years.length; i++) {
 						if (year == years[i]) {
-							dateVlue.push(i);
+							dateValue.push(i);
 						}
 					}
-				dateVlue.push(compareY ? 11 : month);
-				dateVlue.push(compareY ? days : defaultDay - 1);
+				dateValue.push(compareY ? 11 : month);
+				dateValue.push(compareY ? days : defaultDay - 1);
+			}else{
+				if(this.defaultDate) {
+					const arr = this.defaultDate.split(":");
+					dateValue.push(parseInt(arr[0]));
+					dateValue.push(parseInt(arr[1]));
+					dateValue.push(parseInt(arr[2]));
+				}else{
+					let defaultTime = new Date();
+					dateValue.push(defaultTime.getHours());
+					dateValue.push(defaultTime.getMinutes());
+					dateValue.push(defaultTime.getSeconds());
+				}
 			}
-			if (this.mode != _app.picker_date_obj.date) {
-				dateVlue.push(defaultHour);
-				dateVlue.push(defaultMinute);
-				dateVlue.push(defaultSecond);
+			if (this.mode !== _app.picker_date_obj.date && this.mode !== _app.picker_date_obj.time) {
+				dateValue.push(defaultHour);
+				dateValue.push(defaultMinute);
+				dateValue.push(defaultSecond);
 			}
 			return {
 				years,
 				days,
-				dateVlue,
+				dateValue,
 				picker_date_obj: _app.picker_date_obj,
 				classObj: {
 					picker: 'height:' + (this.height || this.wH * .2) + 'px;font-size:' + this.fontSize + 'px;',
@@ -121,41 +136,45 @@
 			}
 		},
 		methods: {
-			bindPickerViewChange(e) {
+			bindPickerViewChange({detail: { value }}) {
 				// console.log(JSON.stringify(e));
-				const val = e.detail.value
-				let data = _app.countDays(this.years[val[0]], val[1], val);
-				this.days = data.days;
-				this.dateVlue = data.val;
+				if(this.mode!==_app.picker_date_obj.time) {
+					let data = _app.countDays(this.years[value[0]], value[1], value);
+					this.days = data.days;
+					this.dateValue = data.val;
+				}else{
+					this.dateValue = value;
+				}
 			},
 			confirmFc() {
 				let _this = this;
-				const dateValue = _this.dateVlue;
+				const dateValue = _this.dateValue;
+				console.log(JSON.stringify(dateValue));
 				let Y = _this.years;
 				let year, month, day, h, m, s;
 				let data;
 				switch (_this.mode) {
 					case _app.picker_date_obj.date:
 						year = Y[dateValue[0]];
-						month = dateValue[1] + 1;
-						day = dateValue[2] + 1;
-						data = `${year}/${month<10?('0' + month):month}/${day<10?('0' + day):day}`
+						month = _app.formatNum(dateValue[1] + 1);
+						day = _app.formatNum(dateValue[2] + 1);
+						data = `${year}/${month}/${day}`;
 						break;
 					case _app.picker_date_obj.time:
-						h = dateValue[0];
-						m = dateValue[1];
-						s = dateValue[2];
-						data = `${h}/${m}/${s}`
+						h = _app.formatNum(dateValue[0]);
+						m = _app.formatNum(dateValue[1]);
+						s = _app.formatNum(dateValue[2]);
+						data = `${h}:${m}:${s}`;
 						break;
 					default:
 						year = Y[dateValue[0]];
-						month = dateValue[1] + 1;
-						day = dateValue[2] + 1;
-						h = dateValue[3];
-						m = dateValue[4];
-						s = dateValue[5];
+						month = _app.formatNum(dateValue[1] + 1);
+						day = _app.formatNum(dateValue[2] + 1);
+						h = _app.formatNum(dateValue[3]);
+						m = _app.formatNum(dateValue[4]);
+						s = _app.formatNum(dateValue[5]);
 						data =
-							`${year}/${month<10?('0' + month):month}/${day<10?('0' + day):day} ${h<10?('0' + h):h}:${m<10?('0' + m):m}:${s<10?('0' + s):s}`
+							`${year}/${month}/${day} ${h}:${m}:${s}`;
 						break;
 				}
 				_this.$emit('getDate', {

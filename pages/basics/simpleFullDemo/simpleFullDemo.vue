@@ -158,6 +158,13 @@
 						onceShowDefaultValue: true //初始化时显示初始值
 					},
 					{
+						type: "picker-date",
+						title: "time",
+						mode: 'picker-time',
+						// defaultValue:'20:11:05',
+						onceShowDefaultValue: true //初始化时显示初始值
+					},
+					{
 						type: "picker-city",
 						title: "city",
 						defaultValue: [10, 6, 0],

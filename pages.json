@@ -162,6 +162,10 @@
             	"navigationBarTitleText": "inputs-自定义input图标点击事件"
 			}
         }
+        ,{
+            "path" : "pages/highGrades/pickerAsync/pickerAsync",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
