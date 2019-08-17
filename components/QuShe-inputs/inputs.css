@@ -1,3 +1,6 @@
+.picker_active{
+	padding: 10rpx;
+}
 .picker_active:active{
 	background-color: #f8f8f8;
 }
