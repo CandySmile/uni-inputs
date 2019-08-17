@@ -18,7 +18,7 @@
 	export default {
 		data() {
 			return {
-				content: 'inputs可以开启校验状态管理, 若启用则需在inputs组件上设置id并传入verifyStatusSet中的inputsId属性, 传入verifyStatusSet控制校验状态管理, 传入focusStyle控制状态颜色, 若为自定义组件模式建议传入usingComponents属性为true\r\n请尝试点击获取输入按钮',
+				content: 'inputs可以开启校验状态管理, 若启用则需在inputs组件上设置id并传inputsId属性为id值, 传入verifyStatusSet控制校验状态管理, 传入focusStyle控制状态颜色, 若为自定义组件模式建议传入usingComponents属性为true\r\n请尝试点击获取输入按钮',
 				usingComponents: true,
 				verifyStatusSet: {
 					openVerifyStatus: true,
@@ -113,11 +113,7 @@
 						placeholder: "限制输入小数点后一位"
 					}, {
 						title: "手机号校验",
-						verifyFc: function(value) {
-							if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value))
-								return true;
-							return false;
-						},
+						verifyType: "Tel",
 						verifyErr: "手机号校验错误",
 						ignore: true
 					}, {

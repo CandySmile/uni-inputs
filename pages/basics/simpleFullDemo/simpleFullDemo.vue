@@ -45,7 +45,8 @@
 					{
 						type: "textarea",
 						title: "textarea",
-						defaultValue: "今天也要加油鸭~" //默认值
+						defaultValue: "今天也要加油鸭~" ,//默认值
+						focus: true
 					},
 					{
 						type: "switch",
@@ -100,11 +101,7 @@
 						placeholder: "限制输入小数点后一位"
 					}, {
 						title: "手机号校验",
-						verifyFc: function(value) {
-							if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value))
-								return true;
-							return false;
-						},
+						verifyType: "Tel",
 						verifyErr: "手机号校验错误",
 						ignore: true
 					}, {
@@ -112,7 +109,7 @@
 						ignore: true, //是否可忽略该值(判断时此项值可以为空)
 						defaultValue: "今天也要加油鸭~",
 						tapClear: true, //input一键清除功能
-						// password: true, //input密码类型
+						password: true, //input密码类型
 						customTap: true,
 						customTapIcon: 'scan',
 						customId: 'scan',

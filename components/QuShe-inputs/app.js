@@ -365,23 +365,34 @@ const UpLoadFile = function(customId, filePath) { // 上传文件方法: (自定
 	}
 	return new Promise((reslove, reject) => {
 		_this.showLoading('上传文件中');
-		uni.uploadFile({
+		const obj = {
 			url,
-			formData,
 			name,
 			filePath,
 			success(res) {
-				console.log('进入UpLoadFile方法的success回调')
+				appJS.log('进入UpLoadFile方法的success回调: ' + JSON.stringify(res));
 				_this.hideLoading();
 				reslove(res)
 			},
 			fail(err) {
-				console.log('进入UpLoadFile方法的fail回调')
-				console.log(JSON.stringify(err))
+				appJS.log('进入UpLoadFile方法的fail回调')
+				appJS.log(JSON.stringify(err))
 				_this.hideLoading();
 				reject();
 			}
-		})
+		}
+		
+		// #ifdef APP-PLUS
+		if (plus.os.name.toLowerCase() === 'ios') {
+			if(Object.keys(formData).length > 0) obj.url = renderUrlData(obj.url, formData);
+		}else{
+			obj.formData = formData;
+		}
+		// #endif
+		// #ifndef APP-PLUS
+		obj.formData = formData;
+		// #endif
+		uni.uploadFile(obj);
 	})
 }
 
@@ -634,4 +645,18 @@ function getParamsArray(type) {
 			break;
 	}
 	return arr;
+}
+
+function renderUrlData(u, d) {
+	let c = '';
+	let n = 0;
+	if (d)
+		for (let i in d) {
+			if (n > 0)
+				c += '&' + i + '=' + d[i];
+			else
+				c += '?' + i + '=' + d[i];
+			++n;
+		}
+	return u + c;
 }

@@ -34,6 +34,7 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
+| v7.4 | 1、新增picker显示模式，用pickerMode属性控制picker显示模式，默认为arrowhead模式, 并增加相应的空占位字符<br /> 2、详见2. 修复自定义组件模式下input、textarea的focus错乱问题 |
 | v7.3 | 1、picker-custom与picker-custom2新增逐级获取功能, 需要在app.js中配置getSendData与getAsyncDataFc两个方法<br />2、修复picker-date下mode为picker-time的问题, 并且picker-time支持初始化<br />3、修复app.js中的手机号正则判断(在下遇到了198的手机号，然后判断不通过……修改为必须以1开头的11位数字)<br />4、修复可能出现input输入报错问题(需要部分苹果机型的小伙伴测试一下) |
 |    ……    |    详细历次更新说明请移步至文档底部       |
 
@@ -74,6 +75,8 @@
 | @inputsChange(v6.4新增)| | Function| | inputs内某类型的值更改时的回调, 详见1.1.2 |
 | otherSet(v6.5新增)| | Object| | 其他设置, 详见1.1.3 |
 | inputsId(v6.8新增)| | String| | inputs的id属性值 |
+| pickerMode(v7.4新增)| | String| | picker显示模式，若为arrowhead则为箭头模式，否则为button模式 |
+| picerPlaceholder(v7.4新增)| | String| | picker显示模式若为arrowhead时的空占位字符, 也可由picker项内属性placeholder控制 |
 注：titleFontSize、titleFontColor、contentFontSize、changeReSet、ruleArray等属性已废弃
 
 ### 1.0.1 animationType属性说明
@@ -522,6 +525,7 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 | editorName| | String| 更改| 更改日期按钮命名|
 | confirmName| | String| 确定| 弹出时,确定选择日期按钮命名|
 | onceShowDefaultValue| | Boolean| `false`| 初始化时是否显示初始值|
+| placeholder| | String| 请选择| picker为arrowhead时的空占位字符|
 #### 3.0.8.0.1 mode属性说明
 | 值|  值类型|说明|
 |------|----|----|----|-------|
@@ -543,6 +547,7 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 | editorName| | String| 更改| 更改城市按钮命名|
 | confirmName| | String| 确定| 弹出时,确定选择城市按钮命名|
 | onceShowDefaultValue| | Boolean| `false`| 初始化时是否显示初始值|
+| placeholder| | String| 请选择| picker为arrowhead时的空占位字符|
 
 注：picker-city取值时返回对象，可根据需求修改
 
@@ -564,6 +569,7 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 | onceShowDefaultValue| | Boolean| false| 初始化时是否显示初始值|
 | async(7.3新增)| | Boolean| false| 是否逐级获取, 详见示例项目-高级-逐级获取示例|
 | customId| | String\|Object| | 自定义标识|
+| placeholder| | String| 请选择| picker为arrowhead时的空占位字符|
 
 #### 3.1.0.0.1 picker-custom的steps属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
@@ -821,6 +827,7 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 | onceShowDefaultValue| | Boolean| `false`| 初始化时是否显示初始值|
 | async(7.3新增)| | Boolean| false| 是否逐级获取, 详见示例项目-高级-逐级获取示例|
 | customId| | String\|Object| | 自定义标识|
+| placeholder| | String| 请选择| picker为arrowhead时的空占位字符|
 
 #### 3.1.1.0.1 picker-custom2的steps属性说明
 | 属性名| 是否必填| 值类型| 默认值| 说明|
@@ -981,6 +988,7 @@ this.$refs.inputs.setInputsValue('notFind', 'setInputsValue示例4所设置的�
 | editorName| | String| 更改| 更改按钮命名|
 | confirmName| | String| 确定| 弹出时,确定选择按钮命名|
 | onceShowDefaultValue| | Boolean| `false`| 初始化时是否显示初始值|
+| placeholder| | String| 请选择| picker为arrowhead时的空占位字符|
 
 注：picker-provincialStreet取值时返回对象，可根据需求修改， 若无此类型需求并且嫌此组件体积过大可将乡镇街道数据文件(QuShe-inputs/mpvue-citypicker/city-data/streets.js)删除，并注释相关import代码(QuShe-inputs/mpvue-citypicker/picker-provincialStreet.vue)！
 

@@ -1,3 +1,12 @@
+.picker_active:active{
+	background-color: #f8f8f8;
+}
+
+
+
+
+
+
 .Flex1{
 	flex: 1;
 }

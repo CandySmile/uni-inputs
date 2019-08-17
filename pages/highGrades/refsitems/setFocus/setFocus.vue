@@ -32,6 +32,9 @@
 				]
 			}
 		},
+		onReady() {
+				this.setfocus1();
+		},
 		methods: {
 			setfocus1() { //设置focus示例1
 				this.$refs.inputs.setFocus({

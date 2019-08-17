@@ -1,7 +1,11 @@
 <template>
 	<view>
 		<textView :content="content"/>
-		<inputs :inputsArray="inputsArray" activeName="获取输入" @activeFc="activeFc($event)" />
+		<inputs 
+		:inputsArray="inputsArray" 
+		activeName="获取输入" 
+		@activeFc="activeFc($event)" 
+		pickerMode="arrowhead"/>
 	</view>
 </template>
 

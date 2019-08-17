@@ -15,7 +15,12 @@
 				<!-- title -->
 				<view class="width20 marginRight5 flex_row_e_c" :style="classObj.titleColor + classObj.titleFontSize" v-if="!titleHide&&item.type!=='editor'">
 					<view class="width100 word_wrap" :class="classObj.titleLayout">
-						<view class="fontColorF1505C" v-if="item.type!='pics'&&!item.ignore&&item.title&&(otherSet.requiredFieldsSet?!otherSet.requiredFieldsSet.hideRequiredFields:true)">{{otherSet.requiredFieldsSet?otherSet.requiredFieldsSet.requiredFieldsFlag||'*':'*'}}</view>{{item.title?item.title:''}}
+						<view 
+						class="fontColorF1505C" 
+						v-if="item.type!='pics'&&!item.ignore&&item.title&&(otherSet.requiredFieldsSet?!otherSet.requiredFieldsSet.hideRequiredFields:true)">
+						{{otherSet.requiredFieldsSet?otherSet.requiredFieldsSet.requiredFieldsFlag||'*':'*'}}
+						</view>
+						{{item.title?item.title:''}}
 					</view>
 				</view>
 				<view :class="[(item.type==='editor'?'width100':classObj.contentsWidth), classObj.contentsLayout]">
@@ -25,16 +30,18 @@
 							<view class="flex_column_c_c border_radius_4px transition_border_point6s" v-for="(picsItem, picsIndex) in item.itemArray"
 							 :key="picsIndex" :style="classObj.paddingPoint5 + 'border: 1px solid ' + (verifyStatusObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]||'rgba(0,0,0,0)') + ';'">
 								<view class="flex_row_c_c border1pxf2f2f2 position_relative border_radius_4px backgrounColor_f8f8f8" :style="classObj.picsBox"
-								 @tap="chooseImg(item.variableName||index, picsIndex)">
+								 @tap="chooseImg" :data-index="item.variableName||index" :data-picsindex="picsIndex" :data-infinite="false"
+								 :data-customtapid="picsItem.customTapId">
 									<image :src="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]"
 									 class="border_radius_4px box_shadow_2px_2px_5px_ADADAD" mode="aspectFill" :style="classObj.picsBox" v-if="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]"
-									 @tap="showImg(picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)])">
+									 @tap="showImg" :data-path="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]">
 									</image>
 									<view v-else>
 										<uni-icon type="image" :pxSize="classObj.size6wW" color="#999999" />
 									</view>
 									<view class="picsClear" v-if="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]"
-									 @tap.stop.prevent="clearPic(item.variableName||index, picsIndex)">
+									 @tap.stop.prevent="clearPic" :data-index="item.variableName||index" :data-picsindex="picsIndex"
+									 :data-infinite="false">
 										<uni-icon type="clear" :color="item.clearColor||'#f5105c'" :pxSize="classObj.size4wW" />
 									</view>
 								</view>
@@ -51,16 +58,18 @@
 							 :key="picsIndex" :style="classObj.paddingPoint5">
 								<view class="flex_row_c_c border1pxf2f2f2 position_relative border_radius_4px backgrounColor_f8f8f8" :style="classObj.picsBox">
 									<image :src="picsItem.path" class="border_radius_4px box_shadow_2px_2px_5px_ADADAD" mode="aspectFill" :style="classObj.picsBox"
-									 @tap="infinitePicsShowImg(item.variableName||index, picsIndex)">
+									 @tap="infinitePicsShowImg" :data-index="item.variableName||index" :data-picsindex="picsIndex">
 									</image>
-									<view class="picsClear" @tap.stop.prevent="clearPic(item.variableName||index, picsIndex, true)">
+									<view class="picsClear" @tap.stop.prevent="clearPic" :data-index="item.variableName||index" :data-picsindex="picsIndex"
+									 :data-infinite="true">
 										<uni-icon type="clear" :color="item.clearColor||'#f5105c'" :pxSize="classObj.size4wW" />
 									</view>
 								</view>
 							</view>
 							<view class="flex_column_c_c border_radius_4px transition_border_point6s" :style="classObj.paddingPoint5" v-if="item.max?(infinitePicsObj[infinitePicsName + (item.variableName||index)]?infinitePicsObj[infinitePicsName + (item.variableName||index)].length>=item.max?false:true:true):true">
 								<view class="flex_row_c_c border1pxf2f2f2 position_relative border_radius_4px backgrounColor_f8f8f8 box_shadow_2px_2px_5px_ADADAD"
-								 :style="classObj.picsBox" @tap="chooseImg(item.variableName||index, index, true)">
+								 :style="classObj.picsBox" @tap="chooseImg" :data-index="item.variableName||index" :data-picsindex="index"
+								 :data-infinite="true" :data-customtapid="item.customTapId">
 									<uni-icon type="image" :pxSize="classObj.size6wW" color="#999999" />
 								</view>
 							</view>
@@ -70,19 +79,19 @@
 					<view :class="[classObj.contentLayout]" :style="classObj.contentWidth" v-else-if="item.type&&item.type=='switch'">
 						<view class="position_relative">
 							<switch :checked="inputsObj[item.variableName||(onLoadData+index)]" :disabled="item.disabled" :type="item.mode||'switch'"
-							 :color="item.color" @change="inputs_change($event, item.variableName||index)" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
+							 :color="item.color" @change="inputs_change" :data-index="item.variableName||index" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
 						</view>
 					</view>
 					<!-- slider -->
 					<view :style="classObj.contentWidth" v-else-if="item.type&&item.type=='slider'">
-						<slider @change="inputs_change($event, item.variableName||index)" :min="item.min||0" :max="item.max||100" :step="item.step||1"
-						 :disabled="item.disabled" :value="inputsObj[item.variableName||(onLoadData+index)]" :color="item.color"
+						<slider @change="inputs_change" :data-index="item.variableName||index" :min="item.min||0" :max="item.max||100"
+						 :step="item.step||1" :disabled="item.disabled" :value="inputsObj[item.variableName||(onLoadData+index)]" :color="item.color"
 						 :selected-color="item.selected_color" :activeColor="item.activeColor" :backgroundColor="item.backgroundColor"
 						 :block-size="item.block_size" :block-color="item.block_color" :show-value="item.show_value" />
 					</view>
 					<!-- radio -->
 					<view :style="classObj.contentWidth" v-else-if="item.type&&item.type=='radio'">
-						<radio-group @change="inputs_change($event, item.variableName||index)" class="width100 wrap" :class="[classObj.contentLayout]">
+						<radio-group @change="inputs_change" :data-index="item.variableName||index" class="width100 wrap" :class="[classObj.contentLayout]">
 							<label class="fontColor666666 flex_row_none_c" :style="classObj.contentFontSize + classObj.padding1 + classObj.marginRight2"
 							 v-for="(radioItem, radioIndex) in item.itemArray" :key="radioIndex">
 								<radio :value="radioItem.value" :checked="inputsObj[item.variableName||(onLoadData+index)]==radioItem.value"
@@ -93,7 +102,7 @@
 					</view>
 					<!-- checkbox -->
 					<view :style="classObj.contentWidth" v-else-if="item.type&&item.type=='checkbox'">
-						<checkbox-group @change="checkbox_change($event, item.variableName||index)" class="width100 wrap" :class="[classObj.contentLayout]">
+						<checkbox-group @change="checkbox_change" :data-index="item.variableName||index" class="width100 wrap" :class="[classObj.contentLayout]">
 							<label class="fontColor666666 flex_row_none_c" :style="classObj.contentFontSize + classObj.padding1 + classObj.marginRight2"
 							 v-for="(checkboxItem, checkboxIndex) in item.itemArray" :key="checkboxIndex">
 								<checkbox :value="checkboxItem.value" :checked="inputsObj[item.variableName||(onLoadData+index)]&&inputsObj[item.variableName||(onLoadData+index)].status&&inputsObj[item.variableName||(onLoadData+index)].status[checkboxIndex]"
@@ -112,134 +121,346 @@
 						'width': (item.width||'60') + '%', 
 						'background-color': item.backgroundColor||'#F8F8F8', 
 						'color': item.color||'#666666', 
-						'border': '1px solid ' + (focusObj[(item.variableName||(onLoadData+index))]?(item.focusBorderStyle||focusStyle.focusBorderStyle||'#999999'):(item.blurBorderStyle||focusStyle.blurBorderStyle||'#f8f8f8'))}"
+						'border': '1px solid ' + (focusStyleObj[(item.variableName||(onLoadData+index))]?(item.focusBorderStyle||focusStyle.focusBorderStyle||'#999999'):(item.blurBorderStyle||focusStyle.blurBorderStyle||'#f8f8f8'))}"
 						 class="width100 border_radius_4px padding8px transition_point6s" :disabled="item.disabled" :maxlength="item.maxlength||140"
 						 :focus="focusObj[(item.variableName||(onLoadData+index))]" :auto-height="item.auto_height" :fixed="item.fixed"
 						 :cursor-spacing="item.cursor_spacing" :cursor="item.cursor" :show-confirm-bar="item.show_confirm_bar"
 						 :selection-start="item.selection_start" :selection-end="item.selection_end" :adjust-position="item.adjust_position"
-						 @input="inputs_change($event, item.variableName||index, item.filterFc, true)" @focus="focusChange(item.variableName||index)"
-						 @blur="blurChange(item.variableName||index)" />
+						 @input="inputs_change" :data-index="item.variableName||index" :data-filterfc="item.filterFc" :data-filtertype="item.filterType"
+						 :data-isinput="true" @focus="focusChange" @blur="blurChange" />
 						</view>
 					<!-- picker-date -->
 					<view :class="[classObj.contentLayout]" :style="classObj.padding0_3 + classObj.contentWidth" v-else-if="item.type&&item.type=='picker-date'">
-						<view class="flex_row_none_c width100" v-if="inputsObj[item.variableName||(onLoadData+index)]">
-							<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize">
-								{{inputsObj[item.variableName||(onLoadData+index)]}}
+						<block v-if="pickerMode === 'arrowhead'">
+							<view class="flex_row_none_c width100 borderBottom1pxf2f2f2 picker_active" 
+							@tap="showPicker"
+							:data-item="item"
+							:data-index="item.variableName||index">
+								<view 
+								class="flex_row_e_c width70 word_wrap" 
+								:class="inputsObj[item.variableName||(onLoadData+index)]?'fontColor666666':'fontColorADADAD'"
+								:style="classObj.contentFontSize">
+									{{
+									inputsObj[item.variableName||(onLoadData+index)]?
+									inputsObj[item.variableName||(onLoadData+index)]:
+									(item.placeholder||picerPlaceholder||'')
+									}}
+								</view>
+								<view class="flex_row_e_c width30">
+									<uniIcon :type="item.rightIcon||'arrowright'" :color="item.rightIconColor||'#666'" :pxSize="classObj.iconSize"></uniIcon>
+								</view>
 							</view>
-							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
-								:style="classObj.marginLeft3 + classObj.changeButton">
-								{{item.editorName||'更改'}}
+						</block>
+						<block v-else>
+							<view class="flex_row_none_c width100" v-if="inputsObj[item.variableName||(onLoadData+index)]">
+								<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize">
+									{{inputsObj[item.variableName||(onLoadData+index)]}}
+								</view>
+								<view class="flex_row_e_c width30">
+									<button type="primary" @tap="showPicker"
+									 :data-item="item"
+									 :data-index="item.variableName||index"
+									 size="mini"
+									:style="classObj.marginLeft3 + classObj.changeButton">
+									{{item.editorName||'更改'}}
+									</button>
+								</view>
+							</view>
+							<view class="flex_row_e_c" v-else>
+								<button type="primary" @tap="showPicker"
+								 :data-item="item"
+								 :data-index="item.variableName||index"
+								  size="mini"
+								:style="classObj.selectButton">
+								{{item.chooseName||'选择日期'}}
 								</button>
 							</view>
-						</view>
-						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
-							:style="classObj.selectButton">
-							{{item.chooseName||'选择日期'}}
-							</button>
-						</view>
+						</block>
 					</view>
 					<!-- picker-city -->
 					<view :class="[classObj.contentLayout]" :style="classObj.padding0_3 + classObj.contentWidth" v-else-if="item.type&&item.type=='picker-city'">
-						<view class="flex_row_none_c width100" v-if="inputsObj[item.variableName||(onLoadData+index)]">
-							<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize">
-								{{inputsObj[item.variableName||(onLoadData+index)].label}}
+						<block v-if="pickerMode === 'arrowhead'">
+							<view class="flex_row_none_c width100 borderBottom1pxf2f2f2 picker_active"
+							@tap="showPicker"
+							:data-item="item"
+							:data-index="item.variableName||index">
+								<view 
+								class="flex_row_e_c width70 word_wrap" 
+								:class="inputsObj[item.variableName||(onLoadData+index)]&&inputsObj[item.variableName||(onLoadData+index)].label?'fontColor666666':'fontColorADADAD'"
+								:style="classObj.contentFontSize">
+									{{
+									inputsObj[item.variableName||(onLoadData+index)]&&inputsObj[item.variableName||(onLoadData+index)].label?
+									inputsObj[item.variableName||(onLoadData+index)].label:
+									item.placeholder||picerPlaceholder||''
+									}}
+								</view>
+								<view class="flex_row_e_c width30">
+									<uniIcon :type="item.rightIcon||'arrowright'" :color="item.rightIconColor||'#666'" :pxSize="classObj.iconSize"></uniIcon>
+								</view>
 							</view>
-							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
-								:style="classObj.marginLeft3 + classObj.changeButton">
-								{{item.editorName||'更改'}}
+						</block>
+						<block v-else>
+							<view class="flex_row_none_c width100" v-if="inputsObj[item.variableName||(onLoadData+index)]">
+								<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize">
+									{{inputsObj[item.variableName||(onLoadData+index)].label}}
+								</view>
+								<view class="flex_row_e_c width30">
+									<button type="primary" @tap="showPicker"
+									:data-item="item"
+									:data-index="item.variableName||index"
+									size="mini"
+									:style="classObj.marginLeft3 + classObj.changeButton">
+									{{item.editorName||'更改'}}
+									</button>
+								</view>
+							</view>
+							<view class="flex_row_e_c" v-else>
+								<button type="primary" @tap="showPicker"
+								:data-item="item"
+								:data-index="item.variableName||index"
+								 size="mini"
+								:style="classObj.selectButton">
+								{{item.chooseName||'选择城市'}}
 								</button>
 							</view>
-						</view>
-						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
-							:style="classObj.selectButton">
-							{{item.chooseName||'选择城市'}}
-							</button>
-						</view>
+						</block>
 					</view>
 					<!-- picker-custom -->
 					<view :class="[classObj.contentLayout]" :style="classObj.padding0_3 + classObj.contentWidth" v-else-if="item.type&&item.type=='picker-custom'">
-						<view class="flex_row_none_c width100" v-if="inputsObj[item.variableName||(onLoadData+index)]">
-							<block v-if="item.linkage">
-								<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize">
-									{{item.linkageNum==2?inputsObj[item.variableName||(onLoadData+index)].result.steps1[item.steps.steps_1_value]+'-'+(item.steps.steps_2_value?inputsObj[item.variableName||(onLoadData+index)].result.steps2[item.steps.steps_2_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps2):item.linkageNum==3?inputsObj[item.variableName||(onLoadData+index)].result.steps1[item.steps.steps_1_value]+'-'+inputsObj[item.variableName||(onLoadData+index)].result.steps2[item.steps.steps_2_value]+'-'+(item.steps.steps_3_value?inputsObj[item.variableName||(onLoadData+index)].result.steps3[item.steps.steps_3_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps3):'不在范围中'}}
-								</view>
-							</block>
-							<block v-else>
-								<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize">
-									<view v-for="(i, d) in inputsObj[item.variableName||(onLoadData+index)].result" :key="d">
-										{{d==0?(item.steps?item.steps.steps_1_value?i[item.steps.steps_1_value]:i:i):'-' + (item.steps?item.steps.steps_1_value?i[item.steps.steps_1_value]:i:i)}}
+						<block v-if="pickerMode === 'arrowhead'">
+							<view 
+							class="flex_row_none_c width100 borderBottom1pxf2f2f2 picker_active"
+							@tap="showPicker"
+							:data-item="item"
+							:data-index="item.variableName||index">
+								<block v-if="item.linkage">
+									<view class="flex_row_e_c width70 word_wrap" 
+									:class="inputsObj[item.variableName||(onLoadData+index)]&&inputsObj[item.variableName||(onLoadData+index)].result?'fontColor666666':'fontColorADADAD'"
+									:style="classObj.contentFontSize">
+										{{
+										inputsObj[item.variableName||(onLoadData+index)]&&inputsObj[item.variableName||(onLoadData+index)].result?
+										item.linkageNum==2?
+										inputsObj[item.variableName||(onLoadData+index)].result.steps1[item.steps.steps_1_value]
+										+'-'+
+										(item.steps.steps_2_value?
+										inputsObj[item.variableName||(onLoadData+index)].result.steps2[item.steps.steps_2_value]:
+										inputsObj[item.variableName||(onLoadData+index)].result.steps2):
+										item.linkageNum==3?
+										inputsObj[item.variableName||(onLoadData+index)].result.steps1[item.steps.steps_1_value]
+										+'-'+
+										inputsObj[item.variableName||(onLoadData+index)].result.steps2[item.steps.steps_2_value]
+										+'-'+
+										(item.steps.steps_3_value?
+										inputsObj[item.variableName||(onLoadData+index)].result.steps3[item.steps.steps_3_value]:
+										inputsObj[item.variableName||(onLoadData+index)].result.steps3):
+										'不在范围中':
+										item.placeholder||picerPlaceholder||''
+										}}
 									</view>
+								</block>
+								<block v-else>
+									<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize">
+										<view v-for="(i, d) in inputsObj[item.variableName||(onLoadData+index)].result" :key="d">
+											{{
+											d==0?
+											(item.steps?
+											item.steps.steps_1_value?
+											i[item.steps.steps_1_value]:
+											i:
+											i):
+											'-' + 
+											(item.steps?
+											item.steps.steps_1_value?
+											i[item.steps.steps_1_value]:
+											i:
+											i)
+											}}
+										</view>
+									</view>
+								</block>
+								<view class="flex_row_e_c width30">
+									<uniIcon :type="item.rightIcon||'arrowright'" :color="item.rightIconColor||'#666'" :pxSize="classObj.iconSize"></uniIcon>
 								</view>
-							</block>
-							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
-								:style="classObj.marginLeft3 + classObj.changeButton">
-								{{item.editorName||'更改'}}
+							</view>
+						</block>
+						<block v-else>
+							<view class="flex_row_none_c width100" v-if="inputsObj[item.variableName||(onLoadData+index)]">
+								<block v-if="item.linkage">
+									<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize">
+										{{item.linkageNum==2?inputsObj[item.variableName||(onLoadData+index)].result.steps1[item.steps.steps_1_value]+'-'+(item.steps.steps_2_value?inputsObj[item.variableName||(onLoadData+index)].result.steps2[item.steps.steps_2_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps2):item.linkageNum==3?inputsObj[item.variableName||(onLoadData+index)].result.steps1[item.steps.steps_1_value]+'-'+inputsObj[item.variableName||(onLoadData+index)].result.steps2[item.steps.steps_2_value]+'-'+(item.steps.steps_3_value?inputsObj[item.variableName||(onLoadData+index)].result.steps3[item.steps.steps_3_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps3):'不在范围中'}}
+									</view>
+								</block>
+								<block v-else>
+									<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize">
+										<view v-for="(i, d) in inputsObj[item.variableName||(onLoadData+index)].result" :key="d">
+											{{d==0?(item.steps?item.steps.steps_1_value?i[item.steps.steps_1_value]:i:i):'-' + (item.steps?item.steps.steps_1_value?i[item.steps.steps_1_value]:i:i)}}
+										</view>
+									</view>
+								</block>
+								<view class="flex_row_e_c width30">
+									<button type="primary" @tap="showPicker"
+									:data-item="item"
+									:data-index="item.variableName||index"
+									 size="mini"
+									:style="classObj.marginLeft3 + classObj.changeButton">
+									{{item.editorName||'更改'}}
+									</button>
+								</view>
+							</view>
+							<view class="flex_row_e_c" v-else>
+								<button type="primary" @tap="showPicker"
+								:data-item="item"
+								:data-index="item.variableName||index"
+								size="mini"
+								:style="classObj.selectButton">
+								{{item.chooseName||'选择'}}
 								</button>
 							</view>
-						</view>
-						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
-							:style="classObj.selectButton">
-							{{item.chooseName||'选择'}}
-							</button>
-						</view>
+						</block>
 					</view>
 					<!-- picker-custom2 -->
 					<view :class="[classObj.contentLayout]" :style="classObj.padding0_3 + classObj.contentWidth" v-else-if="item.type&&item.type=='picker-custom2'">
-						<view class="flex_row_none_c width100" v-if="inputsObj[item.variableName||(onLoadData+index)]">
-							<block v-if="item.linkage">
-								<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize" v-if="item.linkageNum==2">
-									{{(item.steps&&item.steps.step_1_value?inputsObj[item.variableName||(onLoadData+index)].result.steps1[item.steps.step_1_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps1) + '-' + (item.steps&&item.steps.step_2_value?inputsObj[item.variableName||(onLoadData+index)].result.steps2[item.steps.step_2_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps2)}}
-								</view>
-								<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize" v-else-if="item.linkageNum==3">
-									{{(item.steps&&item.steps.step_1_value?inputsObj[item.variableName||(onLoadData+index)].result.steps1[item.steps.step_1_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps1) + '-' + (item.steps&&item.steps.step_2_value?inputsObj[item.variableName||(onLoadData+index)].result.steps2[item.steps.step_2_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps2) + '-' + (item.steps&&item.steps.step_3_value?inputsObj[item.variableName||(onLoadData+index)].result.steps3[item.steps.step_3_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps3)}}
-								</view>
-							</block>
-							<block v-else>
-								<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize">
-									<view v-for="(i, d) in inputsObj[item.variableName||(onLoadData+index)].result" :key="d">
-										{{d==0?(item.steps?item.steps.step_1_value?i[item.steps.step_1_value]:i:i):'-' + (item.steps?item.steps.step_1_value?i[item.steps.step_1_value]:i:i)}}
+						<block v-if="pickerMode === 'arrowhead'">
+							<view class="flex_row_none_c width100 borderBottom1pxf2f2f2 picker_active"
+							@tap="showPicker"
+							:data-item="item"
+							:data-index="item.variableName||index">
+								<block v-if="item.linkage">
+									<view 
+									class="flex_row_e_c width70 word_wrap" 
+									:class="inputsObj[item.variableName||(onLoadData+index)]&&inputsObj[item.variableName||(onLoadData+index)].result?'fontColor666666':'fontColorADADAD'"
+									:style="classObj.contentFontSize" 
+									v-if="item.linkageNum==2">
+										{{
+										inputsObj[item.variableName||(onLoadData+index)]&&inputsObj[item.variableName||(onLoadData+index)].result?
+										(item.steps&&item.steps.step_1_value?
+										inputsObj[item.variableName||(onLoadData+index)].result.steps1[item.steps.step_1_value]:
+										inputsObj[item.variableName||(onLoadData+index)].result.steps1) 
+										+ '-' + 
+										(item.steps&&item.steps.step_2_value?
+										inputsObj[item.variableName||(onLoadData+index)].result.steps2[item.steps.step_2_value]:
+										inputsObj[item.variableName||(onLoadData+index)].result.steps2):
+										item.placeholder||picerPlaceholder||''
+										}}
 									</view>
+									<view 
+									class="flex_row_e_c width70 word_wrap" 
+									:class="inputsObj[item.variableName||(onLoadData+index)]&&inputsObj[item.variableName||(onLoadData+index)].result?'fontColor666666':'fontColorADADAD'"
+									:style="classObj.contentFontSize" 
+									v-else-if="item.linkageNum==3">
+										{{
+										inputsObj[item.variableName||(onLoadData+index)]&&inputsObj[item.variableName||(onLoadData+index)].result?
+										(item.steps&&item.steps.step_1_value?
+										inputsObj[item.variableName||(onLoadData+index)].result.steps1[item.steps.step_1_value]:
+										inputsObj[item.variableName||(onLoadData+index)].result.steps1)
+										+ '-' + 
+										(item.steps&&item.steps.step_2_value?
+										inputsObj[item.variableName||(onLoadData+index)].result.steps2[item.steps.step_2_value]:
+										inputsObj[item.variableName||(onLoadData+index)].result.steps2)
+										+ '-' + 
+										(item.steps&&item.steps.step_3_value?
+										inputsObj[item.variableName||(onLoadData+index)].result.steps3[item.steps.step_3_value]:
+										inputsObj[item.variableName||(onLoadData+index)].result.steps3):
+										item.placeholder||picerPlaceholder||''
+										}}
+									</view>
+								</block>
+								<block v-else>
+									<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize">
+										<view v-for="(i, d) in inputsObj[item.variableName||(onLoadData+index)].result" :key="d">
+											{{d==0?(item.steps?item.steps.step_1_value?i[item.steps.step_1_value]:i:i):'-' + (item.steps?item.steps.step_1_value?i[item.steps.step_1_value]:i:i)}}
+										</view>
+									</view>
+								</block>
+								<view class="flex_row_e_c width30">
+									<uniIcon :type="item.rightIcon||'arrowright'" :color="item.rightIconColor||'#666'" :pxSize="classObj.iconSize"></uniIcon>
 								</view>
-							</block>
-							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
-								:style="classObj.marginLeft3 + classObj.changeButton">
-								{{item.editorName||'更改'}}
+							</view>
+						</block>
+						<block v-else>
+							<view class="flex_row_none_c width100" v-if="inputsObj[item.variableName||(onLoadData+index)]">
+								<block v-if="item.linkage">
+									<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize" v-if="item.linkageNum==2">
+										{{(item.steps&&item.steps.step_1_value?inputsObj[item.variableName||(onLoadData+index)].result.steps1[item.steps.step_1_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps1) + '-' + (item.steps&&item.steps.step_2_value?inputsObj[item.variableName||(onLoadData+index)].result.steps2[item.steps.step_2_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps2)}}
+									</view>
+									<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize" v-else-if="item.linkageNum==3">
+										{{(item.steps&&item.steps.step_1_value?inputsObj[item.variableName||(onLoadData+index)].result.steps1[item.steps.step_1_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps1) + '-' + (item.steps&&item.steps.step_2_value?inputsObj[item.variableName||(onLoadData+index)].result.steps2[item.steps.step_2_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps2) + '-' + (item.steps&&item.steps.step_3_value?inputsObj[item.variableName||(onLoadData+index)].result.steps3[item.steps.step_3_value]:inputsObj[item.variableName||(onLoadData+index)].result.steps3)}}
+									</view>
+								</block>
+								<block v-else>
+									<view class="flex_row_e_c width70 fontColor666666 word_wrap" :style="classObj.contentFontSize">
+										<view v-for="(i, d) in inputsObj[item.variableName||(onLoadData+index)].result" :key="d">
+											{{d==0?(item.steps?item.steps.step_1_value?i[item.steps.step_1_value]:i:i):'-' + (item.steps?item.steps.step_1_value?i[item.steps.step_1_value]:i:i)}}
+										</view>
+									</view>
+								</block>
+								<view class="flex_row_e_c width30">
+									<button type="primary" @tap="showPicker"
+									:data-item="item"
+									:data-index="item.variableName||index"
+									size="mini"
+									:style="classObj.marginLeft3 + classObj.changeButton">
+									{{item.editorName||'更改'}}
+									</button>
+								</view>
+							</view>
+							<view class="flex_row_e_c" v-else>
+								<button type="primary" @tap="showPicker"
+								:data-item="item"
+								:data-index="item.variableName||index"
+								size="mini"
+								:style="classObj.selectButton">
+								{{item.chooseName||'选择'}}
 								</button>
 							</view>
-						</view>
-						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
-							:style="classObj.selectButton">
-							{{item.chooseName||'选择'}}
-							</button>
-						</view>
+						</block>
 					</view>
 					<!-- picker-provincialStreet -->
 					<view :class="[classObj.contentLayout]" :style="classObj.padding0_3 + classObj.contentWidth" v-else-if="item.type&&item.type=='picker-provincialStreet'">
-						<view class="flex_row_none_c width100" v-if="inputsObj[item.variableName||(onLoadData+index)]">
-							<view class="flex_row_e_c fontColor666666 width70 word_wrap" :style="classObj.contentFontSize">
-								{{inputsObj[item.variableName||(onLoadData+index)].label}}
+						<block v-if="pickerMode === 'arrowhead'">
+							<view class="flex_row_none_c width100 borderBottom1pxf2f2f2 picker_active"
+							@tap="showPicker"
+							:data-item="item"
+							:data-index="item.variableName||index">
+								<view class="flex_row_e_c width70 word_wrap"
+								 :class="inputsObj[item.variableName||(onLoadData+index)]&&inputsObj[item.variableName||(onLoadData+index)].label?'fontColor666666':'fontColorADADAD'"
+								 :style="classObj.contentFontSize">
+									{{
+									inputsObj[item.variableName||(onLoadData+index)]&&inputsObj[item.variableName||(onLoadData+index)].label?
+									inputsObj[item.variableName||(onLoadData+index)].label:
+									item.placeholder||picerPlaceholder||''
+									}}
+								</view>
+								<view class="flex_row_e_c width30">
+									<uniIcon :type="item.rightIcon||'arrowright'" :color="item.rightIconColor||'#666'" :pxSize="classObj.iconSize"></uniIcon>
+								</view>
 							</view>
-							<view class="flex_row_e_c width30">
-								<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini"
-								:style="classObj.marginLeft3 + classObj.changeButton">
-								{{item.editorName||'更改'}}
+						</block>
+						<block v-else>
+							<view class="flex_row_none_c width100" v-if="inputsObj[item.variableName||(onLoadData+index)]">
+								<view class="flex_row_e_c fontColor666666 width70 word_wrap" :style="classObj.contentFontSize">
+									{{inputsObj[item.variableName||(onLoadData+index)].label}}
+								</view>
+								<view class="flex_row_e_c width30">
+									<button type="primary" @tap="showPicker"
+									:data-item="item"
+									:data-index="item.variableName||index"
+									size="mini"
+									:style="classObj.marginLeft3 + classObj.changeButton">
+									{{item.editorName||'更改'}}
+									</button>
+								</view>
+							</view>
+							<view class="flex_row_e_c" v-else>
+								<button type="primary" @tap="showPicker"
+								:data-item="item"
+								:data-index="item.variableName||index"
+								size="mini" 
+								:style="classObj.selectButton">
+								{{item.chooseName||'选择街道'}}
 								</button>
 							</view>
-						</view>
-						<view class="flex_row_e_c" v-else>
-							<button type="primary" @tap="showPicker(item, item.variableName||index)" size="mini" 
-							:style="classObj.selectButton">
-							{{item.chooseName||'选择街道'}}
-							</button>
-						</view>
+						</block>
 					</view>
 					<!-- text -->
 					<view :class="[classObj.contentLayout]" :style="classObj.contentWidth"
@@ -322,38 +543,53 @@
 							:showImgResize="item.showImgResize"
 							@statuschange="onStatusChange" 
 							:read-only="readOnly" 
-							@ready="onEditorReady(item.variableName||index)">
+							@ready="onEditorReady">
 							</editor>
 						</block>
 						<!-- #endif -->
 					</view>
 					<!-- input -->
-					<view class="flex_row_none_c transition_point6s" :style="classObj.contentWidth + 'border-bottom: 1px solid ' + (focusObj[(item.variableName||(onLoadData+index))]?(item.focusBorderStyle||focusStyle.focusBorderStyle||'#999999'):(item.blurBorderStyle||focusStyle.blurBorderStyle||'#f2f2f2')) + ';'" v-else>
+					<view class="flex_row_none_c transition_point6s" :style="classObj.contentWidth + 'border-bottom: 1px solid ' + (focusStyleObj[(item.variableName||(onLoadData+index))]?(item.focusBorderStyle||focusStyle.focusBorderStyle||'#999999'):(item.blurBorderStyle||focusStyle.blurBorderStyle||'#f2f2f2')) + ';'" v-else>
 						<view class="flex_row_none_c Flex5">
 							<view class="Flex1" v-if="item.icon">
 								<view class="flex_row_c_c width100">
 									<uni-icon :type="item.icon" :pxSize="classObj.iconSize" :color="item.iconColor||'#999999'"></uni-icon>
 								</view>
 							</view>
-							<input :type="item.inputType||'text'" :value="inputsObj[(item.variableName||(onLoadData+index))]" @input="inputs_change($event, item.variableName||index, item.filterFc, item.filterType, true)" :placeholder="item.placeholder||'请输入' + item.title"
+							<input :type="item.inputType||'text'" :value="inputsObj[(item.variableName||(onLoadData+index))]" 
+							@input="inputs_change" 
+							:data-index="item.variableName||index"
+							:data-filterfc="item.filterFc"
+							:data-filtertype="item.filterType"
+							:data-isinput="true"
+							:placeholder="item.placeholder||'请输入' + item.title"
 							 :password="passwordObj[(item.variableName||(onLoadData+index))+'password']" :placeholder-style="item.placeholder_style" :placeholder-class="item.placeholder_class"
 							 :maxlength="item.maxlength||140" :cursor-spacing="item.cursor_spacing" :focus="focusObj[(item.variableName||(onLoadData+index))]"
 							 :confirm-type="item.confirm_type" :confirm-hold="item.confirm_hold" :selection-start="item.selection_start" :selection-end="item.selection_end"
 							 :cursor="item.cursor" :adjust-position="item.adjust_position" :disabled="item.disabled" 
-							 :style="classObj.contentFontSize" class="fontColor666666 Flex5" @focus="focusChange(item.variableName||index)" @blur="blurChange(item.variableName||index)"/>
+							 :style="classObj.contentFontSize" class="fontColor666666 Flex5" @focus="focusChange" @blur="blurChange"/>
 						</view>
 						<view class="Flex1" v-if="item.password">
-							<view class="flex_row_c_c width100" @tap.prevent.stop="inputTap('passwordSwitch', item.variableName||index, item.customId)">
+							<view class="flex_row_c_c width100" @tap.prevent.stop="inputTap"
+							data-type="passwordSwitch"
+							:data-index="item.variableName||index"
+							:data-customid="item.customId">
 								<uni-icon type="eye" :pxSize="classObj.iconSize" :color="passwordObj[(item.variableName||(onLoadData+index))+'password']?'#999999':item.iconColor||'#33cc33'"></uni-icon>
 							</view>
 						</view>
 						<view class="Flex1" v-if="item.tapClear">
-							<view class="flex_row_c_c width100" v-if="inputsObj[(item.variableName||(onLoadData+index))]!=''" @tap.prevent.stop="inputTap('clear', item.variableName||index, item.customId)">
+							<view class="flex_row_c_c width100" v-if="inputsObj[(item.variableName||(onLoadData+index))]!=''" @tap.prevent.stop="inputTap"
+							data-type="clear"
+							:data-index="item.variableName||index"
+							:data-customid="item.customId">
 								<uni-icon type="clear" :pxSize="classObj.iconSize" color="#999999"></uni-icon>
 							</view>
 						</view>
 						<view class="Flex1" v-if="item.customTap">
-							<view class="flex_row_c_c width100" @tap.prevent.stop="inputTap('custom', item.variableName||index, item.customId)">
+							<view class="flex_row_c_c width100" @tap.prevent.stop="inputTap"
+							data-type="custom"
+							:data-index="item.variableName||index"
+							:data-customid="item.customId">
 								<uni-icon :type="item.customTapIcon" :pxSize="classObj.iconSize" color="#999999"></uni-icon>
 							</view>
 						</view>
@@ -373,7 +609,7 @@
 						<input type="text" :value="userCode" :placeholder="otherSet.getCodeSet?otherSet.getCodeSet.securityCodePlaceholder||'请输入验证码':'请输入验证码'" class="width100 borderBottom1pxf2f2f2" :style="classObj.contentFontSize" @input="code_change($event)"/>
 					</view>
 					<view class="flex_row_e_c width55" :style="classObj.padding0_3">
-						<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="getCode()" :style="classObj.getcodeButton">{{startCode?codeCount + 's':'获取验证码'}}</button>
+						<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="getCode" :style="classObj.getcodeButton">{{startCode?codeCount + 's':'获取验证码'}}</button>
 					</view>
 				</view>
 			</view>
@@ -383,7 +619,12 @@
 			<label class="flex_row_c_c">
 				<switch :checked="Igree" @change="IgreeFc" type="checkbox" :color="ruleSet.checkbox_color"/>{{ruleSet.rulePreText||'我已阅读并同意'}}
 			</label>
-			<view :style="'color:' + (ruleItem.color||ruleSet.color||'#007AFF') + ';'" @tap="openRuleFc(ruleItem.value)" v-for="(ruleItem, ruleIndex) in ruleSet.itemArray" :key="ruleIndex">{{ruleIndex==0?ruleItem.name:'、' + ruleItem.name}}</view>
+			<view 
+			:style="'color:' + (ruleItem.color||ruleSet.color||'#007AFF') + ';'" 
+			v-for="(ruleItem, ruleIndex) in ruleSet.itemArray" 
+			:key="ruleIndex" 
+			@tap="openRuleFc"
+			:data-value="ruleItem.value">{{ruleIndex==0?ruleItem.name:'、' + ruleItem.name}}</view>
 		</view>
 		<!-- 主按钮 -->
 		<button v-if="inputsArray&&inputsArray.length>0&&activeName" type="primary" @tap="activeFc" :class="[animationType||'']" :style="classObj.margin2_3 + classObj.animationDuration2 + classObj.activeButton">{{activeName}}</button>
@@ -442,6 +683,7 @@
 	
 	var inputCodeDebounce;	//验证码输入防抖
 	var inputCodeDebounceTime;	//验证码输入防抖间隔记录时间戳
+	const codeIntervalNum = 800; //验证码输入防抖间隔时间
 	
 	export default {
 		name: 'inputs',
@@ -571,6 +813,14 @@
 			inputsId: {
 				type: String,
 				default: ''
+			},
+			pickerMode: {
+				type: String,
+				default: 'arrowhead'
+			},
+			picerPlaceholder: {
+				type: String,
+				default: '请选择'
 			}
 		},
 		data() {
@@ -602,6 +852,7 @@
 				inputsObj: {} , //inputsArray除特有对象外的各类型视图对象
 				passwordObj: {}, //input password视图暂存
 				focusObj:{}, //input、textarea视图暂存
+				focusStyleObj: {},
 				verifyStatusObj: {}, //校验边框颜色
 				classObj: { //拼接页面需用的样式
 					segmentationTitle: 'font-size:' + (wW*((this.otherSet.segmentationTitleSet?this.otherSet.segmentationTitleSet.segmentationTitleFontSizeScale||false:false)||.038)) + 'px;padding:' + wH*.015+'px '+ wW*.03+'px;' + (this.otherSet.segmentationTitleSet?this.otherSet.segmentationTitleSet.segmentationTitleStyle||'':''),
@@ -668,9 +919,8 @@
 		// #endif
 		methods: {
 			init(
-				initSet = {}
+				{ fixedVariableNamePattern, launch } = {}
 			) { // 初始化默认数据 param{是否是固定变量名模式初始化, 是否是首次初始化}
-				let { fixedVariableNamePattern, launch } = initSet;
 				let _this = this;
 				console.log(`初始化inputs${launch?'':fixedVariableNamePattern?'-固定变量名模式':'-非固定变量名模式'}`);
 				const inputsArray = _this.inputsArray;
@@ -763,7 +1013,6 @@
 										data = `${Y}/${M}/${D}`;
 										break;
 									case _app.picker_date_obj.time:
-									console.log('defaultValue:' + item.defaultValue);
 										if(item.defaultValue) {
 											const arr = item.defaultValue.split(":");
 											h = _app.formatNum(parseInt(arr[0]));
@@ -1017,47 +1266,49 @@
 					}
 				}
 			},
-			showPicker(obj, index) { //显示相对应的picker
+			showPicker(
+				{ currentTarget: { dataset: { item, index } } } = {},
+			) { //显示相对应的picker
 				//console.log(JSON.stringify(obj));
 				let _this = this;
-				obj.index = index;
+				item.index = index;
 				_this.maskShow = true;
-				if (obj && obj.type) {
+				if (item && item.type) {
 					let pickerValue;
-					switch (obj.type) {
+					switch (item.type) {
 						case 'picker-date':
 							//记忆数据优先
 							pickerValue = _app.pickerChoosedType.pickerChoosedType_date.value + index;
-							if(_this.pickerObj[pickerValue]) obj.defaultValue = _this.pickerObj[pickerValue];
-							_this.P_data = obj;
+							if(_this.pickerObj[pickerValue]) item.defaultValue = _this.pickerObj[pickerValue];
+							_this.P_data = item;
 							_this.pickerDateShow = true;
 							break;
 						case 'picker-city':
 							//记忆数据优先
 							pickerValue = _app.pickerChoosedType.pickerChoosedType_city.value + index;
-							if(_this.pickerObj[pickerValue]) obj.defaultValue = _this.pickerObj[pickerValue];
-							_this.P_data = obj;
+							if(_this.pickerObj[pickerValue]) item.defaultValue = _this.pickerObj[pickerValue];
+							_this.P_data = item;
 							_this.pickerCityShow = true;
 							break;
 						case 'picker-custom':
 							//记忆数据优先
 							pickerValue = _app.pickerChoosedType.pickerChoosedType_custom.value + index;
-							if(_this.pickerObj[pickerValue]) obj.defaultValue = _this.pickerObj[pickerValue];
-							_this.P_data = obj;
+							if(_this.pickerObj[pickerValue]) item.defaultValue = _this.pickerObj[pickerValue];
+							_this.P_data = item;
 							_this.pickerCustomShow = true;
 							break;
 						case 'picker-custom2':
 							//记忆数据优先
 							pickerValue = _app.pickerChoosedType.pickerChoosedType_custom2.value + index;
-							if(_this.pickerObj[pickerValue]) obj.defaultValue = _this.pickerObj[pickerValue];
-							_this.P_data = obj;
+							if(_this.pickerObj[pickerValue]) item.defaultValue = _this.pickerObj[pickerValue];
+							_this.P_data = item;
 							_this.pickerCustom2Show = true;
 							break;
 						case 'picker-provincialStreet':
 							//记忆数据优先
 							pickerValue = _app.pickerChoosedType.pickerChoosedType_provincialStreet.value + index;
-							if(_this.pickerObj[pickerValue]) obj.defaultValue = _this.pickerObj[pickerValue];
-							_this.P_data = obj;
+							if(_this.pickerObj[pickerValue]) item.defaultValue = _this.pickerObj[pickerValue];
+							_this.P_data = item;
 							_this.pickerProvincialStreetShow = true;
 							break;
 						default:
@@ -1068,13 +1319,19 @@
 					_app.showToast('picker参数类型错误');
 				}
 			},
-			IgreeFc({detail: {value}}) { // 用户是否同意规则
+			IgreeFc(
+				{detail: {value}},
+			) { // 用户是否同意规则
 				this.Igree = value;
 			},
-			openRuleFc(value) { // 打开规则页面的父级方法
+			openRuleFc(
+				{ currentTarget: { dataset: { value } } } = {}
+			) { // 打开规则页面的父级方法
 				this.$emit('chaildOpenEvent', value);
 			},
-			checkbox_change({detail: {value}}, index) { //checkbox赋值方法
+			checkbox_change(
+				{detail: {value}, currentTarget: { dataset: { index } }} = {},
+			) { //checkbox赋值方法
 				let cbObj;
 				let vbName;
 				if(_app.regTest('Int', index)) {
@@ -1084,6 +1341,7 @@
 					cbObj = this.inputsArray.find(item=>item.variableName===index);
 					vbName = index;
 				}
+				console.log(JSON.stringify(cbObj));
 				let checkboxArray = cbObj.itemArray;
 				let oldData = this.inputsObj[vbName];
 				let newArray = [];
@@ -1104,23 +1362,25 @@
 				this.$set(this.inputsObj, vbName, newData);
 				this._emitEvent(_app.eventNames.inputsChange, {newData, oldData, index});
 			},
-			inputs_change({detail: {value}}, index, filterFc, filterType, isInput) { // 用户输入时，根据index赋值
+			inputs_change(
+				{ detail: { value }, currentTarget: { dataset: { index, filterfc, filtertype, isinput } } } = {}
+			) { // 用户输入时，根据index赋值
 				//console.log(e.detail.value);
 				// console.log(index);
-				if(this.inputDebounceSet.openInputDebounce&&isInput) {
+				if(this.inputDebounceSet.openInputDebounce&&isinput) {
 					if(inputDebounce[debounceName+index]) clearTimeout(inputDebounce[debounceName+index]);
 					if(inputDebounce[debounceTimeName+index]&&new Date().getTime()-inputDebounce[debounceTimeName+index]<(this.inputDebounceSet.delay||500)) {
 						console.log('防抖冲突,立即执行')
-						this.inputs_changeFc(value, index, filterFc, filterType, true);
+						this.inputs_changeFc(value, index, filterfc, filtertype, true);
 					}else{
 						inputDebounce[debounceName+index] = setTimeout(()=>{
 							console.log('防抖')
-							this.inputs_changeFc(value, index, filterFc, filterType);
+							this.inputs_changeFc(value, index, filterfc, filtertype);
 						}, this.inputDebounceSet.delay||500);
 					}
 				}else{
 					console.log('无防抖')
-					this.inputs_changeFc(value, index, filterFc, filterType);
+					this.inputs_changeFc(value, index, filterfc, filtertype);
 				}
 			},
 			inputs_changeFc(value, index, filterFc, filterType, clash) {
@@ -1202,7 +1462,9 @@
 				this.picker_hideFc();
 				this._emitEvent(_app.eventNames.inputsChange, res);
 			},
-			inputTap(type, index, customId) { //input点击事件
+			inputTap(
+				{ currentTarget: { dataset: { type, index, customid } } } = {}
+			) { //input点击事件
 				let vbName;
 				if(_app.regTest('Int', index))
 					vbName = this.onLoadData + index;
@@ -1218,13 +1480,13 @@
 						this.$set(this.inputsObj, vbName, '');
 						break;
 					case 'custom':
-						this.inputCustomTapFc(index, customId, vbName);
+						this.inputCustomTapFc(index, customid, vbName);
 						break;
 					default:
 						_app.showToast('inputTap类型错误');
 						break;
 				}
-				this._emitEvent(_app.eventNames.inputTap, {type, index, customId});
+				this._emitEvent(_app.eventNames.inputTap, {type, index, customId: customid});
 			},
 			async inputCustomTapFc(index, customId, vbName) {
 				try{
@@ -1242,14 +1504,14 @@
 			},
 			code_change({detail: {value}}) { //验证码防抖输入
 				if(inputCodeDebounce) clearTimeout(inputCodeDebounce);
-				if(inputCodeDebounceTime&&new Date().getTime()-inputCodeDebounceTime<500) {
+				if(inputCodeDebounceTime&&new Date().getTime()-inputCodeDebounceTime<codeIntervalNum) {
 					console.log('防抖冲突,立即执行')
 					this.code_changeFc(value, true);
 				}else{
 					inputCodeDebounce = setTimeout(()=>{
 						console.log('防抖')
 						this.code_changeFc(value);
-					}, 500);
+					}, codeIntervalNum);
 				}
 			},
 			code_changeFc(value, clash) { //验证码防抖输入
@@ -1423,19 +1685,22 @@
 									return;
 								}
 							} else {
-								if(d[i].verifyType&&_app.verifyTypeObj[d[i].verifyType])
+								if(d[i].verifyType&&_app.verifyTypeObj[d[i].verifyType]) {
+									console.log(_this.inputsObj[variableName]);
 									if(!_app.verifyTypeObj[d[i].verifyType].reg.test(_this.inputsObj[variableName])) {
 										_this.change_verifyStatus(i, 1);
 										_app.showToast(d[i].verifyErr || ((d[i].title||'第' + i + '项') + _app.verifyTypeObj[d[i].verifyType].name +  '格式校验错误'))
 										return;
 									}
+								}
 								let verifyFc = d[i].verifyFc;
-								if(verifyFc&&typeof(verifyFc)== 'function')
+								if(verifyFc&&typeof(verifyFc)== 'function') {
 									if(!verifyFc(_this.inputsObj[variableName])) {
 										_this.change_verifyStatus(i, 1);
 										_app.showToast(d[i].verifyErr || ((d[i].title||'第' + i + '项') + '格式校验错误'))
 										return;
 									}
+								}
 								_this.change_verifyStatus(i, 0);
 								inputsDataObj[variableName] = _this.inputsObj[variableName];
 							}
@@ -1562,16 +1827,26 @@
 				//若submit为true，重置表单为初始化
 				if(this.submitReSet) this.init();
 			},
-			chooseImg(index, picsIndex, infinite) { //选择图片
-				let vbName;
-				let oldData;
+			chooseImg( //选择图片
+				{currentTarget: { dataset: { index, picsindex, infinite, customtapid } } } = {},
+			) {
+			let vbName;
+			let oldData;
+			if(customtapid) {
+				this.$emit('picsTap', {
+					index,
+					picsIndex: picsindex,
+					infinite,
+					customTapId: customtapid
+				});
+			}else{
 				if(infinite) {
 					vbName = this.infinitePicsName + index;
 				}else {
 					if(_app.regTest('Int', index)) {
-						vbName = this.onLoadData + index + this.onLoadData + picsIndex;
+						vbName = this.onLoadData + index + this.onLoadData + picsindex;
 					}else{
-						vbName = index + picsIndex;
+						vbName = index + picsindex;
 					}
 					if(this.picsObj[vbName]) return;
 					oldData = this.picsObj[vbName];
@@ -1584,7 +1859,7 @@
 							if(!infinitePicsObj[vbName])
 								infinitePicsObj[vbName] = [];
 							const tempFilePaths = res.tempFilePaths;
-							const inputsArrayItem = this.inputsArray[picsIndex];
+							const inputsArrayItem = this.inputsArray[picsindex];
 							const oldInfiniteLength = this.infinitePicsObj[vbName]?this.infinitePicsObj[vbName].length:0;
 							tempFilePaths.forEach((item, pathIndex)=>{
 								if(inputsArrayItem.max) {
@@ -1599,12 +1874,15 @@
 						}else{
 							const newData = res.tempFilePaths[0];
 							this.$set(this.picsObj, vbName, newData);
-							this._emitEvent(_app.eventNames.inputsChange, {newData, oldData, index, picsIndex});
+							this._emitEvent(_app.eventNames.inputsChange, {newData, oldData, index, picsindex});
 						}
 					}
 				})
+			}
 			},
-			clearPic(index, picsIndex, infinite) { //清除图片
+			clearPic(
+				{ currentTarget: { dataset: { index, picsindex, infinite } } } = {},
+			) { //清除图片
 				this.initedSetChange({vbName: index});
 				let vbName;
 				let oldData;
@@ -1624,10 +1902,14 @@
 					this._emitEvent(_app.eventNames.inputsChange, {newData: '', oldData, index, picsIndex});
 				}
 			},
-			showImg(imgPath) { //大图预览选中的图片
-				_app.previewImage(imgPath);
+			showImg(
+				{ currentTarget: { dataset: path } } = {}
+			) { //大图预览选中的图片
+				_app.previewImage(path);
 			},
-			infinitePicsShowImg(index, currentIndex) {
+			infinitePicsShowImg(
+				{ currentTarget: { dataset: { index, picsindex } } } = {},
+			) {
 				const vbName = this.infinitePicsName + index;
 				const infiniteItem = this.infinitePicsObj[vbName];
 				const imgArr = [];
@@ -1635,7 +1917,7 @@
 					if(item.path)
 						imgArr.push(item.path)
 				})
-				_app.previewImage(imgArr, currentIndex);
+				_app.previewImage(imgArr, picsindex);
 			},
 			picker_hideFc() { //picker类型全部隐藏
 				this.pickerDateShow = false;
@@ -1646,19 +1928,21 @@
 				this.maskShow = false;
 				this.P_data = {};
 			},
-			focusChange(index) {
+			focusChange(
+				{ currentTarget: { dataset: { index } } } = {}
+			) {
 				let vbName;
-				if(typeof index === 'string')
-					vbName = index;
-				else
+				if(_app.regTest('Int', index))
 					vbName = this.onLoadData + index;
+				else
+					vbName = index;
 				let o = {};
 				o[vbName] = true;
-				this.$set(this, 'focusObj', o);
+				this.$set(this, 'focusStyleObj', o);
 			},
-			blurChange(index) {
-				let o = {};
-				this.$set(this, 'focusObj', o);
+			blurChange() {
+				this.$set(this, 'focusStyleObj', {});
+				this.$set(this, 'focusObj', {});
 			},
 			change_verifyStatus(index, status, index2) { //0:none, 1:error, 2:warning
 				let verifyStatusSet = this.verifyStatusSet;
