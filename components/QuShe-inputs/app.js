@@ -535,7 +535,8 @@ const setValueType = {
 	}
 };
 const filterParamsArrayType = {
-	setInputsValueFc: 'setInputsValueFc'
+	setInputsValueFc: 'setInputsValueFc',
+	setValue: 'setValue'
 };
 
 const _app = {
@@ -614,18 +615,21 @@ const _app = {
 	isNumber(param) {
 		return typeof(param) === 'number';
 	},
-	filterParams(params, type) {
+	filterParams(params, type, setArr) {
 		if (params.length === 0)
-			return false;
+			return {};
+		const arr = getParamsArray(type);
 		if (params.length > 1) {
-			let arr = getParamsArray(type);
-			let o = {};
+			const o = {};
 			Object.keys(params).forEach((item, index) => {
 				o[arr[index]] = params[index];
 			})
 			return o;
 		} else {
-			return params[0];
+			if(params[0] instanceof Object && !setArr)
+				return params[0];
+			else
+				return { [arr[0]]: params[0] }
 		}
 	},
 	formatNum(num) {
@@ -639,6 +643,9 @@ function getParamsArray(type) {
 	switch (type) {
 		case filterParamsArrayType.setInputsValueFc:
 			arr = ['param', 'value', 'fail', 'isVariableName'];
+			break;
+		case filterParamsArrayType.setValue:
+			arr = ['setDatas']
 			break;
 		default:
 			arr = [];

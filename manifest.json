@@ -48,7 +48,7 @@
             /* ios打包配置 */
             "sdkConfigs" : {}
         },
-        "usingComponents" : false //是否启用`自定义组件模式`，为true表示新的`自定义组件模式`，否则启用老的`template模板模式` 
+        "usingComponents" : true //是否启用`自定义组件模式`，为true表示新的`自定义组件模式`，否则启用老的`template模板模式` 
     },
     /* SDK配置 */
     "quickapp" : {},

@@ -216,6 +216,8 @@
 						data.result.push(d[(v[i] || 0)]);
 					}
 				}
+				console.log('picker 数据: ' + JSON.stringify(data));
+				console.log('picker value: ' + JSON.stringify(v));
 				_this.$emit('getCustom', {
 					newData: data,
 					index: _this.index,

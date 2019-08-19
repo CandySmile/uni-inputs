@@ -8,10 +8,22 @@
 
 
 
-
-
+.maxWidth40 {
+	max-width: 40%;
+}
+.text_nowrap{
+	white-space: nowrap;
+}
 .Flex1{
 	flex: 1;
+}
+
+.Flex1_5{
+	flex: 1_5;
+}
+
+.Flex2{
+	flex: 2;
 }
 
 .Flex4{
@@ -124,6 +136,10 @@ button::after {
 
 .width85 {
 	width: 85%;
+}
+
+.width90{
+	width: 90%;
 }
 
 .width100 {

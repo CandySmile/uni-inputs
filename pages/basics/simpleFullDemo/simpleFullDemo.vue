@@ -93,7 +93,8 @@
 					}, {
 						title: "内置正则校验Email",
 						verifyType: "Email", // 内置正则校验
-						defaultValue: "494843897@qq"
+						defaultValue: "494843897@qq",
+						tapClear: false
 					}, {
 						title: "内置过滤函数",
 						filterType: "twoDecimalPlaces",

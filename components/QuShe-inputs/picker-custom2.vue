@@ -206,7 +206,7 @@
 						data.result.steps2 = async?this.async_1[v[1]]:datas.step_2[v[0]][v[1]];
 						if(!data.result.steps2)
 							_app.showToast('第二列中不存在第'+v[1]+'项');
-						data.result.steps3 = async?this.async_1[v[2]]:datas.step_3[v[0]][v[1]][v[2]];
+						data.result.steps3 = async?this.async_2[v[2]]:datas.step_3[v[0]][v[1]][v[2]];
 						if(!data.result.steps3)
 							_app.showToast('第三列中不存在第'+v[2]+'项');
 					}else{
@@ -219,6 +219,8 @@
 						data.result.push(d[(v[i] || 0)]);
 					}
 				}
+				console.log('picker 数据: ' + JSON.stringify(data));
+				console.log('picker value: ' + JSON.stringify(v));
 				_this.$emit('getCustom', {newData: data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_custom2.name});
 			},
 			voidFc() {}

@@ -166,6 +166,10 @@
             "path" : "pages/highGrades/pickerAsync/pickerAsync",
             "style" : {}
         }
+        ,{
+            "path" : "pages/highGrades/canvasSignature/canvasSignature",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -29,6 +29,10 @@
 					{
 						name: 'picker-custom与picker-custom2逐级获取示例',
 						path: '/pages/highGrades/pickerAsync/pickerAsync'
+					},
+					{
+						name: '手写签名示例',
+						path: '/pages/highGrades/canvasSignature/canvasSignature'
 					}
 				]
 			}
