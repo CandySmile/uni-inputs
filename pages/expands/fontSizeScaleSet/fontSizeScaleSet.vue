@@ -14,8 +14,8 @@
 			return {
 				fontSizeScaleSet: { //inputs内的字体大小系数设置(字体大小为屏幕宽高度以此系数)
 					allScale: .028,
-					titleScale: .022,	//优先于allScale
-					contentScale: .025	//优先于allScale
+					titleScale: .035,	//优先于allScale
+					contentScale: .035	//优先于allScale
 				},
 				inputsArray: [{
 						segmentationTitle: "展示信息", //分割大标题

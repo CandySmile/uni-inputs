@@ -5,6 +5,7 @@
 		:inputsArray="inputsArray" 
 		activeName="获取输入" 
 		@activeFc="activeFc" 
+		:fontSizeScaleSet="fontSizeScaleSet"
 		/>
 	</view>
 </template>
@@ -14,6 +15,11 @@
 		data() {
 			return {
 				content: '基础表单组件类型有input、slider、textarea、switch、radiocheckbox等',
+				fontSizeScaleSet: { //inputs内的字体大小系数设置(字体大小为屏幕宽高度以此系数)
+					allScale: .028,
+					titleScale: .035,	//优先于allScale
+					contentScale: .035	//优先于allScale
+				},
 				inputsArray: [
 					{
 						title: 'input'

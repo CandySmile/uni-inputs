@@ -34,8 +34,8 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
-| v7.4 | 1、新增picker显示模式，用pickerMode属性控制picker显示模式，默认为arrowhead模式, 并增加相应的空占位字符， 详见1.<br /> 2、详见2. 修复自定义组件模式下input、textarea的focus错乱问题<br />3、input的tapClear默认设为true<br />4、优化title块为text标签，可以用\n控制换行，并且title块可以伸缩，最大宽度为40%，由titleFixedWidth控制title块的宽度是否固定，text类型一直为固定，默认为不固定<br />5、pics类型的itemArray新增属性customTapId, 并在inputs组件上增加回调事件picsTap, 用于实现类似手写签名的功能, 示例项目新增 手写签名示例 详见 示例项目-高级，该功能参考了[手写签名]([https://ext.dcloud.net.cn/plugin?id=331]) 感谢！ <br />6、ref新增setValue方法，用于设置inputs内数据，支持设置多项, 详见2.<br />7、修复picker-custom2三级联动逐级获取的第三列数据不正确问题 |
-| v7.3 | 1、picker-custom与picker-custom2新增逐级获取功能, 需要在app.js中配置getSendData与getAsyncDataFc两个方法<br />2、修复picker-date下mode为picker-time的问题, 并且picker-time支持初始化<br />3、修复app.js中的手机号正则判断(在下遇到了198的手机号，然后判断不通过……修改为必须以1开头的11位数字)<br />4、修复可能出现input输入报错问题(需要部分苹果机型的小伙伴测试一下) |
+| v7.5 | 1、修复pics类型点击穿透问题<br />2、修复 checkbox 初始值问题 |
+| v7.4 | 1、新增picker显示模式，用pickerMode属性控制picker显示模式，默认为arrowhead模式, 并增加相应的空占位字符， 详见1.<br /> 2、详见2. 修复自定义组件模式下input、textarea的focus错乱问题<br />3、input的tapClear默认设为true<br />4、优化title块为text标签，可以用\n控制换行，并且title块可以伸缩，最大宽度为40%，由titleFixedWidth控制title块的宽度是否固定，text类型一直为固定，默认为不固定<br />5、pics类型的itemArray新增属性customTapId, 并在inputs组件上增加回调事件picsTap, 用于实现类似手写签名的功能, 示例项目新增 手写签名示例 详见 示例项目-高级，该功能参考了[手写签名](https://ext.dcloud.net.cn/plugin?id=331) 感谢！ <br />6、ref新增setValue方法，用于设置inputs内数据，支持设置多项, 详见2.<br />7、修复picker-custom2三级联动逐级获取的第三列数据不正确问题<br />8、app.js上传文件方法内对ios传参做了处理，请根据自己的需求修改，在下在项目中是需要这样做的，请一定要根据自己的需求来 |
 |    ……    |    详细历次更新说明请移步至文档底部       |
 
 
@@ -1667,6 +1667,7 @@ this.$refs.inputs.setValue([
 
 | 版本号 | 更新说明 |
 |--------|:----------|
+| v7.3 | 1、picker-custom与picker-custom2新增逐级获取功能, 需要在app.js中配置getSendData与getAsyncDataFc两个方法<br />2、修复picker-date下mode为picker-time的问题, 并且picker-time支持初始化<br />3、修复app.js中的手机号正则判断(在下遇到了198的手机号，然后判断不通过……修改为必须以1开头的11位数字)<br />4、修复可能出现input输入报错问题(需要部分苹果机型的小伙伴测试一下) |
 | v7.2 | 1、再一次修复固定变量名模式下初始化问题(啊，， 好失败啊，，) ， 这个问题是这样的，对于用户手动修改值后或者在初始化时有默认值的项将被判定为已初始化，下次初始化时不会改变原有的值, 而未判定为已初始化的值，在下次初始化时还是有机会初始化|
 | v7.1 | 1、再次修复固定变量名模式下初始化问题(emmm...这次一定好啊啊啊啊)<br />2、infinitePics支持默认值, 详见3.1.5 |
 | v7.0 | 1、优化上传图片功能-- 新增 域名替换机制：（上传图片时会判断是否是网络图片(后端获取的图片)，若是会replace此路径替换域名, 域名在app.js的interface中的baseUrl设置, 然后不执行上传功能直接resolve替换后的路径）具体位于app.js中的UpLoadFile方法, 不需要则可删除<br />2、修复 固定变量名模式下 替换inputsArray后 初始值不生效的问题 <br />3、更改默认字体大小系数为.029<br />4、otherSet属性新增 segmentationTitleSet属性，用于设置segmentationTitle的字体大小系数与样式, 详见1.1.3 <br />5、buttonStyle属性新增 changeButtonSizeScale、selectButtonSizeScale、getcodeButtonSizeScale属性, 目前用于修改 更改picker按钮、验证码按钮文字大小, 详见 1.0.5<br />6、修复ref调用的setFocus方法无效问题<br />7、优化picker-date类型返回值中若小于10则前面加零 |

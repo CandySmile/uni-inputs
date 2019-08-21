@@ -43,13 +43,13 @@
 								 :data-infinite="false" :data-customtapid="picsItem.customTapId">
 									<image :src="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]"
 									 class="border_radius_4px box_shadow_2px_2px_5px_ADADAD" mode="aspectFill" :style="classObj.picsBox" v-if="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]"
-									 @tap="showImg" :data-path="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]">
+									 @tap.prevent.stop="showImg" :data-path="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]">
 									</image>
 									<view v-else>
 										<uni-icon type="image" :pxSize="classObj.size6wW" color="#999999" />
 									</view>
 									<view class="picsClear" v-if="picsObj[item.variableName?(item.variableName + picsIndex):(onLoadData + index + onLoadData + picsIndex)]"
-									 @tap.stop.prevent="clearPic" :data-index="item.variableName||index" :data-picsindex="picsIndex"
+									 @tap.prevent.stop="clearPic" :data-index="item.variableName||index" :data-picsindex="picsIndex"
 									 :data-infinite="false">
 										<uni-icon type="clear" :color="item.clearColor||'#f5105c'" :pxSize="classObj.size4wW" />
 									</view>
@@ -67,9 +67,9 @@
 							 :key="picsIndex" :style="classObj.paddingPoint5">
 								<view class="flex_row_c_c border1pxf2f2f2 position_relative border_radius_4px backgrounColor_f8f8f8" :style="classObj.picsBox">
 									<image :src="picsItem.path" class="border_radius_4px box_shadow_2px_2px_5px_ADADAD" mode="aspectFill" :style="classObj.picsBox"
-									 @tap="infinitePicsShowImg" :data-index="item.variableName||index" :data-picsindex="picsIndex">
+									 @tap.prevent.stop="infinitePicsShowImg" :data-index="item.variableName||index" :data-picsindex="picsIndex">
 									</image>
-									<view class="picsClear" @tap.stop.prevent="clearPic" :data-index="item.variableName||index" :data-picsindex="picsIndex"
+									<view class="picsClear" @tap.prevent.stop="clearPic" :data-index="item.variableName||index" :data-picsindex="picsIndex"
 									 :data-infinite="true">
 										<uni-icon type="clear" :color="item.clearColor||'#f5105c'" :pxSize="classObj.size4wW" />
 									</view>
@@ -1108,6 +1108,7 @@
 							_this.fixedVariableNamePattern = false;
 					}
 					const params = { item, itemVariableName };
+					let value;
 					switch (item.type) {
 						case 'radio':
 							let data;
@@ -1126,15 +1127,17 @@
 							}	
 							break;
 						case 'checkbox':
-							let value = [];
+							value = [];
 							for (let j = 0; j < item.itemArray.length; j++) {
-								let d = item.itemArray[j].value;
-								if (d) {
-									value.push(d);
+								const d = item.itemArray[j];
+								if (d.defaultValue) {
+									value.push(d.value);
 								}
 							}
-							params.value = value;
-							_this.setValueFc(params);
+							if(value.length > 0) {
+								params.value = value;
+								_this.setValueFc(params);
+							}
 							break;
 						case 'pics':
 							for (let j = 0; j < item.itemArray.length; j++) {
