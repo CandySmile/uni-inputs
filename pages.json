@@ -170,6 +170,10 @@
             "path" : "pages/highGrades/canvasSignature/canvasSignature",
             "style" : {}
         }
+        ,{
+            "path" : "pages/highGrades/refsitems/setPicsUpLoadData/setPicsUpLoadData",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

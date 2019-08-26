@@ -36,6 +36,9 @@
 
 <script>
 	import _app from './app.js';
+	function log(t, f) {
+		_app.log(t + ', at picker-custom2.vue-' + f);
+	}
 	export default {
 		props: {
 			itemArray: {
@@ -124,6 +127,7 @@
 		},
 		methods: {
 			bindPickerViewChange({detail:{value}}) {		//解构 赋值
+				const fnName = 'bindPickerViewChange';
 				this.value = value;
 				const oldValue = [...this.oldValue];
 				if (this.async && this.linkage) {
@@ -143,7 +147,7 @@
 									index: 0
 								});
 							} else if (oldValue[1] !== value[1]) {
-								console.log('value[1]不相同');
+								log('value[1]不相同', fnName);
 								this.getAsyncData({
 									value,
 									index: 1
@@ -156,6 +160,7 @@
 				}
 			},
 			getAsyncData(obj) {	// 逐级获取
+				const fnName = 'getAsyncData';
 				let oldValue = [];
 				if (this.oldValue.length&&this.oldValue.length > 0) oldValue = [...this.oldValue];
 				if (obj.value.length === 0) {
@@ -167,7 +172,7 @@
 							obj.value = [0, 0, 0];
 							break;
 						default:
-							console.log('级数不存在');
+							_app.log('级数不存在', fnName);
 							break;
 					}
 					this.value = [...obj.value];
@@ -219,8 +224,6 @@
 						data.result.push(d[(v[i] || 0)]);
 					}
 				}
-				console.log('picker 数据: ' + JSON.stringify(data));
-				console.log('picker value: ' + JSON.stringify(v));
 				_this.$emit('getCustom', {newData: data, index: _this.index, type: _app.pickerChoosedType.pickerChoosedType_custom2.name});
 			},
 			voidFc() {}

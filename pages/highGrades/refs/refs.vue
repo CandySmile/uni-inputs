@@ -24,8 +24,12 @@
 						path: '/pages/highGrades/refsitems/refActiveFc/refActiveFc'
 					},
 					{
-						name: 'ref从外部设置editor内容的方法',
+						name: 'ref从外部设置editor内容',
 						path: '/pages/highGrades/refsitems/editorSetContent/editorSetContent'
+					},
+					{
+						name: 'ref设置上传图片携带自定义数据',
+						path: '/pages/highGrades/refsitems/setPicsUpLoadData/setPicsUpLoadData'
 					}
 				]
 			}

@@ -34,8 +34,7 @@
 
 | 版本号 | 更新说明 |
 |--------|:----------|
-| v7.5 | 1、修复pics类型点击穿透问题<br />2、修复 checkbox 初始值问题 |
-| v7.4 | 1、新增picker显示模式，用pickerMode属性控制picker显示模式，默认为arrowhead模式, 并增加相应的空占位字符， 详见1.<br /> 2、详见2. 修复自定义组件模式下input、textarea的focus错乱问题<br />3、input的tapClear默认设为true<br />4、优化title块为text标签，可以用\n控制换行，并且title块可以伸缩，最大宽度为40%，由titleFixedWidth控制title块的宽度是否固定，text类型一直为固定，默认为不固定<br />5、pics类型的itemArray新增属性customTapId, 并在inputs组件上增加回调事件picsTap, 用于实现类似手写签名的功能, 示例项目新增 手写签名示例 详见 示例项目-高级，该功能参考了[手写签名](https://ext.dcloud.net.cn/plugin?id=331) 感谢！ <br />6、ref新增setValue方法，用于设置inputs内数据，支持设置多项, 详见2.<br />7、修复picker-custom2三级联动逐级获取的第三列数据不正确问题<br />8、app.js上传文件方法内对ios传参做了处理，请根据自己的需求修改，在下在项目中是需要这样做的，请一定要根据自己的需求来 |
+| v7.6 | 1、ref调用方法新增设置上传图片自定义携带数据, 详见2.或示例项目中的ref调用示例<br />2、新增打印管理，详见app.js-log<br />3、修复radio和checkbox类型的value精确度问题，注：radio与checkbox的value会转为String类型，所以尽量使用String类型<br />4、修复验证码样式问题 |
 |    ……    |    详细历次更新说明请移步至文档底部       |
 
 
@@ -229,6 +228,8 @@ inputs内任何类型的值变更时都会触发此回调, 该方法接收一个
 | setInputsValue(6.4新增)`不推荐使用，建议使用setValue`| 设置inputs内部的值, 暂不支持pics类型赋值| |
 | setEditorContent(6.8新增)| 设置editor的值| 顺序传参: (值, 值类型), 值类型若不为delta，则按html处理|
 | setValue(7.4新增)| 设置inputs内的值| 可传一个对象属性或一个数组, 用于一项或多项设置, 详见 2.0.3 |
+| setPicsUpLoadData(7.6新增)| 设置上传图片的自定义携带数据| 可传一个对象属性或一个数组, 用于一项或多项设置, 详见 2.0.4 |
+| clearPicsUpLoadData(7.6新增)| 删除上传图片的自定义携带数据| 可不传或传一个对象属性或一个数组, 用于一项或多项设置, 详见 2.0.5 |
 
 ## 2.0.1 setFocus示例
 #### 传入参数:（Number | String | Function）, focus值(Boolean), 错误回调(Function)
@@ -295,6 +296,92 @@ this.$refs.inputs.setValue([
     value  //需设置的值, 值类型根据各类型而定, 一般与默认值相似
   }
 ]);
+```
+
+## 2.0.4 setPicsUpLoadData示例
+
+#### 传入参数:（Object | Array ）
+```javascript
+//设置多项
+this.$refs.inputs.setPicsUpLoadData(
+	[
+		{
+			customId: 'setPicsData',
+			data: {a:1,b:2}
+		},
+		{
+			customId: 'setPicsData2',
+			data: {c:3,d:4}
+		}
+	]
+);
+
+//设置一项
+this.$refs.inputs.setPicsUpLoadData(
+	{
+		customId: 'setPicsData',
+		data: {a:1,b:2}
+	}
+);
+
+this.$refs.inputs.setPicsUpLoadData({
+	setPicsDatas: [
+		{
+			customId: 'setPicsData',
+			data: {a:1,b:2}
+		},
+		{
+			customId: 'setPicsData2',
+			data: {c:3,d:4}
+		}
+	],
+	scb(obj) {
+		console.log('设置图片上传的自定义数据成功: ' + JSON.stringify(obj));
+		uni.showToast({title:'设置图片上传的自定义数据成功'});
+	},
+	fcb() {
+		console.log('设置图片上传的自定义数据失败');
+		uni.showToast({title:'设置图片上传的自定义数据失败'});
+	}
+});
+```
+
+
+## 2.0.5 clearPicsUpLoadData示例
+
+#### 传入参数:（Object | Array ）
+```javascript
+//清除多项
+this.$refs.inputs.clearPicsUpLoadData(
+	[
+		{
+			customId: 'setPicsData'
+		},
+		{
+			customId: 'setPicsData2'
+		}
+	]
+);
+
+
+//清除一项
+this.$refs.inputs.clearPicsUpLoadData(
+	{
+		customId: 'setPicsData'
+	}
+);
+
+//清除全部
+this.$refs.inputs.clearPicsUpLoadData();
+
+
+//有回调函数
+this.$refs.inputs.clearPicsUpLoadData({
+	scb(obj) {
+		console.log('清除成功');
+		uni.showToast({title:'清除成功'});
+	}
+}); 
 ```
 
 
@@ -1667,6 +1754,8 @@ this.$refs.inputs.setValue([
 
 | 版本号 | 更新说明 |
 |--------|:----------|
+| v7.5 | 1、修复pics类型点击穿透问题<br />2、修复 checkbox 初始值问题 |
+| v7.4 | 1、新增picker显示模式，用pickerMode属性控制picker显示模式，默认为arrowhead模式, 并增加相应的空占位字符， 详见1.<br /> 2、详见2. 修复自定义组件模式下input、textarea的focus错乱问题<br />3、input的tapClear默认设为true<br />4、优化title块为text标签，可以用\n控制换行，并且title块可以伸缩，最大宽度为40%，由titleFixedWidth控制title块的宽度是否固定，text类型一直为固定，默认为不固定<br />5、pics类型的itemArray新增属性customTapId, 并在inputs组件上增加回调事件picsTap, 用于实现类似手写签名的功能, 示例项目新增 手写签名示例 详见 示例项目-高级，该功能参考了[手写签名](https://ext.dcloud.net.cn/plugin?id=331) 感谢！ <br />6、ref新增setValue方法，用于设置inputs内数据，支持设置多项, 详见2.<br />7、修复picker-custom2三级联动逐级获取的第三列数据不正确问题<br />8、app.js上传文件方法内对ios传参做了处理，请根据自己的需求修改，在下在项目中是需要这样做的，请一定要根据自己的需求来 |
 | v7.3 | 1、picker-custom与picker-custom2新增逐级获取功能, 需要在app.js中配置getSendData与getAsyncDataFc两个方法<br />2、修复picker-date下mode为picker-time的问题, 并且picker-time支持初始化<br />3、修复app.js中的手机号正则判断(在下遇到了198的手机号，然后判断不通过……修改为必须以1开头的11位数字)<br />4、修复可能出现input输入报错问题(需要部分苹果机型的小伙伴测试一下) |
 | v7.2 | 1、再一次修复固定变量名模式下初始化问题(啊，， 好失败啊，，) ， 这个问题是这样的，对于用户手动修改值后或者在初始化时有默认值的项将被判定为已初始化，下次初始化时不会改变原有的值, 而未判定为已初始化的值，在下次初始化时还是有机会初始化|
 | v7.1 | 1、再次修复固定变量名模式下初始化问题(emmm...这次一定好啊啊啊啊)<br />2、infinitePics支持默认值, 详见3.1.5 |

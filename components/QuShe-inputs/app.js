@@ -1,3 +1,7 @@
+const log = function(t) {
+	console.log(t);	// 若不想打印信息请注释
+}
+
 // 7.3 新增（start）
 // 需自己配置（start）
 function getSendData(obj) {
@@ -44,7 +48,7 @@ function getSendData(obj) {
 						sendData.id = data_1[0][vbName_1];
 						break;
 					default:
-						console.log('column 超限');
+						log('column 超限');
 						break;
 				}
 			} else { // 第二列更改
@@ -52,7 +56,7 @@ function getSendData(obj) {
 			}
 			break;
 		default:
-			console.log('级数不存在');
+			log('级数不存在');
 			break;
 	}
 	return sendData; // 最终return sendData
@@ -258,14 +262,14 @@ const getPickerAsyncData = async function(obj) { // picker-custom与picker-custo
 							_this.value[2] = 0; // 初始化可以赋值初始化的值
 							break;
 						case 1: // 第二列更改
-							console.log('第二列更改')
+							log('第二列更改')
 							if (!_this.memoryData_2[value[0]])
 								_this.memoryData_2[value[0]] = [];
 							if (!!_this.memoryData_2[value[0]][value[1]]) { // 查询记忆数据
-								console.log('有记忆数据');
+								log('有记忆数据');
 								newData_2 = [..._this.memoryData_2[value[0]][value[1]]]; // 直接赋值记忆数据
 							} else {
-								console.log('没有记忆数据');
+								log('没有记忆数据');
 								sendData = getSendData(obj); // 访问接口携带参数
 								newData_2 = await getAsyncDataFc(sendData);
 								_this.memoryData_2[value[0]][value[1]] = [...newData_2]; // 记忆数据
@@ -306,8 +310,8 @@ const inputCustomTapFc = function(customId) { //inputTap custom类型触发的�
 			default:
 				uni.scanCode({ //示例, 扫码后赋值
 					success: function(res) {
-						console.log('条码类型：' + res.scanType);
-						console.log('条码内容：' + res.result);
+						log('条码类型：' + res.scanType);
+						log('条码内容：' + res.result);
 						resolve(res.result);
 					}
 				});
@@ -328,7 +332,8 @@ const inputCustomTapCatchFc = function(customId, e) { // inputTap custom类型�
 	})
 }
 
-const UpLoadFile = function(customId, filePath) { // 上传文件方法: (自定义上传标识, 文件路径)
+const UpLoadFile = function(customId, filePath, picsUpLoadData) { // 上传文件方法: (自定义上传标识, 文件路径, 自定义上传数据)
+	log('自定义上传图片携带数据:' + JSON.stringify(picsUpLoadData));
 	if (filePath.substring(0, 4) === 'http') { //域名替换机制: 判断是否是从后端获取的图片路径, 若是 替换域名字符串为空后resolve. 也可以根据customId动态控制, 不需要则删除此代码
 		const replacePath = filePath.replace(interfaces.baseUrl, '');
 		return Promise.resolve({
@@ -536,10 +541,12 @@ const setValueType = {
 };
 const filterParamsArrayType = {
 	setInputsValueFc: 'setInputsValueFc',
-	setValue: 'setValue'
+	setValue: 'setValue',
+	picsUpLoadData: 'picsUpLoadData'
 };
 
 const _app = {
+	log, //打印管理
 	eventNames, // inputs内所有类型变更时的emit事件名称
 	picker_date_obj: {
 		dateTime,
@@ -604,7 +611,7 @@ const _app = {
 	},
 	checkbox_status(data) {
 		for (let i = 0; i < data.length; i++) {
-			if (data[i] || data[i] === 0) data[i] = true;
+			if (data[i] !== '') data[i] = true;
 			else data[i] = false;
 		}
 		return data;
@@ -615,7 +622,7 @@ const _app = {
 	isNumber(param) {
 		return typeof(param) === 'number';
 	},
-	filterParams(params, type, setArr) {
+	filterParams(params, type, checkOneVariableName) {
 		if (params.length === 0)
 			return {};
 		const arr = getParamsArray(type);
@@ -626,10 +633,22 @@ const _app = {
 			})
 			return o;
 		} else {
-			if(params[0] instanceof Object && !setArr)
-				return params[0];
-			else
-				return { [arr[0]]: params[0] }
+			if(params[0] instanceof Object){
+				
+				if(checkOneVariableName) {
+					const ps = Object.keys(params[0]);
+					for(let i = 0; i < ps.length; i++) {
+						if(arr.includes(ps[i])) {
+							return params[0];
+						}
+					}
+					return { [arr[0]]: params[0] };
+				}else{
+					return params[0];
+				}
+			}else{
+				return { [arr[0]]: params[0] };
+			}
 		}
 	},
 	formatNum(num) {
@@ -645,7 +664,10 @@ function getParamsArray(type) {
 			arr = ['param', 'value', 'fail', 'isVariableName'];
 			break;
 		case filterParamsArrayType.setValue:
-			arr = ['setDatas']
+			arr = ['setDatas'];
+			break;
+		case filterParamsArrayType.picsUpLoadData:
+			arr = ['setPicsDatas', 'scb', 'fcb'];
 			break;
 		default:
 			arr = [];

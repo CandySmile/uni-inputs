@@ -22,7 +22,7 @@
 			'padding-top':item.border_top?wH*.015+'px':'none',
 			'border-top': item.border_top||'none'}">
 				<!-- title -->
-				<view class="marginRight5 flex_row_e_c" :class="[(titleFixedWidth || item.type==='text')?'width20':'Flex1_5', (titleFixedWidth || item.type==='text')?'':'maxWidth40']"
+				<view class="marginRight5 flex_row_e_c" :class="[(titleFixedWidth || item.type==='text')?'width20':'Flex1_5', (titleFixedWidth || item.type==='text')?'':'maxWidth40', classObj.titleLayout]"
 				 :style="classObj.titleColor + classObj.titleFontSize" v-if="!titleHide&&item.type!=='editor'">
 					<text class="width100 flex_row" :class="(titleFixedWidth || item.type==='text')?'word_wrap':'text_nowrap'">
 						<text class="fontColorF1505C" v-if="item.type!='pics'&&!item.ignore&&item.title&&(otherSet.requiredFieldsSet?!otherSet.requiredFieldsSet.hideRequiredFields:true)">
@@ -103,7 +103,7 @@
 						<radio-group @change="inputs_change" :data-index="item.variableName||index" class="width100 wrap" :class="[classObj.contentLayout]">
 							<label class="fontColor666666 flex_row_none_c" :style="classObj.contentFontSize + classObj.padding1 + classObj.marginRight2"
 							 v-for="(radioItem, radioIndex) in item.itemArray" :key="radioIndex">
-								<radio :value="radioItem.value" :checked="inputsObj[item.variableName||(onLoadData+index)]==radioItem.value"
+								<radio :value="radioItem.value" :checked="inputsObj[item.variableName||(onLoadData+index)]==String(radioItem.value)"
 								 :disabled="radioItem.disabled" :color="radioItem.color||item.color" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
 								<view class="flex_row_none_c">{{radioItem.name}}</view>
 							</label>
@@ -114,7 +114,12 @@
 						<checkbox-group @change="checkbox_change" :data-index="item.variableName||index" class="width100 wrap" :class="[classObj.contentLayout]">
 							<label class="fontColor666666 flex_row_none_c" :style="classObj.contentFontSize + classObj.padding1 + classObj.marginRight2"
 							 v-for="(checkboxItem, checkboxIndex) in item.itemArray" :key="checkboxIndex">
-								<checkbox :value="checkboxItem.value" :checked="inputsObj[item.variableName||(onLoadData+index)]&&inputsObj[item.variableName||(onLoadData+index)].status&&inputsObj[item.variableName||(onLoadData+index)].status[checkboxIndex]"
+								<checkbox :value="checkboxItem.value" :checked="
+								inputsObj[item.variableName||(onLoadData+index)]
+								&&
+								inputsObj[item.variableName||(onLoadData+index)].status
+								&&
+								inputsObj[item.variableName||(onLoadData+index)].status[checkboxIndex]===true"
 								 :disabled="checkboxItem.disabled" :color="checkboxItem.color||item.color" :style="'transform: scale(' + (item.scale||'.8') + ');'" />
 								<view class="flex_row_none_c">{{checkboxItem.name}}</view>
 							</label>
@@ -758,19 +763,23 @@
 			</view>
 		</view>
 		<!-- 验证码 -->
-		<view class="flex_row width100"  :class="[animationType||'']" :style="classObj.padding2_3 + classObj.animationDuration1"
+		<view class="flex_row width100"  :class="[animationType||'']" :style="classObj.padding2_5 + classObj.animationDuration1"
 		 v-if="ifCode">
-			<view class="width20 marginRight5" :class="classObj.titleLayout" :style="classObj.titleFontSize + classObj.titleColor" v-if="!titleHide">
+			 <view class="marginRight5 flex_row_e_c" :class="[titleFixedWidth?'width20':'Flex1_5', titleFixedWidth?'':'maxWidth40', classObj.titleLayout]"
+			   :style="classObj.titleFontSize + classObj.titleColor" v-if="!titleHide">
+				<text class="width100 flex_row" :class="titleFixedWidth?'word_wrap':'text_nowrap'">
+					<text class="fontColorF1505C" v-if="(otherSet.requiredFieldsSet?!otherSet.requiredFieldsSet.hideRequiredFields:true)">{{otherSet.requiredFieldsSet?otherSet.requiredFieldsSet.requiredFieldsFlag||'*':'*'}}</text>验证码
+				</text>
+			 </view>
+			<!-- <view class="width20 marginRight5" :class="classObj.titleLayout" :style="classObj.titleFontSize + classObj.titleColor" v-if="!titleHide">
 				<view class="fontColorF1505C" v-if="(otherSet.requiredFieldsSet?!otherSet.requiredFieldsSet.hideRequiredFields:true)">{{otherSet.requiredFieldsSet?otherSet.requiredFieldsSet.requiredFieldsFlag||'*':'*'}}</view>验证码
-			</view>
-			<view :class="[classObj.contentsWidth, classObj.contentsLayout]">
-				<view class="flex_row" :style="classObj.contentWidth">
-					<view class="width45">
-						<input type="text" :value="userCode" :placeholder="otherSet.getCodeSet?otherSet.getCodeSet.securityCodePlaceholder||'请输入验证码':'请输入验证码'" class="width100 borderBottom1pxf2f2f2" :style="classObj.contentFontSize" @input="code_change($event)"/>
-					</view>
-					<view class="flex_row_e_c width55" :style="classObj.padding0_3">
-						<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="getCode" :style="classObj.getcodeButton">{{startCode?codeCount + 's':'获取验证码'}}</button>
-					</view>
+			</view> -->
+			<view class="flex_row" :class="[(titleFixedWidth?classObj.contentsWidth:'Flex4'), classObj.contentsLayout]">
+				<view class="Flex1">
+					<input type="text" :value="userCode" :placeholder="otherSet.getCodeSet?otherSet.getCodeSet.securityCodePlaceholder||'请输入验证码':'请输入验证码'" class="width100 borderBottom1pxf2f2f2" :style="classObj.contentFontSize" @input="code_change($event)"/>
+				</view>
+				<view class="flex_row_e_c Flex1" :style="classObj.padding0_3">
+					<button type="primary" size="mini" v-if="ifCode" :disabled="startCode" @tap="getCode" :style="classObj.getcodeButton">{{startCode?codeCount + 's':'获取验证码'}}</button>
 				</view>
 			</view>
 		</view>
@@ -836,6 +845,10 @@
 	import pickerCustom from './picker-custom.vue';
 	import pickerCustom2 from './picker-custom2.vue';
 	import pickerProvincialStreet from './mpvue-citypicker/picker-provincialStreet.vue';
+	
+	function log(t, f) {
+		_app.log(t + ', at inputs.vue-' + f);
+	}
 	
 	const debounceName = 'inputdebounce_';
 	const debounceTimeName = 'inputdebounce_time_';
@@ -1060,7 +1073,8 @@
 				infinitePicsObj: {},
 				infinitePicsName: 'infinitePics',
 				initedSet: new Set(),
-				fixedVariableNamePattern: false
+				fixedVariableNamePattern: false,
+				picsUpLoadData: {}
 			};
 		},
 		watch: {
@@ -1088,7 +1102,7 @@
 				{ fixedVariableNamePattern, launch } = {}
 			) { // 初始化默认数据 param{是否是固定变量名模式初始化, 是否是首次初始化}
 				let _this = this;
-				console.log(`初始化inputs${launch?'':fixedVariableNamePattern?'-固定变量名模式':'-非固定变量名模式'}`);
+				log(`初始化inputs${launch?'':fixedVariableNamePattern?'-固定变量名模式':'-非固定变量名模式'}`, 'init');
 				const inputsArray = _this.inputsArray;
 				_this.$set(_this, 'verifyStatusObj', {});
 				if(_this.phoneIndex!=='') _this.phoneIndex = '';
@@ -1114,12 +1128,11 @@
 							let data;
 							for (let j = 0; j < item.itemArray.length; j++) {
 								if (item.itemArray[j].defaultValue) {
-									data = item.itemArray[j].value;
+									data = String(item.itemArray[j].value);
 									break;
 								}
 							}
-							
-							if(data) {
+							if(data!==undefined) {
 								params.value = data;
 								_this.setValueFc(params);
 							}else {
@@ -1225,7 +1238,7 @@
 						case 'editor':
 							// #ifdef APP-PLUS || MP-WEIXIN
 							if(this.usingComponents&&!this.editorLoadedFontFace) {
-								console.log('editor 初始化')
+								log('editor 初始化', 'init');
 								uni.loadFontFace({
 									family: 'Pacifico',
 									source: 'url("https://sungd.github.io/Pacifico.ttf")'
@@ -1273,15 +1286,11 @@
 					}
 				}
 			},
-			showPicker(
 			// #ifndef H5
-				{ currentTarget: { dataset: { item, index } } } = {},
-			// #endif
-			// #ifdef H5
-				item, index
-			// #endif
+			showPicker(
+				{ currentTarget: { dataset: { item, index } } } = {}
 			) { //显示相对应的picker
-				let _this = this;
+			let _this = this;
 				item.index = index;
 				_this.maskShow = true;
 				if (item && item.type) {
@@ -1330,6 +1339,61 @@
 					_app.showToast('picker参数类型错误');
 				}
 			},
+			// #endif
+			// #ifdef H5
+			showPicker(
+				item, index
+			) { //显示相对应的picker
+			let _this = this;
+				item.index = index;
+				_this.maskShow = true;
+				if (item && item.type) {
+					let pickerValue;
+					switch (item.type) {
+						case 'picker-date':
+							//记忆数据优先
+							pickerValue = _app.pickerChoosedType.pickerChoosedType_date.value + index;
+							if(_this.pickerObj[pickerValue]) item.defaultValue = _this.pickerObj[pickerValue];
+							_this.P_data = item;
+							_this.pickerDateShow = true;
+							break;
+						case 'picker-city':
+							//记忆数据优先
+							pickerValue = _app.pickerChoosedType.pickerChoosedType_city.value + index;
+							if(_this.pickerObj[pickerValue]) item.defaultValue = _this.pickerObj[pickerValue];
+							_this.P_data = item;
+							_this.pickerCityShow = true;
+							break;
+						case 'picker-custom':
+							//记忆数据优先
+							pickerValue = _app.pickerChoosedType.pickerChoosedType_custom.value + index;
+							if(_this.pickerObj[pickerValue]) item.defaultValue = _this.pickerObj[pickerValue];
+							_this.P_data = item;
+							_this.pickerCustomShow = true;
+							break;
+						case 'picker-custom2':
+							//记忆数据优先
+							pickerValue = _app.pickerChoosedType.pickerChoosedType_custom2.value + index;
+							if(_this.pickerObj[pickerValue]) item.defaultValue = _this.pickerObj[pickerValue];
+							_this.P_data = item;
+							_this.pickerCustom2Show = true;
+							break;
+						case 'picker-provincialStreet':
+							//记忆数据优先
+							pickerValue = _app.pickerChoosedType.pickerChoosedType_provincialStreet.value + index;
+							if(_this.pickerObj[pickerValue]) item.defaultValue = _this.pickerObj[pickerValue];
+							_this.P_data = item;
+							_this.pickerProvincialStreetShow = true;
+							break;
+						default:
+							_app.showToast('缺少必要参数-type');
+							break;
+					}
+				}else {
+					_app.showToast('picker参数类型错误');
+				}
+			},
+			// #endif
 			IgreeFc(
 				{detail: {value}},
 			) { // 用户是否同意规则
@@ -1352,23 +1416,23 @@
 					cbObj = this.inputsArray.find(item=>item.variableName===index);
 					vbName = index;
 				}
-				console.log(JSON.stringify(cbObj));
-				let checkboxArray = cbObj.itemArray;
-				let oldData = this.inputsObj[vbName];
-				let newArray = [];
-				let oldArray = [];
+				const checkboxArray = cbObj.itemArray;
+				const oldData = this.inputsObj[vbName];
+				const status = [];
+				const values = [];
 				if(checkboxArray.length>0&&value.length>0) {
 					checkboxArray.forEach(item=>{
-						newArray.push('');
-						oldArray.push(item.value);
+						status.push(false);
+						values.push(String(item.value));
 					});
-					value.forEach(item=>{
-						let num = oldArray.indexOf(item);
-						if(num>=0)
-							newArray[num] = item;
+					value.forEach((item)=>{
+						const num = values.indexOf(item);
+						if(num>=0) {
+							status[num] = true;
+						}
 					});
 				}
-				let newData = {value, status: _app.checkbox_status(newArray)};
+				const newData = {value, status};
 				this.initedSetChange({vbName});
 				this.$set(this.inputsObj, vbName, newData);
 				this._emitEvent(_app.eventNames.inputsChange, {newData, oldData, index});
@@ -1376,21 +1440,19 @@
 			inputs_change(
 				{ detail: { value }, currentTarget: { dataset: { index, filterfc, filtertype, isinput } } } = {}
 			) { // 用户输入时，根据index赋值
-				//console.log(e.detail.value);
-				// console.log(index);
 				if(this.inputDebounceSet.openInputDebounce&&isinput) {
 					if(inputDebounce[debounceName+index]) clearTimeout(inputDebounce[debounceName+index]);
 					if(inputDebounce[debounceTimeName+index]&&new Date().getTime()-inputDebounce[debounceTimeName+index]<(this.inputDebounceSet.delay||500)) {
-						console.log('防抖冲突,立即执行')
+						log('防抖冲突,立即执行', 'inputs_change');
 						this.inputs_changeFc(value, index, filterfc, filtertype, true);
 					}else{
 						inputDebounce[debounceName+index] = setTimeout(()=>{
-							console.log('防抖')
+							log('防抖', 'inputs_change');
 							this.inputs_changeFc(value, index, filterfc, filtertype);
 						}, this.inputDebounceSet.delay||500);
 					}
 				}else{
-					console.log('无防抖')
+					log('无防抖', 'inputs_change');
 					this.inputs_changeFc(value, index, filterfc, filtertype);
 				}
 			},
@@ -1449,7 +1511,7 @@
 					
 				this.initedSetChange({vbName});
 				res.oldData = this.inputsObj[vbName];
-				console.log('pickerValue：' + JSON.stringify(res));
+				log('pickerValue：' + JSON.stringify(res), 'picker_change');
 				this.inputsObj[vbName] = res.newData;
 				switch (res.type){		// 该项picker的value记忆
 					case _app.pickerChoosedType.pickerChoosedType_date.name:
@@ -1516,11 +1578,11 @@
 			code_change({detail: {value}}) { //验证码防抖输入
 				if(inputCodeDebounce) clearTimeout(inputCodeDebounce);
 				if(inputCodeDebounceTime&&new Date().getTime()-inputCodeDebounceTime<codeIntervalNum) {
-					console.log('防抖冲突,立即执行')
+					log('防抖冲突,立即执行', 'code_change');
 					this.code_changeFc(value, true);
 				}else{
 					inputCodeDebounce = setTimeout(()=>{
-						console.log('防抖')
+						log('防抖', 'code_change');
 						this.code_changeFc(value);
 					}, codeIntervalNum);
 				}
@@ -1677,7 +1739,7 @@
 									inputsDataObj[variableName] = await this.getEditorContent();
 								}catch(e){
 									//TODO handle the exception
-									console.log('editor取值异常:' + JSON.stringify(e));
+									log('editor取值异常:' + JSON.stringify(e), 'activeFc');
 									inputsDataObj[variableName] = {};
 								}
 								// #endif
@@ -1697,7 +1759,7 @@
 								}
 							} else {
 								if(d[i].verifyType&&_app.verifyTypeObj[d[i].verifyType]) {
-									console.log(_this.inputsObj[variableName]);
+									log(_this.inputsObj[variableName], 'activeFc');
 									if(!_app.verifyTypeObj[d[i].verifyType].reg.test(_this.inputsObj[variableName])) {
 										_this.change_verifyStatus(i, 1);
 										_app.showToast(d[i].verifyErr || ((d[i].title||'第' + i + '项') + _app.verifyTypeObj[d[i].verifyType].name +  '格式校验错误'))
@@ -1752,17 +1814,18 @@
 				// 如果用了图片类型， 则上传并返回数据
 				const pic_promise = [];
 				if(ifUsePics.length > 0) {
+					const picsUpLoadData = _this.picsUpLoadData;
 					for (let i = 0; i < ifUsePics.length; i++) {
-						let index = ifUsePics[i];
-						let onLoadData = _this.onLoadData + index;
-						let variableName = d[index].variableName || onLoadData;
+						const index = ifUsePics[i];
+						const onLoadData = _this.onLoadData + index;
+						const variableName = d[index].variableName || onLoadData;
 						if (d[index].type && d[index].type == 'pics') {
 							for (let j = 0; j < d[index].itemArray.length; j++) {
-								let picsObj = inputsDataObj[variableName][j];
+								const picsObj = inputsDataObj[variableName][j];
 								if (picsObj) {
 									pic_promise.push(new Promise(function(reslove, reject) {
 										// push Promise 上传图片到服务器并返回图片在服务器的地址并拼接的方法
-										_app.UpLoadFile(d[index].customId, picsObj).then((res)=>{
+										_app.UpLoadFile(d[index].customId, picsObj, picsUpLoadData[d[index].customId]).then((res)=>{
 											reslove({
 												index1: index,
 												index2: j,
@@ -1788,6 +1851,7 @@
 				// 无限上传图片类型
 				const infinitePic_promise = [];
 				if(ifInfinitePics.length > 0) {
+					const picsUpLoadData = _this.picsUpLoadData;
 					for(let i = 0; i < ifInfinitePics.length; i++) {
 						const item = ifInfinitePics[i];
 						const index = item.index;
@@ -1797,7 +1861,7 @@
 								if(infiniteItem[j].path) {
 									infinitePic_promise.push(new Promise(function(reslove, reject) {
 										// push Promise 上传图片到服务器并返回图片在服务器的地址并拼接的方法
-										_app.UpLoadFile(d[index].customId, infiniteItem[j].path).then((res)=>{
+										_app.UpLoadFile(d[index].customId, infiniteItem[j].path, picsUpLoadData[d[index].customId]).then((res)=>{
 											reslove({
 												index1: index,
 												index2: j,
@@ -1808,11 +1872,11 @@
 										});
 									}));
 								}else{
-									console.log('not find infiniteItem path');
+									log('not find infiniteItem path', 'activeFc');
 								}
 							}
 						}else{
-							console.log('not find infiniteItem');
+							log('not find infiniteItem', 'activeFc');
 						}
 					}
 				}
@@ -1826,7 +1890,7 @@
 					_this.$emit('activeFc', inputsDataObj); // 把用户输入数据对象输出给父级
 					_this.inputs_reSet(); //提交后重置
 				}).catch((err)=>{
-					console.log(err);
+					log('err:' + JSON.stringify(err), 'activeFc');
 					_app.showToast(err);
 				});
 			},
@@ -1990,7 +2054,7 @@
 					// #endif
 					// #ifndef H5
 					if(this.usingComponents) {
-						if(!this.inputsId) { console.log('找不到inputsId, 请在inputs中传此参数'); return; }
+						if(!this.inputsId) { log('找不到inputsId, 请在inputs中传此参数', 'change_verifyStatus'); return; }
 						view = uni.createSelectorQuery().select(`#${this.inputsId} >>> #Id_${inputId}`);
 					}else {
 						view = uni.createSelectorQuery().select(`#Id_${inputId}`);
@@ -2006,11 +2070,11 @@
 					}).catch((err)=>{
 						switch (err){
 							case 1:
-								console.log('首次滚动失败, 正在尝试切换参数后重试滚动, 注意: 注意自己的编译模式, 若为自定义组件模式, 请传参数usingComponents为true, 详见v6.1更新说明 http://ext.dcloud.net.cn/plugin?id=149');
+								log('首次滚动失败, 正在尝试切换参数后重试滚动, 注意: 注意自己的编译模式, 若为自定义组件模式, 请传参数usingComponents为true, 详见v6.1更新说明 http://ext.dcloud.net.cn/plugin?id=149', 'change_verifyStatus');
 								this.retryScroll(verifyStatusSet, inputId);
 								break;
 							case 2:
-								console.log('获取滚动条位置信息失败');
+								log('获取滚动条位置信息失败', 'change_verifyStatus');
 								break;
 							default:
 								break;
@@ -2024,7 +2088,7 @@
 				if(this.usingComponents) {
 					view = uni.createSelectorQuery().select(`#Id_${inputId}`);
 				}else{
-					if(!this.inputsId) { console.log('找不到inputsId, 请在inputs中传此参数'); return; }
+					if(!this.inputsId) { log('找不到inputsId, 请在inputs中传此参数', 'retryScroll'); return; }
 					view = uni.createSelectorQuery().select(`#${this.inputsId} >>> #Id_${inputId}`);
 				}
 				let p1 = new Promise((rs, rj)=>{ view.fields({ rect: true }, data => { if(data) rs(data); else rj('重试滚动失败, 获取节点信息失败'); }).exec(); })
@@ -2035,9 +2099,9 @@
 						scrollTop:t < 0?0:t,
 						duration: 300
 					})
-					console.log('重试滚动成功, 请注意自己的编译模式, 若为自定义组件模式, 则传usingComponents为true, 可免去此次重复操作, 详见v6.1更新说明 http://ext.dcloud.net.cn/plugin?id=149')
+					log('重试滚动成功, 请注意自己的编译模式, 若为自定义组件模式, 则传usingComponents为true, 可免去此次重复操作, 详见v6.1更新说明 http://ext.dcloud.net.cn/plugin?id=149', 'retryScroll')
 				}).catch((err)=>{
-					console.log(err);
+					log('重试滚动失败: ' + JSON.stringify(err), 'retryScroll');
 				})
 			},
 			setFocus() {
@@ -2060,7 +2124,7 @@
 						i = param(this.inputsArray);
 						break;
 					default:
-						console.log('setFocus方法传入的参数不正确');
+						log('setFocus方法传入的参数不正确', 'setInputsValueFc');
 						if(fcb&&typeof(fcb)==='function') fcb();
 						return;
 						break;
@@ -2071,7 +2135,7 @@
 					if(fail&&typeof(fail)==='function') fail(isNumber?'下标小于零':'匹配标识不能为空');
 				}else {
 					this.initedSetChange({vbName: i});
-					console.log('setInputsValueFc: i:' + i + ', name: ' + obj.name + ', value: ' + value);
+					log('setInputsValueFc: i:' + i + ', name: ' + obj.name + ', value: ' + value, 'setInputsValueFc');
 					this.$set(this[obj.name], (isNumber?(this.onLoadData + i):i) + obj.itemName, value); 
 				}
 			},
@@ -2085,10 +2149,10 @@
 					}else if(setDatas instanceof Object) {
 						this.setValueFc(setDatas);
 					}else{
-						console.warn('warn: setValue, 不支持的类型');
+						_app.warn('warn: setValue, 不支持的类型');
 					}
 				}else{
-					console.warn('warn: setValue, 参数不能为空');
+					_app.warn('warn: setValue, 参数不能为空');
 				}
 			},
 			setValueFc(params) {
@@ -2106,12 +2170,12 @@
 						}else if(index!==undefined){
 							itemVariableName = _this.onLoadData + index;
 						}else{
-							console.error('err: setValueFc, 找不到变量名');
+							_app.error('err: setValueFc, 找不到变量名');
 							return;
 						}
 					}
 					if(!itemVariableName) {
-						console.error('err: setValueFc, 找不到变量名');
+						_app.error('err: setValueFc, 找不到变量名');
 						return;
 					}
 					let data;
@@ -2145,7 +2209,7 @@
 							break;
 						case 'pics':
 							if (picsIndex === undefined) {
-								console.error('pics类型找不到picsIndex');
+								_app.error('pics类型找不到picsIndex');
 								return;
 							}
 							let picVbNmae;
@@ -2201,13 +2265,12 @@
 										data = `${Y}/${M}/${D} ${h}:${m}:${s}`;
 										break;
 								}
-								console.log('picker data: ' + JSON.stringify(data));
 								_this.initedSetChange({vbName: itemVariableName});
 								_this.$set(_this.inputsObj, itemVariableName, data);
 							break;
 						case 'picker-city':
 								if(!(value instanceof Array && value.length >= 3)) {
-									console.error('err: setValueFc, picer-city格式不正确');
+									_app.error('err: setValueFc, picer-city格式不正确');
 									return;
 								}
 								provinceDataList = require('./mpvue-citypicker/city-data/province.js').default;
@@ -2384,13 +2447,13 @@
 				}else if(index!==undefined && _app.regTest('Int', index)) {
 					obj = inputsArray[Number(index)];
 				}else{
-					console.error('err: setValueFc, 找不到可匹配标识');
+					_app.error('err: setValueFc, 找不到可匹配标识');
 				}
 				
 				if(obj&&Object.keys(obj).length > 0) {
 					return obj;
 				}else{
-					console.error('err: setValueFc, 找不到匹配项');
+					_app.error('err: setValueFc, 找不到匹配项');
 				}
 				return false;
 			},
@@ -2415,13 +2478,74 @@
 				}
 				this.$emit(name, obj)
 			},
+			clearPicsUpLoadData() {
+				const fnName = 'clearPicsUpLoadData';
+				const { setPicsDatas, scb, fcb } = _app.filterParams(arguments, _app.filterParamsArrayType.picsUpLoadData, true);
+				if(setPicsDatas) {
+					if(setPicsDatas instanceof Array) {
+						for(let i = 0; i < setPicsDatas.length; i++) {
+							const item = setPicsDatas[i];
+							if(item.customId) {
+								if(this.picsUpLoadData[item.customId]!==undefined) {
+									delete this.picsUpLoadData[item.customId];
+								}
+							}
+						}
+						if(scb && typeof(scb) === 'function') scb({...this.picsUpLoadData});
+					}else if(setPicsDatas instanceof Object) {
+						if(setPicsDatas.customId) {
+							if(this.picsUpLoadData[setPicsDatas.customId]!==undefined) {
+								delete this.picsUpLoadData[setPicsDatas.customId];
+							}
+							if(scb && typeof(scb) === 'function') scb({...this.picsUpLoadData});
+						}
+					}
+				}else{
+					this.picsUpLoadData = {};
+					if(scb && typeof(scb) === 'function') scb({...this.picsUpLoadData});
+				}
+			},
+			setPicsUpLoadData() {
+				const fnName = 'setPicsUpLoadData';
+				const { setPicsDatas, scb, fcb } = _app.filterParams(arguments, _app.filterParamsArrayType.picsUpLoadData, true);
+				if(setPicsDatas instanceof Array) {
+					if(setPicsDatas.length === 0) {
+						log('err: 设置上传图片携带数据-长度为0', fnName);
+						if(fcb && typeof(fcb) === 'function') fcb();
+						return;
+					}
+					const picsUpLoadData = {};
+					for(let i = 0; i < setPicsDatas.length; i++) {
+						const item = setPicsDatas[i];
+						if(item.customId) {
+							picsUpLoadData[item.customId] = item.data;
+						}else{
+							log('err: 设置上传图片携带数据-找不到customId', fnName);
+							if(fcb && typeof(fcb) === 'function') fcb();
+							return;
+						}
+					}
+					this.picsUpLoadData = {...this.picsUpLoadData, ...picsUpLoadData};
+					if(scb && typeof(scb) === 'function') scb({...this.picsUpLoadData});
+				}else if(setPicsDatas instanceof Object) {
+					if(setPicsDatas.customId) {
+						this.picsUpLoadData[setPicsDatas.customId] = setPicsDatas.data;
+					if(scb && typeof(scb) === 'function') scb({...this.picsUpLoadData});
+					}else{
+						log('err: 设置上传图片携带数据-找不到customId', fnName);
+					}
+				}else{
+					log('err: 设置上传图片携带数据-类型错误', fnName);
+				}
+			},
 			inputsArrayLengthChange(n, o) {	//switch监听inputsArray变化时触发的方法
+				const fnName = 'inputsArrayLengthChange';
 				let oSet = new Set();
 				for(let i = 0; i < o.length; i++) {
 					if(o[i].variableName) {
 						oSet.add(o[i].variableName);
 					}else {
-						console.log('旧数组中' + (o[i].title||('第' + i + '项')) + '没有variableName属性，执行初始化函数');
+						log('旧数组中' + (o[i].title||('第' + i + '项')) + '没有variableName属性，执行初始化函数', fnName);
 						this.init();
 						return;
 					}
@@ -2431,16 +2555,16 @@
 					if(n[i].variableName) {
 						nSet.add(n[i].variableName);
 					}else {
-						console.log('新数组中' + (n[i].title||('第' + i + '项')) + '没有variableName属性，执行初始化函数');
+						log('新数组中' + (n[i].title||('第' + i + '项')) + '没有variableName属性，执行初始化函数', fnName);
 						this.init();
 						return;
 					}
 				}
 				if(oSet.size !== o.length || nSet.size !== n.length) {
-					console.log('检查结果-不符合固定变量名模式, 执行初始化函数');
+					log('检查结果-不符合固定变量名模式, 执行初始化函数', fnName);
 					this.init();
 				}else{
-					console.log('检查结果-符合固定变量名模式，执行初始化函数时跳过已有值的项');
+					log('检查结果-符合固定变量名模式，执行初始化函数时跳过已有值的项', fnName);
 					let oArr = Array.from(oSet);
 					const differenceArr  = []; // 差集 用于删除多余数据
 					for(let i = 0; i < oArr.length; i++) {
@@ -2450,7 +2574,7 @@
 					}
 					for (let i = 0; i < differenceArr.length; i++) {
 							let vbName = differenceArr[i];
-							console.log('发现多余项:' + vbName);
+							log('发现多余项:' + vbName, fnName);
 						if(vbName) {
 							if(this.initedSet.has(vbName)) this.initedSet.delete(vbName);
 							const obj = o.find(item=>item.variableName===vbName);
@@ -2460,52 +2584,52 @@
 									if(obj.itemArray) {
 										for(let i = 0; i < obj.itemArray.length; i++) {
 											let picVbName = vbName + i;
-											console.log('去除picsObj变量:' + picVbName + ', 值为:' + this.picsObj[picVbName]);
+											log('去除picsObj变量:' + picVbName + ', 值为:' + this.picsObj[picVbName], fnName);
 											this.$delete(this.picsObj, picVbName);
 										}
 									}
 									break;
 								case 'picker-date':
 									pickerValue = _app.pickerChoosedType.pickerChoosedType_date.value + vbName;
-									console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
-									console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
+									log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName], fnName);
+									log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue], fnName);
 									this.$delete(this.inputsObj, vbName);
 									this.$delete(this.pickerObj, pickerValue);
 									break;
 								case 'picker-city':
 									pickerValue = _app.pickerChoosedType.pickerChoosedType_city.value + vbName;
-									console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
-									console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
+									log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName], fnName);
+									log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue], fnName);
 									this.$delete(this.inputsObj, vbName);
 									this.$delete(this.pickerObj, pickerValue);
 									break;
 								case 'picker-custom':
 									pickerValue = _app.pickerChoosedType.pickerChoosedType_custom.value + vbName;
-									console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
-									console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
+									log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName], fnName);
+									log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue], fnName);
 									this.$delete(this.inputsObj, vbName);
 									this.$delete(this.pickerObj, pickerValue);
 									break;
 								case 'picker-custom2':
 									pickerValue = _app.pickerChoosedType.pickerChoosedType_custom2.value + vbName;
-									console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
-									console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
+									log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName], fnName);
+									log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue], fnName);
 									this.$delete(this.inputsObj, vbName);
 									this.$delete(this.pickerObj, pickerValue);
 									break;
 								case 'picker-provincialStreet':
 									pickerValue = _app.pickerChoosedType.pickerChoosedType_provincialStreet.value + vbName;
-									console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
-									console.log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue]);
+									log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName], fnName);
+									log('去除pickerObj变量:' + pickerValue + ', 值为:' + this.pickerObj[pickerValue], fnName);
 									this.$delete(this.inputsObj, vbName);
 									this.$delete(this.pickerObj, pickerValue);
 									break;
 								case 'infinitePics':
-									console.log('去除infinitePicsObj变量:' + vbName + ', 值为:' + this.infinitePicsObj[this.infinitePicsName + vbName]);
+									log('去除infinitePicsObj变量:' + vbName + ', 值为:' + this.infinitePicsObj[this.infinitePicsName + vbName], fnName);
 									this.$delete(this.infinitePicsObj, this.infinitePicsName + vbName);
 									break;
 								default:
-									console.log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName]);
+									log('去除inputsObj变量:' + vbName + ', 值为:' + this.inputsObj[vbName], fnName);
 									this.$delete(this.inputsObj, vbName);
 									break;
 							}
@@ -2520,11 +2644,13 @@
 			// editor
 			// #ifdef APP-PLUS || MP-WEIXIN
 			readOnlyChange() {
-				console.log('editor readOnly');
+				const fnName = 'readOnlyChange';
+				log('editor readOnly', fnName);
 				this.readOnly = !this.readOnly
 			},
 			onEditorReady() {
-				console.log('editor onEditorReady');
+				const fnName = 'onEditorReady';
+				log('editor onEditorReady', fnName);
 				if(this.inputsId)
 					uni.createSelectorQuery().select(`#${this.inputsId} >>> #editor`).context((res) => {
 						this.editorCtx = res.context
@@ -2534,19 +2660,20 @@
 						}
 					}).exec()
 				else
-					console.log('找不到inputsId, 请在inputs中传入')
+					log('找不到inputsId, 请在inputs中传入', fnName)
 			},
 			setEditorContent(val, valType) {
+				const fnName = 'setEditorContent';
 				if(this.usingComponents) {
 					let obj = {};
 					obj[valType||'delta'] = val;
 					this.editorCtx.setContents({
 						...obj,
 						success(res) {
-							console.log('设置editor内容成功:' + JSON.stringify(res));
+							log('设置editor内容成功:' + JSON.stringify(res), fnName);
 						},
 						fail(err) {
-							console.log('设置editor内容失败:' + JSON.stringify(err));
+							log('设置editor内容失败:' + JSON.stringify(err), fnName);
 						}
 					})
 				}
@@ -2581,7 +2708,7 @@
 					value
 				} = e.target.dataset
 				if (!name) return
-				// console.log('format', name, value)
+				// log('format', name, value)
 				this.editorCtx.format(name, value)
 			
 			},
@@ -2590,16 +2717,17 @@
 				this.formats = formats
 			},
 			insertDivider() {
+				const fnName = 'insertDivider';
 				this.editorCtx.insertDivider({
 					success: function() {
-						console.log('insert divider success')
+						log('insert divider success', fnName);
 					}
 				})
 			},
 			editorClear() {
 				this.editorCtx.clear({
 					success: function(res) {
-						console.log("clear success")
+						log("clear success", fnName);
 					}
 				})
 			},
@@ -2614,6 +2742,7 @@
 				})
 			},
 			insertImage() {
+				const fnName = 'insertImage';
 				uni.chooseImage({
 					count: 1,
 					success: (res) => {
@@ -2621,7 +2750,7 @@
 							src: res.tempFilePaths[0],
 							alt: '图像',
 							success: function() {
-								console.log('insert image success')
+								log('insert image success', fnName)
 							}
 						})
 					}

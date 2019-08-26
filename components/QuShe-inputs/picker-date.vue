@@ -137,7 +137,6 @@
 		},
 		methods: {
 			bindPickerViewChange({detail: { value }}) {
-				// console.log(JSON.stringify(e));
 				if(this.mode!==_app.picker_date_obj.time) {
 					let data = _app.countDays(this.years[value[0]], value[1], value);
 					this.days = data.days;
@@ -149,7 +148,6 @@
 			confirmFc() {
 				let _this = this;
 				const dateValue = _this.dateValue;
-				console.log(JSON.stringify(dateValue));
 				let Y = _this.years;
 				let year, month, day, h, m, s;
 				let data;
