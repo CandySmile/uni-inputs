@@ -1,171 +1,10 @@
-const log = function(t) {
-	console.log(t);	// 若不想打印信息请注释
-}
+import log from './config/log';
+import { getSendData, getAsyncDataFc } from './config/picker';
+import interfaces from './config/interfaces';
+import { inputCustomTapFc, inputCustomTapCatchFc, filterTypeObj, verifyTypeObj } from './config/input';
+import { UpLoadFile, pics_splice } from './config/pics';
+import sendSMS from './config/sms';
 
-// 7.3 新增（start）
-// 需自己配置（start）
-function getSendData(obj) {
-	const {
-		// 以下参数供以判断
-		value, //picker的value值
-		launch, // 是否是初始化
-		customId, // 自定义标识
-		index, // 改变的列的下标（第几列改变）
-		linkageNum, // 联动级数
-		type, // picker的type
-		datas, // 页面当前数据: {data_0: 第一列数据, data_1: 第二列数据, data_2: 第三列数据}
-		column // 三级联动中 是第几列获取sendData
-	} = obj
-	const {
-		data_0, // 第一列数据
-		data_1 // 第二列数据
-	} = datas; // 页面当前数据: {data_0: 第一列数据, data_1: 第二列数据, data_2: 第三列数据}
-	let vbName_0; // 第一列数据获取value值的变量名
-	let vbName_1; // 第二列数据获取value值的变量名
-	switch (customId) { // 根据customId决定vbName的赋值走向
-		case '自定义标识':
-			vbName_0 = '';
-			vbName_1 = '';
-			break;
-		default:
-			vbName_0 = 'value';
-			vbName_1 = 'value';
-			break;
-	}
-
-	let sendData = {}; // 访问接口携带的数据
-	switch (linkageNum) {
-		case 2: // 二级联动
-			sendData.id = data_0[value[0]][vbName_0];
-			break;
-		case 3: // 三级联动
-			if (launch || index === 0) { // 首次初始化 或 第一列更改
-				switch (column) {
-					case 0: // 获取第一列中用以获取sendData的数据
-						sendData.id = data_0[value[0]][vbName_0];
-						break;
-					case 1: // 获取第二列中用以获取sendData的数据
-						sendData.id = data_1[0][vbName_1];
-						break;
-					default:
-						log('column 超限');
-						break;
-				}
-			} else { // 第二列更改
-				sendData.id = data_1[value[1]][vbName_1];
-			}
-			break;
-		default:
-			log('级数不存在');
-			break;
-	}
-	return sendData; // 最终return sendData
-
-}
-
-function getAsyncDataFc(obj) { // 访问接口获取picker自定义逐级数据
-	return new Promise((rs, rj) => {
-		uni.showLoading({ //不需要可以删除, 别忘了下面的hideLoading
-			title: '获取数据中……'
-		})
-		setTimeout(() => { // 访问接口获取数据 (需自己修改)
-			let data;
-			switch (obj.id) {
-				case 'a':
-					data = [{
-						name: 'a_a',
-						value: 'a_a'
-					}, {
-						name: 'a_b',
-						value: 'a_b'
-					}];
-					break;
-				case 'b':
-					data = [{
-						name: 'b_a',
-						value: 'b_a'
-					}, {
-						name: 'b_b',
-						value: 'b_b'
-					}];
-					break;
-				case 'c':
-					data = [{
-						name: 'c_a',
-						value: 'c_a'
-					}, {
-						name: 'c_b',
-						value: 'c_b'
-					}];
-					break;
-				case 'a_a':
-					data = [{
-						name: 'a_a_a',
-						value: 'a_a_a'
-					}, {
-						name: 'a_a_b',
-						value: 'a_a_b'
-					}]
-					break;
-				case 'a_b':
-					data = [{
-						name: 'a_b_a',
-						value: 'a_b_a'
-					}, {
-						name: 'a_b_b',
-						value: 'a_b_b'
-					}]
-					break;
-				case 'b_a':
-					data = [{
-						name: 'b_a_a',
-						value: 'b_a_a'
-					}, {
-						name: 'b_a_b',
-						value: 'b_a_b'
-					}]
-					break;
-				case 'b_b':
-					data = [{
-						name: 'b_b_a',
-						value: 'b_b_a'
-					}, {
-						name: 'b_b_b',
-						value: 'b_b_b'
-					}]
-					break;
-				case 'c_a':
-					data = [{
-						name: 'c_a_a',
-						value: 'c_a_a'
-					}, {
-						name: 'c_a_b',
-						value: 'c_a_b'
-					}]
-					break;
-				case 'c_b':
-					data = [{
-						name: 'c_b_a',
-						value: 'c_b_a'
-					}, {
-						name: 'c_b_b',
-						value: 'c_b_b'
-					}]
-					break;
-				default:
-					break;
-			}
-			rs(data);
-			uni.hideLoading(); //不需要可以删除
-		}, 1000);
-	})
-}
-// 需自己配置（end）
-
-
-// 尽量不要动他
-// 尽量不要动他
-// 尽量不要动他
 const getPickerAsyncData = async function(obj) { // picker-custom与picker-custom2的逐级获取数据函数
 	let _this = this;
 	_this.waiting = true; // 在获取数据时不许用户点确定
@@ -293,164 +132,6 @@ const getPickerAsyncData = async function(obj) { // picker-custom与picker-custo
 	}
 }
 
-// 7.3 新增（end）
-
-
-
-const interfaces = {
-	baseUrl: '',
-	upLoadImg: '', // 服务器地址(上传图片)
-};
-
-const inputCustomTapFc = function(customId) { //inputTap custom类型触发的函数, 必须return一个Promise对象, 可以resolve数据给相应的input赋值
-	return new Promise((resolve, reject) => {
-		switch (customId) {
-			case '自定义id':
-				break;
-			default:
-				uni.scanCode({ //示例, 扫码后赋值
-					success: function(res) {
-						log('条码类型：' + res.scanType);
-						log('条码内容：' + res.result);
-						resolve(res.result);
-					}
-				});
-				break;
-		}
-	})
-}
-
-const inputCustomTapCatchFc = function(customId, e) { // inputTap custom类型触发的函数异常时触发的函数, 必须return一个Promise对象, 可以resolve数据给相应的input赋值
-	return new Promise((resolve, reject) => {
-		switch (customId) {
-			case '自定义id':
-				break;
-			default:
-
-				break;
-		}
-	})
-}
-
-const UpLoadFile = function(customId, filePath, picsUpLoadData) { // 上传文件方法: (自定义上传标识, 文件路径, 自定义上传数据)
-	log('自定义上传图片携带数据:' + JSON.stringify(picsUpLoadData));
-	if (filePath.substring(0, 4) === 'http') { //域名替换机制: 判断是否是从后端获取的图片路径, 若是 替换域名字符串为空后resolve. 也可以根据customId动态控制, 不需要则删除此代码
-		const replacePath = filePath.replace(interfaces.baseUrl, '');
-		return Promise.resolve({
-			data: replacePath
-		});
-	}
-	let _this = this;
-	let url = '';
-	let formData = {};
-	let name = '';
-	switch (customId) { //判断该项pics类型自带的UpLoadFileType, 根据此值来确定不同的url、formData、name
-		case 'UpLoadImage_1': //自定义的标识
-			url = '';
-			formData = {};
-			name = '';
-			break;
-		default: //若无判断需求可直接写在这里
-			url = interfaces.upLoadImg;
-			formData = {};
-			name = '';
-			break;
-	}
-	if (!url) {
-		_this.showToast('上传文件的url不能为空');
-		return new Promise((rs, rj) => {
-			rj('上传文件的url不能为空');
-		});
-	}
-	if (!filePath) {
-		_this.showToast('上传文件的filePath不能为空');
-		return new Promise((rs, rj) => {
-			rj('上传文件的filePath不能为空');
-		});
-	}
-	return new Promise((reslove, reject) => {
-		_this.showLoading('上传文件中');
-		const obj = {
-			url,
-			name,
-			filePath,
-			success(res) {
-				appJS.log('进入UpLoadFile方法的success回调: ' + JSON.stringify(res));
-				_this.hideLoading();
-				reslove(res)
-			},
-			fail(err) {
-				appJS.log('进入UpLoadFile方法的fail回调')
-				appJS.log(JSON.stringify(err))
-				_this.hideLoading();
-				reject();
-			}
-		}
-		
-		// #ifdef APP-PLUS
-		if (plus.os.name.toLowerCase() === 'ios') {
-			if(Object.keys(formData).length > 0) obj.url = renderUrlData(obj.url, formData);
-		}else{
-			obj.formData = formData;
-		}
-		// #endif
-		// #ifndef APP-PLUS
-		obj.formData = formData;
-		// #endif
-		uni.uploadFile(obj);
-	})
-}
-
-const pics_splice = function(vals, val) { // 拼接图片上传返回后的数据, vals是拼接后的数据， val是新添项
-	if (typeof(vals) !== 'string') { // 第一次传进来是一个数组
-		vals = val || '|'; // 可更改分隔符
-		return vals;
-	}
-	vals += val ? '|' + val : '|';
-	return vals; // 必须return vals
-}
-
-
-const filterTypeObj = { // 内置过滤函数，可根据需求自行添加拓展
-	twoDecimalPlaces(value) { // 必须接受一个参数
-		value = value.replace(/[^\d.]/g, ""); //清除“数字”和“.”以外的字符
-		value = value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
-		value = value.replace(/^(\-)*(\d+)\.(\d).*$/, '$1$2.$3'); //只能输入1个小数 
-		return value; // 必须return value
-	}
-};
-
-const sendSMS = function(customId, phone) { // 发送验证码方法, 需返回生成的验证码
-	let code = ''; // 生成验证码
-	switch (customId) { // 判断自定义标识
-		case '1':
-			code = '';
-			break;
-		default: //若无判断需求可直接写在这里
-			code = '123456';
-			break;
-	}
-	//发送验证码
-	this.showToast(`发送验证码给${phone}成功,请注意查收`);
-	return code; // 必须return生成的验证码
-}
-
-
-
-
-
-
-/*
- *	一下代码尽量不要动他
- */
-/*
- *	一下代码尽量不要动他
- */
-/*
- *	一下代码尽量不要动他
- */
-
-
 const dateTime = 'picker-dateTime';
 const date = 'picker-date';
 const time = 'picker-time';
@@ -477,52 +158,7 @@ const pickerChoosedType = {
 	}
 };
 
-const verifyTypeObj = {
-	Tel: {
-		reg: /^[1][0-9]{10}$/,
-		name: '手机号'
-	},
-	Email: {
-		reg: /^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/,
-		name: '电子邮箱'
-	},
-	idCart: {
-		reg: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
-		name: '身份证号'
-	},
-	NationalNumber: {
-		reg: /\d{3}-\d{8}|\d{4}-\d{7}/,
-		name: '国内号码'
-	},
-	QQ: {
-		reg: /[1-9][0-9]{4,}/,
-		name: 'QQ号'
-	},
-	PostalCode: {
-		reg: /[1-9]\d{5}(?!\d)/,
-		name: '邮政编码'
-	},
-	IpAddress: {
-		reg: /\d+\.\d+\.\d+\.\d+/,
-		name: 'IP地址'
-	},
-	Chinese: {
-		reg: /[\u4e00-\u9fa5]/,
-		name: '中文字符'
-	},
-	Char: {
-		reg: /^[A-Za-z]+$/,
-		name: '英文字母'
-	},
-	Int: {
-		reg: /^\d+$/,
-		name: '整数'
-	},
-	Number: {
-		reg: /^([1-9]\d*(\.\d+)?)|(\d+(\.\d+))$/,
-		name: '数字'
-	}
-};
+
 
 const eventNames = {
 	inputsChange: 'inputsChange',
@@ -548,11 +184,9 @@ const filterParamsArrayType = {
 const _app = {
 	log, //打印管理
 	eventNames, // inputs内所有类型变更时的emit事件名称
-	picker_date_obj: {
-		dateTime,
-		date,
-		time
-	},
+	UpLoadFile,
+	pics_splice,
+	sendSMS,
 	pickerChoosedType,
 	setValueType,
 	filterParamsArrayType,
@@ -567,25 +201,11 @@ const _app = {
 			icon: 'none'
 		})
 	},
-	showLoading(msg, ifmask) {
-		uni.showLoading({
-			title: msg,
-			mask: ifmask || false
-		})
+	regTest(name, val) {
+		return verifyTypeObj[name].reg.test(val);
 	},
-	hideLoading() {
-		uni.hideLoading();
-	},
-	UpLoadFile,
-	pics_splice,
-	sendSMS,
-	previewImage(imgPath, currentIndex) {
-		if (!(imgPath instanceof Array))
-			imgPath = [imgPath];
-		uni.previewImage({
-			urls: imgPath,
-			current: currentIndex || 0
-		})
+	isNumber(param) {
+		return typeof(param) === 'number';
 	},
 	countDays(Y, M, val, mode) {
 		let days = [];
@@ -609,18 +229,34 @@ const _app = {
 		}
 		return y;
 	},
-	checkbox_status(data) {
+	hideLoading() {
+		uni.hideLoading();
+	},
+	showLoading(msg, ifmask) {
+		uni.showLoading({
+			title: msg,
+			mask: ifmask || false
+		})
+	},
+	picker_date_obj: {
+		dateTime,
+		date,
+		time
+	},
+	previewImage(imgPath, currentIndex) {
+		if (!(imgPath instanceof Array))
+			imgPath = [imgPath];
+		uni.previewImage({
+			urls: imgPath,
+			current: currentIndex || 0
+		})
+	},
+	checkbox_status(data) {	// 暂时无用了
 		for (let i = 0; i < data.length; i++) {
 			if (data[i] !== '') data[i] = true;
 			else data[i] = false;
 		}
 		return data;
-	},
-	regTest(name, val) {
-		return verifyTypeObj[name].reg.test(val);
-	},
-	isNumber(param) {
-		return typeof(param) === 'number';
 	},
 	filterParams(params, type, checkOneVariableName) {
 		if (params.length === 0)
@@ -676,16 +312,4 @@ function getParamsArray(type) {
 	return arr;
 }
 
-function renderUrlData(u, d) {
-	let c = '';
-	let n = 0;
-	if (d)
-		for (let i in d) {
-			if (n > 0)
-				c += '&' + i + '=' + d[i];
-			else
-				c += '?' + i + '=' + d[i];
-			++n;
-		}
-	return u + c;
-}
+

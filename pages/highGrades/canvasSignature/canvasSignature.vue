@@ -11,7 +11,7 @@
 				请签名
 			</view>
 			<view class="Flex8">
-				<canvas class='height100' canvas-id="firstCanvas" @touchmove='move' @touchstart='start($event)' @touchend='end'
+				<canvas :style="{'pointer-events': readySign?'auto':'none'}" class='height100' canvas-id="firstCanvas" @touchmove='move' @touchstart='start($event)' @touchend='end'
 				 @touchcancel='cancel' @longtap='tap' disable-scroll='true' @error='error'>
 				</canvas>
 			</view>
@@ -34,12 +34,12 @@
 	const SystemInfo = uni.getSystemInfoSync();
 	var content = null;
 	var touchs = [];
-
+	var showT;
 	var picSignObj = null;
 	export default {
 		data() {
 			return {
-				content: `该功能参考了 https://ext.dcloud.net.cn/plugin?id=331 的插件, 感谢!`,
+				content: `该功能参考了 https://ext.dcloud.net.cn/plugin?id=331 的插件, 感谢!\n 该页面只是一个示例,并非inputs内的功能`,
 				SystemInfo,
 				inputsArray: [{
 					title: '签名',
@@ -52,7 +52,8 @@
 					customId: 'credit'
 				}],
 				isEnd: false, // 是否签名
-				canvasShow: false
+				canvasShow: false,
+				readySign: false
 			}
 		},
 		onLoad: function(options) {
@@ -183,10 +184,17 @@
 			showSginCanvas() {
 				this.clearClick();
 				this.canvasShow = true;
+				showT = setTimeout(()=>{
+					this.readySign = true;
+				}, 600);
 			},
 			hideSginCanvas() {
 				this.canvasShow = false;
 				this.clearClick();
+				if(showT) {
+					clearTimeout(showT);
+				}
+				this.readySign = false;
 			},
 			voidFc() {}
 		}

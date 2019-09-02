@@ -164,15 +164,21 @@
         }
         ,{
             "path" : "pages/highGrades/pickerAsync/pickerAsync",
-            "style" : {}
+            "style" : {
+            	"navigationBarTitleText": "inputs-picker逐级获取"
+			}
         }
         ,{
             "path" : "pages/highGrades/canvasSignature/canvasSignature",
-            "style" : {}
+            "style" : {
+            	"navigationBarTitleText": "手写签名示例"
+			}
         }
         ,{
             "path" : "pages/highGrades/refsitems/setPicsUpLoadData/setPicsUpLoadData",
-            "style" : {}
+            "style" : {
+            	"navigationBarTitleText": "设置上传图片自定义数据"
+			}
         }
     ],
 	"globalStyle": {

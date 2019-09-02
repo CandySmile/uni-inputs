@@ -715,7 +715,7 @@
 					</view>
 					<!-- input -->
 					<view class="flex_row_none_c transition_point6s" :style="classObj.contentWidth + 'border-bottom: 1px solid ' + (focusStyleObj[(item.variableName||(onLoadData+index))]?(item.focusBorderStyle||focusStyle.focusBorderStyle||'#999999'):(item.blurBorderStyle||focusStyle.blurBorderStyle||'#f2f2f2')) + ';'" v-else>
-						<view class="flex_row_none_c Flex5">
+						<view class="flex_row_none_c Flex5" :style="classObj.padding1_3">
 							<view class="Flex1" v-if="item.icon">
 								<view class="flex_row_c_c width100">
 									<uni-icon :type="item.icon" :pxSize="classObj.iconSize" :color="item.iconColor||'#999999'"></uni-icon>
@@ -1088,10 +1088,12 @@
 				fixedVariableNamePattern: false, 
 				launch: true
 			}); */
-			// #ifdef H5
-			this.onReady = true;
-			// #endif
 		},
+		// #ifdef H5
+		mounted() {
+			this.onReady = true;
+		},
+		// #endif
 		// #ifndef H5
 		onReady() {
 			this.onReady = true;
@@ -2156,6 +2158,7 @@
 				}
 			},
 			setValueFc(params) {
+				const fnName = 'setValueFc';
 				let _this = this;
 				let { value, picsIndex, index, itemVariableName, item, valueType } = params;
 				if(!item)
@@ -2170,12 +2173,12 @@
 						}else if(index!==undefined){
 							itemVariableName = _this.onLoadData + index;
 						}else{
-							_app.error('err: setValueFc, 找不到变量名');
+							log('err: setValueFc, 找不到变量名', fnName);
 							return;
 						}
 					}
 					if(!itemVariableName) {
-						_app.error('err: setValueFc, 找不到变量名');
+						log('err: setValueFc, 找不到变量名', fnName);
 						return;
 					}
 					let data;
@@ -2193,23 +2196,23 @@
 								const values = [];
 								const status = [];
 								for (let j = 0; j < item.itemArray.length; j++) {
-									const d = item.itemArray[j].value;
+									const d = String(item.itemArray[j].value);
 									if(value.includes(d)) {
-										status.push(d)
+										status.push(true);
 										values.push(d);
 									}else{
-										status.push('');
+										status.push(false);
 									}
 								}
 								if(values.length > 0){ 
 									_this.initedSetChange({vbName: itemVariableName});
 								}
-								_this.$set(_this.inputsObj, itemVariableName, {value: values, status: _app.checkbox_status(status)});
+								_this.$set(_this.inputsObj, itemVariableName, {value: values, status});
 							}
 							break;
 						case 'pics':
 							if (picsIndex === undefined) {
-								_app.error('pics类型找不到picsIndex');
+								log('pics类型找不到picsIndex', fnName);
 								return;
 							}
 							let picVbNmae;
@@ -2270,7 +2273,7 @@
 							break;
 						case 'picker-city':
 								if(!(value instanceof Array && value.length >= 3)) {
-									_app.error('err: setValueFc, picer-city格式不正确');
+									log('err: setValueFc, picer-city格式不正确', fnName);
 									return;
 								}
 								provinceDataList = require('./mpvue-citypicker/city-data/province.js').default;
@@ -2438,6 +2441,7 @@
 				}
 			},
 			checkSetValueFc(params) {
+				const fnName = 'checkSetValueFc';
 				const { title, variableName, index, value } = params
 				const inputsArray = this.inputsArray;
 				const name = variableName?'variableName':title?'title':'';
@@ -2447,13 +2451,13 @@
 				}else if(index!==undefined && _app.regTest('Int', index)) {
 					obj = inputsArray[Number(index)];
 				}else{
-					_app.error('err: setValueFc, 找不到可匹配标识');
+					log('err: setValueFc, 找不到可匹配标识', fnName);
 				}
 				
 				if(obj&&Object.keys(obj).length > 0) {
 					return obj;
 				}else{
-					_app.error('err: setValueFc, 找不到匹配项');
+					log('err: setValueFc, 找不到匹配项', fnName);
 				}
 				return false;
 			},
