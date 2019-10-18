@@ -70,15 +70,30 @@
 									 @tap.prevent.stop="infinitePicsShowImg" :data-index="item.variableName||index" :data-picsindex="picsIndex">
 									</image>
 									<view class="picsClear" @tap.prevent.stop="clearPic" :data-index="item.variableName||index" :data-picsindex="picsIndex"
-									 :data-infinite="true">
+									 :data-infinite="true" :data-sortselection="item.sortSelection">
 										<uni-icon type="clear" :color="item.clearColor||'#f5105c'" :pxSize="classObj.size4wW" />
+									</view>
+									<view 
+									class="picsCheck flex_row_c_c"
+									:style="{
+										'background-color': picsSortObj[infinitePicsName + (item.variableName||index)][picsIndex]?(item.selectedColor||'#0099FF'):(item.unselectedColor||'rgba(0,0,0,.7)'),
+										'border': (item.borderColor||'1px solid rgba(255,255,255,.7)'),
+										'color': item.color||'#fff'
+									}"
+									v-if="item.sortSelection"
+									@tap.stop="picsCheckFc"
+									:data-index="item.variableName||index"
+									:data-picsindex="picsIndex">
+										{{
+											picsSortObj[infinitePicsName + (item.variableName||index)][picsIndex] || ''
+										}}
 									</view>
 								</view>
 							</view>
 							<view class="flex_column_c_c border_radius_4px transition_border_point6s" :style="classObj.paddingPoint5" v-if="item.max?(infinitePicsObj[infinitePicsName + (item.variableName||index)]?infinitePicsObj[infinitePicsName + (item.variableName||index)].length>=item.max?false:true:true):true">
 								<view class="flex_row_c_c border1pxf2f2f2 position_relative border_radius_4px backgrounColor_f8f8f8 box_shadow_2px_2px_5px_ADADAD"
 								 :style="classObj.picsBox" @tap="chooseImg" :data-index="item.variableName||index" :data-picsindex="index"
-								 :data-infinite="true" :data-customtapid="item.customTapId">
+								 :data-infinite="true" :data-customtapid="item.customTapId" :data-sortselection="item.sortSelection">
 									<uni-icon type="image" :pxSize="classObj.size6wW" color="#999999" />
 								</view>
 							</view>
@@ -1074,7 +1089,9 @@
 				infinitePicsName: 'infinitePics',
 				initedSet: new Set(),
 				fixedVariableNamePattern: false,
-				picsUpLoadData: {}
+				picsUpLoadData: {},
+				picsSortObj: {},
+				picsSortArrayObj: {}
 			};
 		},
 		watch: {
@@ -1292,6 +1309,7 @@
 			showPicker(
 				{ currentTarget: { dataset: { item, index } } } = {}
 			) { //显示相对应的picker
+			uni.hideKeyboard();
 			let _this = this;
 				item.index = index;
 				_this.maskShow = true;
@@ -1346,6 +1364,7 @@
 			showPicker(
 				item, index
 			) { //显示相对应的picker
+			uni.hideKeyboard();
 			let _this = this;
 				item.index = index;
 				_this.maskShow = true;
@@ -1705,7 +1724,15 @@
 							break;
 						case 'infinitePics':
 							const vbName = this.infinitePicsName + (d[i].variableName || i);
-							const infiniteItem = this.infinitePicsObj[vbName];
+							let infiniteItem;
+							if(d[i].sortSelection) {
+								infiniteItem = this.picsSortArrayObj[vbName];
+								if((!infiniteItem || !infiniteItem instanceof Array || infiniteItem.length === 0) && d[i].defaultSelectAll) {
+									infiniteItem = this.infinitePicsObj[vbName];
+								}
+							}else{
+								infiniteItem = this.infinitePicsObj[vbName];
+							}
 							if(!infiniteItem||infiniteItem.length===0) {
 								if(d[i].ignore || (d[i].hide&&d[i].ignore!==false)) {
 									ifInfinitePics.push({infiniteItem, index: i});
@@ -1727,7 +1754,7 @@
 						case 'text':
 							break;
 						case 'checkbox':
-							if ((!_this.inputsObj[variableName].value||_this.inputsObj[variableName].value.length===0) && d[i].ignore!==false && !d[i].hide) {
+							if ((!_this.inputsObj[variableName].value||_this.inputsObj[variableName].value.length===0) && (!d[i].ignore || (d[i].hide&&d[i].ignore!==false))) {
 								_this.change_verifyStatus(i, 2);
 								_app.showToast(d[i].nullErr || ((d[i].title||'第' + i + '项') + '不能为空'));
 								return;
@@ -1905,70 +1932,78 @@
 				if(this.submitReSet) this.init();
 			},
 			chooseImg( //选择图片
-				{currentTarget: { dataset: { index, picsindex, infinite, customtapid, title } } } = {},
+				{currentTarget: { dataset: { index, picsindex, infinite, customtapid, title, sortselection } } } = {},
 			) {
-			let vbName;
-			let oldData;
-			if(customtapid) {
-				this.$emit('picsTap', {
-					title,
-					index,
-					picsIndex: picsindex,
-					infinite,
-					customTapId: customtapid
-				});
-			}else{
-				if(infinite) {
-					vbName = this.infinitePicsName + index;
-				}else {
-					if(_app.regTest('Int', index)) {
-						vbName = this.onLoadData + index + this.onLoadData + picsindex;
-					}else{
-						vbName = index + picsindex;
+				let vbName;
+				let oldData;
+				if(customtapid) {
+					this.$emit('picsTap', {
+						title,
+						index,
+						picsIndex: picsindex,
+						infinite,
+						customTapId: customtapid
+					});
+				}else{
+					if(infinite) {
+						vbName = this.infinitePicsName + index;
+					}else {
+						if(_app.regTest('Int', index)) {
+							vbName = this.onLoadData + index + this.onLoadData + picsindex;
+						}else{
+							vbName = index + picsindex;
+						}
+						if(this.picsObj[vbName]) return;
+						oldData = this.picsObj[vbName];
 					}
-					if(this.picsObj[vbName]) return;
-					oldData = this.picsObj[vbName];
-				}
-				uni.chooseImage({
-					success: res => {
-						this.initedSetChange({vbName: index});
-						if(infinite) {
-							const infinitePicsObj = {...this.infinitePicsObj};
-							if(!infinitePicsObj[vbName])
-								infinitePicsObj[vbName] = [];
-							const tempFilePaths = res.tempFilePaths;
-							const inputsArrayItem = this.inputsArray[picsindex];
-							const oldInfiniteLength = this.infinitePicsObj[vbName]?this.infinitePicsObj[vbName].length:0;
-							tempFilePaths.forEach((item, pathIndex)=>{
-								if(inputsArrayItem.max) {
-									if((oldInfiniteLength + (pathIndex + 1)) <= inputsArrayItem.max) {
+					uni.chooseImage({
+						success: res => {
+							this.initedSetChange({vbName: index});
+							if(infinite) {
+								const infinitePicsObj = {...this.infinitePicsObj};
+								if(!infinitePicsObj[vbName])
+									infinitePicsObj[vbName] = [];
+								const tempFilePaths = res.tempFilePaths;
+								const inputsArrayItem = this.inputsArray[picsindex];
+								const oldInfiniteLength = this.infinitePicsObj[vbName]?this.infinitePicsObj[vbName].length:0;
+								tempFilePaths.forEach((item, pathIndex)=>{
+									if(inputsArrayItem.max) {
+										if((oldInfiniteLength + (pathIndex + 1)) <= inputsArrayItem.max) {
+											infinitePicsObj[vbName].push({path: item});
+										}
+									}else{
 										infinitePicsObj[vbName].push({path: item});
 									}
-								}else{
-									infinitePicsObj[vbName].push({path: item});
-								}
-							})
-							this.$set(this.infinitePicsObj, vbName, infinitePicsObj[vbName]);
-						}else{
-							const newData = res.tempFilePaths[0];
-							this.$set(this.picsObj, vbName, newData);
-							this._emitEvent(_app.eventNames.inputsChange, {newData, oldData, index, picsindex});
+								})
+								this.$set(this.infinitePicsObj, vbName, infinitePicsObj[vbName]);
+								if(sortselection) this.sortSelectionPicsCheckObj(vbName);
+							}else{
+								const newData = res.tempFilePaths[0];
+								this.$set(this.picsObj, vbName, newData);
+								this._emitEvent(_app.eventNames.inputsChange, {newData, oldData, index, picsindex});
+							}
 						}
-					}
-				})
-			}
+					})
+				}
 			},
 			clearPic(
-				{ currentTarget: { dataset: { index, picsindex, infinite } } } = {},
+				{ currentTarget: { dataset: { index, picsindex, infinite, sortselection } } } = {},
 			) { //清除图片
 				this.initedSetChange({vbName: index});
 				let vbName;
 				let oldData;
 				if(infinite) {
 					vbName = this.infinitePicsName + index;
-					const infinitePicsObj = {...this.infinitePicsObj};
-					infinitePicsObj[vbName].splice(picsindex, 1);
-					this.$set(this.infinitePicsObj, vbName, infinitePicsObj[vbName]);
+					// const infinitePicsObj = {...this.infinitePicsObj};
+					const oldPath = this.infinitePicsObj[vbName][picsindex].path;
+					this.infinitePicsObj[vbName].splice(picsindex, 1);
+					if(sortselection) {
+						const sortSelectionIndex = this.picsSortArrayObj[vbName].findIndex(item=>item.path === oldPath);
+						if(sortSelectionIndex >= 0) {
+							if(this.picsSortArrayObj[vbName][sortSelectionIndex]) this.picsSortArrayObj[vbName].splice(sortSelectionIndex, 1);
+						}
+						this.sortSelectionPicsCheckObj(vbName);
+					}
 				}else {
 					if(_app.regTest('Int', index)) {
 						vbName = this.onLoadData + index + this.onLoadData + picsindex;
@@ -1996,6 +2031,36 @@
 						imgArr.push(item.path)
 				})
 				_app.previewImage(imgArr, picsindex);
+			},
+			picsCheckFc(
+				{ currentTarget: { dataset: { index, picsindex } } } = {},
+			) {
+				const vbName = this.infinitePicsName + index;
+				const pic = this.infinitePicsObj[vbName][picsindex].path;
+				if(!this.picsSortArrayObj[vbName]) this.picsSortArrayObj[vbName] = [];
+				const hasIndex = this.picsSortArrayObj[vbName].findIndex(ite=>ite.path===pic);
+				if(hasIndex >= 0) {
+					this.picsSortArrayObj[vbName].splice(hasIndex, 1);
+				}else{
+					this.picsSortArrayObj[vbName].push({path: pic});
+				}
+				this.sortSelectionPicsCheckObj(vbName);
+			},
+			sortSelectionPicsCheckObj(vbName) {
+				const newArray = [];
+				const infinitePicsItem = this.infinitePicsObj[vbName];
+				if(!this.picsSortArrayObj[vbName]) this.picsSortArrayObj[vbName] = [];
+				const checkPicsCheckArrayItem = this.picsSortArrayObj[vbName];
+				for(let i = 0; i < infinitePicsItem.length; i++) {
+					const item = infinitePicsItem[i];
+					const index = checkPicsCheckArrayItem.findIndex(ite=>ite.path === item.path);
+					if(index >= 0) {
+						newArray.push(index+1);
+					}else{
+						newArray.push('');
+					}
+				}
+				this.$set(this.picsSortObj, vbName, newArray);
 			},
 			picker_hideFc() { //picker类型全部隐藏
 				this.pickerDateShow = false;
@@ -2426,6 +2491,10 @@
 							break;
 						case 'infinitePics':
 							const vbName = _this.infinitePicsName + (item.variableName||(index||_this.inputsArray.findIndex(o=>o.title&&o.title===item.title)));
+							// 重置sortSelection
+							if(this.picsSortObj[vbName]) this.picsSortObj[vbName] = [];
+							if(this.picsSortArrayObj[vbName]) this.picsSortArrayObj[vbName] = [];
+							
 							const ininiteValue = [];
 							for(let p = 0; p < value.length; p++) {
 								ininiteValue.push({path: value[p]});

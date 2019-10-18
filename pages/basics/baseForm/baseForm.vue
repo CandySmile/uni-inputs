@@ -84,7 +84,8 @@
 						}],
 						variableName: "checkbox",
 						scale: '.8', //比例大小
-						color: "#c0ebd7"
+						color: "#c0ebd7",
+						ignore: true
 					}
 				]
 			}

@@ -58,9 +58,9 @@
 					}
 				); */
 				
-				
+				let _this = this;
 				//有回调函数
-				this.$refs.inputs.setPicsUpLoadData({
+				_this.$refs.inputs.setPicsUpLoadData({
 					setPicsDatas: [
 						{
 							customId: 'setPicsData',
@@ -74,6 +74,7 @@
 					scb(obj) {
 						console.log('设置成功: ' + JSON.stringify(obj));
 						uni.showToast({title:'设置成功'});
+						_this.$refs.inputs.activeFc();
 					},
 					fcb() {
 						console.log('设置失败');

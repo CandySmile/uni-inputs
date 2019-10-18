@@ -59,7 +59,7 @@
 						}];
 						//获取数据
 						let defaultValue1 = '从接口获取的初始值';
-						let defaultValue2 = '1';
+						let defaultValue2 = '2';
 						inputsArray[0].defaultValue = defaultValue1;
 
 						inputsArray[1].itemArray.find((item) => {

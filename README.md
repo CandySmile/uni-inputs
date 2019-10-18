@@ -1,5 +1,7 @@
 ## 下载示例项目 可直接拖进项目运行
 
+## QQ交流群: 750104037 [点我加入](https://jq.qq.com/?_wv=1027&k=5OyZoXa)
+
 ## 作者想说
 ```
 感谢各位小伙伴的不断建议，inputs组件的进步都是因为你们哦~！
@@ -28,14 +30,22 @@
 甚至，表单的类型、布局、取值可以由后端接口动态决定！有需要的小伙伴快点下载吧
 ```
 
+# 提示
+## 有该插件的拆分版: [QS-inputs-split](https://ext.dcloud.net.cn/plugin?id=652)<br />
+```
+相较于QS-inputs-split
+优点: 能根据后台生成对应的类型
+缺点: 可拓展性差、兼容性差(只要支持H5、App、微信小程序)
+
+```
+
 ---
 
 # 更新说明
 
 | 版本号 | 更新说明 |
 |--------|:----------|
-| v7.7 | 1、新增config目录，该目录下为inputs的配置文件，方便管理，以后更新也不用管app.js文件了，只要保留config目录更新即可<br />2、input样式内边距调整<br />3、手写签名示例优化在刚显示画布就滑动绘制导致画布初始设置失效的问题 |
-| v7.6 | 1、ref调用方法新增设置上传图片自定义携带数据, 详见2.或示例项目中的ref调用示例<br />2、新增打印管理，详见app.js-log<br />3、修复radio和checkbox类型的value精确度问题，注：radio与checkbox的value会转为String类型，所以尽量使用String类型<br />4、修复验证码样式问题 |
+| v7.8 | 1、infinitePics类型新增`选择排序模式`, 并增加设置参数sortSelection、showClose、showNext、defaultSelectAll等，详见 [3.1.5 infinitePics](#infinitePics), 详见<br /> 2、修复checkbox为空判断不正确问题<br />3、 优化 当显示picker时隐藏软键盘<br />4、优化 上传图片 域名替换机制判断为上传文件路径是是否包含interface.js中设置的域名  |
 |    ……    |    详细历次更新说明请移步至文档底部       |
 
 
@@ -49,7 +59,7 @@
 # `1. 传给inputs组件的属性`
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
-| inputsArray| 是| Array\<Object\>| | 需循环的inputs数组（可从后端接口获取）, 详见3.|
+| inputsArray| 是| Array\<Object\>| | 需循环渲染的inputs虚拟dom, 详见3.|
 | @activeFc| 是| Function| | 主功能方法，携带一个用户所输入的数据对象|
 | activeName| | String| | 主功能按钮的文字说明，不传该值，则主按钮不显示，可以用ref调用inputs的activeFc方法获取输入|
 | ifCode| | Boolean| `false`| 是否启用验证码功能, 若启用则需完善app.js中`sendSMS`发送验证码方法, 并需设置一项input的phone属性为true|
@@ -407,7 +417,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 
 ##  目前共十一种类型
 
-### 3.0.1 input
+### <span id="input">3.0.1  input</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| | String| | 不传该值(因默认为input)|
@@ -492,7 +502,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 
 ---
 
-### 3.0.2  textarea
+### <span id="textarea">3.0.2  textarea</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'textarea'`|
@@ -524,7 +534,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 注：最好看源码对照官网属性
 
 ---
-### 3.0.3 上传图片
+### <span id="pics">3.0.3 上传图片</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'pics'`|
@@ -535,7 +545,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 | customId| |Any| | 用来控制上传文件发法的属性赋值走向,在app.js文件中的UpLoadFile方法内判断此属性 |
 | customTapId(7.4新增)| |Any| | 点击进入自定义事件而不选择图片, 触发inputs传入的@picsTap |
 
-#### 3.0.3.0.1 pics的itemArray属性说明
+#### <span id="pics-itemArray">3.0.3.0.1 pics的itemArray属性说明</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | title| | String| | 该项图片的标题|
@@ -545,7 +555,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 注：若启用此项，则需完善app.js中的UpLoadFile上传图片至服务器方法，并且完善pics_splice拼接返回的图片路径方法<br />v7.0新增 域名替换机制 ,  若所上传的图片路径字符串开头4位是http， 则被认为是从后端获取的图片，此时会将此路径替换域名字符串为空后resolve出来
 
 ---
-### 3.0.4 radio(单选)
+### <span id="radio">3.0.4 radio(单选)</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'radio'`|
@@ -554,7 +564,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 | color| | Color| | radio的颜色|
 | scale| | String| `.8`| 大小比例, 取0-1的值|
 
-#### 3.0.4.0.1 radio的itemArray属性说明
+#### <span id="radio-itemArray">3.0.4.0.1 radio的itemArray属性说明</span>
 
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
@@ -567,7 +577,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 注：itemArray的color优先于外部的color
 
 ---
-### 3.0.5 checkbox(多选)
+### <span id="checkbox">3.0.5 checkbox(多选)</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'checkbox'`|
@@ -576,7 +586,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 | color| | Color| | checkbox的颜色|
 | scale| | String| `.8`| 大小比例, 取0-1的值|
 
-#### 3.0.5.0.1checkbox的itemArray属性说明
+#### <span id="1checkbox-itemArray">3.0.5.0.1checkbox的itemArray属性说明</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|-----|----|----|-------|
 | name| 是| String| | 该checkbox的标题|
@@ -588,7 +598,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 注：checkbox返回数据为:{value,status}  3.7更新
 
 ---
-### 3.0.6 switch
+### <span id="switch">3.0.6 switch</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'switch'`|
@@ -598,7 +608,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 | scale| | String| `.8`| 大小比例, 取0-1的值|
 
 ---
-### 3.0.7 slider
+### <span id="slider">3.0.7 slider</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'slider'`|
@@ -617,7 +627,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 ---
 
 
-### 3.0.8 picker-date 日期控件
+### <span id="picker-date">3.0.8 picker-date 日期控件</span>
 #### picker类型注意
 若要设置picker的样式，比如我要设置picker高为5，picker内的行内样式高为1，这样可以显示5行，但是，不要把样式设置的太死，行内高设为.9或.8 即可，设置的太死会导致picker在选择最后一项时出现bug
 
@@ -645,7 +655,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 注：所传的defaultDate若不在范围中，则将显示范围内的最后一年最后一月最后一日, defaultValue中所传的月份需-1;
 
 ---
-### 3.0.9 picker-city 城市选择
+### <span id="picker-city">3.0.9 picker-city 城市选择</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'picker-city'`|
@@ -661,7 +671,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 注：picker-city取值时返回对象，可根据需求修改
 
 ---
-### 3.1.0 picker-custom 自定义 （建议使用3.1.1 picker-custom2，返回的数据更简单）
+### <span id="picker-custom">3.1.0 picker-custom 自定义 （建议使用3.1.1 picker-custom2，返回的数据更简单）</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'picker-custom'`|
@@ -680,7 +690,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 | customId| | String\|Object| | 自定义标识|
 | placeholder| | String| 请选择| picker为arrowhead时的空占位字符|
 
-#### 3.1.0.0.1 picker-custom的steps属性说明
+#### <span id="picker-custom-steps">3.1.0.0.1 picker-custom的steps属性说明</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | steps_1_value| | String| | 一级显示属性名|
@@ -918,7 +928,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 注：picker-cutsom取值时无联动类型返回数组，联动类型返回对象
 
 ---
-### 3.1.1 picker-custom2 自定义（同类型优化版,返回数据更简单）
+### <span id="picker-custom2">3.1.1 picker-custom2 自定义（同类型优化版,返回数据更简单）</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'picker-custom2'`|
@@ -938,7 +948,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 | customId| | String\|Object| | 自定义标识|
 | placeholder| | String| 请选择| picker为arrowhead时的空占位字符|
 
-#### 3.1.1.0.1 picker-custom2的steps属性说明
+#### <span id="picker-custom2-steps">3.1.1.0.1 picker-custom2的steps属性说明</span>
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | step_1_value| | String| | 一级显示属性名|
@@ -1083,7 +1093,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 
 注：picker-cutsom取值时无联动类型返回数组，联动类型返回对象
 
-### 3.1.2 picker-provincialStreet 省市区乡镇街道选择
+### <span id="picker-provincialStreet">3.1.2 picker-provincialStreet 省市区乡镇街道选择</span>
 
 乡镇街道数据文件完整的需1.5MB左右，目前使用的是600KB，只有街道name无code，若需完整街道数据文件，可以找我拿，甚至自定义生成省市区街道数据格式的方法也可以找我拿，若需求多，可上传为另一个插件
 
@@ -1104,7 +1114,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 ---
 
 
-### 3.1.3 text 用于展示信息
+### <span id="text">3.1.3 text 用于展示信息</span>
 
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
@@ -1116,7 +1126,7 @@ this.$refs.inputs.clearPicsUpLoadData({
 
 注：text类型在取值时不会判断该项，但是会占一个位子
 
-### 3.1.4 editor 官方editor组件  `支持度随官方editor` （v6.9新增）
+### <span id="editor">3.1.4 editor 官方editor组件  `支持度随官方editor` （v6.9新增）</span>
 
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
@@ -1127,13 +1137,18 @@ this.$refs.inputs.clearPicsUpLoadData({
 
 注：editor类型是唯一的，只能有一个, 并且只在APP、微信小程序中的自定义组件模式下有效，需传入usingComponents属性为true, editor不支持动态增删
 
-### 3.1.5 infinitePics 无限上传图片（v6.9新增）
+### <span id="infinitePics">3.1.5 infinitePics 无限上传图片（v6.9新增）</span>
 
 | 属性名| 是否必填| 值类型| 默认值| 说明|
 |------|----|----|----|-------|
 | type| 是| String| | 传固定值 `type: 'infinitePics'`|
 | max| | Number| 无限| 图片数量的限制数值|
 | defaultValue |    |Array|    |初始默认图片数组, 数组中每项为图片地址|
+| `v7.8新增` |    | | | |
+| sortSelection |    |Boolean| false| 是否开启选择排序模式|
+| showClose |    |Boolean| true| 是否显示删除图片按钮|
+| showNext |    |Boolean| true| 是否显示添加下一项|
+| defaultSelectAll |    |Boolean| false| 当sortSelection为true并用户未选择任何图片时，是否默认上传所有图片|
 
 注：支持多选择，加强大图预览
 
@@ -1755,6 +1770,8 @@ this.$refs.inputs.clearPicsUpLoadData({
 
 | 版本号 | 更新说明 |
 |--------|:----------|
+| v7.7 | 1、新增config目录，该目录下为inputs的配置文件，方便管理，以后更新也不用管app.js文件了，只要保留config目录更新即可<br />2、input样式内边距调整<br />3、手写签名示例优化在刚显示画布就滑动绘制导致画布初始设置失效的问题 |
+| v7.6 | 1、ref调用方法新增设置上传图片自定义携带数据, 详见2.或示例项目中的ref调用示例<br />2、新增打印管理，详见app.js-log<br />3、修复radio和checkbox类型的value精确度问题，注：radio与checkbox的value会转为String类型，所以尽量使用String类型<br />4、修复验证码样式问题 |
 | v7.5 | 1、修复pics类型点击穿透问题<br />2、修复 checkbox 初始值问题 |
 | v7.4 | 1、新增picker显示模式，用pickerMode属性控制picker显示模式，默认为arrowhead模式, 并增加相应的空占位字符， 详见1.<br /> 2、详见2. 修复自定义组件模式下input、textarea的focus错乱问题<br />3、input的tapClear默认设为true<br />4、优化title块为text标签，可以用\n控制换行，并且title块可以伸缩，最大宽度为40%，由titleFixedWidth控制title块的宽度是否固定，text类型一直为固定，默认为不固定<br />5、pics类型的itemArray新增属性customTapId, 并在inputs组件上增加回调事件picsTap, 用于实现类似手写签名的功能, 示例项目新增 手写签名示例 详见 示例项目-高级，该功能参考了[手写签名](https://ext.dcloud.net.cn/plugin?id=331) 感谢！ <br />6、ref新增setValue方法，用于设置inputs内数据，支持设置多项, 详见2.<br />7、修复picker-custom2三级联动逐级获取的第三列数据不正确问题<br />8、app.js上传文件方法内对ios传参做了处理，请根据自己的需求修改，在下在项目中是需要这样做的，请一定要根据自己的需求来 |
 | v7.3 | 1、picker-custom与picker-custom2新增逐级获取功能, 需要在app.js中配置getSendData与getAsyncDataFc两个方法<br />2、修复picker-date下mode为picker-time的问题, 并且picker-time支持初始化<br />3、修复app.js中的手机号正则判断(在下遇到了198的手机号，然后判断不通过……修改为必须以1开头的11位数字)<br />4、修复可能出现input输入报错问题(需要部分苹果机型的小伙伴测试一下) |

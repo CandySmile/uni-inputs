@@ -24,7 +24,10 @@
 							'http://imgsrc.baidu.com/forum/w%3D580/sign=d97763e5f5dcd100cd9cf829428a47be/bc48eec4b74543a96096332413178a82b801141e.jpg',
 							'http://imgsrc.baidu.com/forum/w%3D580/sign=0bce5a5ec4177f3e1034fc0540ce3bb9/a435064f78f0f73675c584e90755b319eac413f4.jpg',
 							'http://imgsrc.baidu.com/forum/w%3D580/sign=791a660d9c2397ddd679980c6983b216/591f9758d109b3de80a0bb82c1bf6c81810a4c89.jpg'
-						]
+						],
+						check: true,
+						showNext: false,
+						showClose: false
 					},
 					{
 						title: 'infinitePics2',
@@ -37,6 +40,13 @@
 						type: 'infinitePics',
 						max: 3,
 						ignore: true
+					},
+					{
+						title: 'infinitePics4-排序模式',
+						type: 'infinitePics',
+						max: 3,
+						ignore: true,
+						sortSelection: true
 					}
 				]
 			}
